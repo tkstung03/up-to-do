@@ -19,6 +19,7 @@ public class UserSession {
     public void setUserId(int userId) {
         this.userId = userId;
     }
+
     public void clearSession() {
         userId = 0;
     }

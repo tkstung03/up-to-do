@@ -28,7 +28,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.nhom10.R;
-import com.example.nhom10.dao.TasksDAO;
+import com.example.nhom10.dao.TaskDAO;
 import com.example.nhom10.fragments.AboutFragment;
 import com.example.nhom10.fragments.CalendarFragment;
 import com.example.nhom10.fragments.CategoryFragment;
@@ -36,7 +36,7 @@ import com.example.nhom10.fragments.HomeFragment;
 import com.example.nhom10.fragments.PersonalFragment;
 import com.example.nhom10.fragments.SettingFragment;
 import com.example.nhom10.fragments.ShareFragment;
-import com.example.nhom10.model.Tasks;
+import com.example.nhom10.model.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -51,14 +51,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FloatingActionButton fab;
     private BottomNavigationView bottomNavigationView;
     private FragmentManager fragmentManager;
-    private TasksDAO tasksDAO;
+    private TaskDAO taskDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tasksDAO = new TasksDAO(this);
+        taskDAO = new TaskDAO(this);
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         fab = findViewById(R.id.fab);
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -173,14 +173,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return;
             }
 
-            Tasks task = new Tasks();
+            Task task = new Task();
             task.setTitle(title);
             task.setNote(note);
             task.setDueDate(dueDate);
-            task.setCreateAt(createAt);
-            task.setUpdateAt(updateAt);
 
-            boolean isInserted = tasksDAO.insertTask(task);
+            boolean isInserted = taskDAO.insertTask(task);
 
             if (isInserted) {
                 Toast.makeText(this, "Task đã được lưu", Toast.LENGTH_SHORT).show();

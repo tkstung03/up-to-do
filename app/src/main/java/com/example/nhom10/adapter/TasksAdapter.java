@@ -10,8 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nhom10.R;
-import com.example.nhom10.dao.TasksDAO;
-import com.example.nhom10.model.Tasks;
+import com.example.nhom10.dao.TaskDAO;
+import com.example.nhom10.model.Task;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,12 +20,12 @@ import java.util.Locale;
 
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHolder> {
 
-    private List<Tasks> tasksList;
-    private TasksDAO tasksDAO;
+    private List<Task> taskList;
+    private TaskDAO taskDAO;
 
-    public TasksAdapter(List<Tasks> tasksList, TasksDAO tasksDAO) {
-        this.tasksList = tasksList;
-        this.tasksDAO = tasksDAO;
+    public TasksAdapter(List<Task> taskList, TaskDAO taskDAO) {
+        this.taskList = taskList;
+        this.taskDAO = taskDAO;
     }
 
     @NonNull
@@ -38,7 +38,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-        final Tasks task = tasksList.get(position);
+        final Task task = taskList.get(position);
         holder.taskTitle.setText(task.getTitle());
 
         Date dueDate = task.getDueDate();
@@ -52,7 +52,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
         holder.taskCheckBox.setChecked(task.isCompleted());
         holder.taskCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            tasksDAO.updateTaskStatus(task.getTaskId(), isChecked);
+            taskDAO.updateTaskStatus(task.getTaskId(), isChecked);
 
             task.setCompleted(isChecked);
         });
@@ -60,11 +60,11 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
     @Override
     public int getItemCount() {
-        return tasksList.size();
+        return taskList.size();
     }
 
-    public void updateTasks(List<Tasks> newTasksList) {
-        this.tasksList = newTasksList;
+    public void updateTasks(List<Task> newTaskList) {
+        this.taskList = newTaskList;
         notifyDataSetChanged();
     }
 

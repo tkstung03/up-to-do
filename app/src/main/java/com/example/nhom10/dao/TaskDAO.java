@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.nhom10.database.DbHelper;
-import com.example.nhom10.model.Tasks;
+import com.example.nhom10.model.Task;
 import com.example.nhom10.objects.UserSession;
 
 import java.util.ArrayList;
@@ -14,54 +14,52 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class TasksDAO {
+public class TaskDAO {
     private SQLiteDatabase db;
     private int userId;
 
-    public TasksDAO(Context context) {
+    public TaskDAO(Context context) {
         DbHelper dbHelper = new DbHelper(context);
         db = dbHelper.getWritableDatabase();
         UserSession userSession = UserSession.getInstance();
         userId = userSession.getUserId();
     }
 
-    public List<Tasks> getTasks() {
-        List<Tasks> tasksList = new ArrayList<>();
+    public List<Task> getTasks() {
+        List<Task> taskList = new ArrayList<>();
 
-        String query = "SELECT * FROM Tasks WHERE user_id = ? ORDER BY dueDate ASC";
+        String query = "SELECT * FROM tasks WHERE user_id = ? ORDER BY due_date ASC";
         try (Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId)})) {
             while (cursor.moveToNext()) {
-                tasksList.add(parseTask(cursor));
+                taskList.add(parseTask(cursor));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return tasksList;
+        return taskList;
     }
 
-    public boolean insertTask(Tasks task) {
+    public boolean insertTask(Task task) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("title", task.getTitle());
         contentValues.put("note", task.getNote());
-        contentValues.put("dueDate", task.getDueDate().getTime());
-        contentValues.put("createAt", task.getCreateAt().getTime());
-        contentValues.put("updateAt", task.getUpdateAt().getTime());
+        contentValues.put("due_date", task.getDueDate().getTime());
         contentValues.put("user_id", userId);
-        contentValues.put("categoryId", task.getCategoryId());
+        contentValues.put("category_id", task.getCategoryId());
 
-        long result = db.insert("Tasks", null, contentValues);
+        long result = db.insert("tasks", null, contentValues);
         return result != -1;
     }
 
     public void updateTaskStatus(int taskId, boolean isCompleted) {
         ContentValues values = new ContentValues();
-        values.put("isCompleted", isCompleted ? 1 : 0);
+        values.put("is_completed", isCompleted ? 1 : 0);
 
-        db.update("tasks", values, "taskId = ?", new String[]{String.valueOf(taskId)});
+        db.update("tasks", values, "task_id = ?", new String[]{String.valueOf(taskId)});
     }
 
-    public List<Tasks> getTasksForToday() {
+    public List<Task> getTasksForToday() {
         Calendar calendar = Calendar.getInstance();
         long startOfDay = getStartOfDay(calendar).getTime();
         long endOfDay = getEndOfDay(calendar).getTime();
@@ -69,7 +67,7 @@ public class TasksDAO {
         return getTasksByDateRange(startOfDay, endOfDay);
     }
 
-    public List<Tasks> getTasksForThisWeek() {
+    public List<Task> getTasksForThisWeek() {
         Calendar calendar = Calendar.getInstance();
         long startOfWeek = getStartOfWeek(calendar).getTime();
         calendar.add(Calendar.DATE, 7);
@@ -78,7 +76,7 @@ public class TasksDAO {
         return getTasksByDateRange(startOfWeek, endOfWeek);
     }
 
-    public List<Tasks> getTasksForThisMonth() {
+    public List<Task> getTasksForThisMonth() {
         Calendar calendar = Calendar.getInstance();
         long startOfMonth = getStartOfMonth(calendar).getTime();
         calendar.add(Calendar.MONTH, 1);
@@ -87,33 +85,31 @@ public class TasksDAO {
         return getTasksByDateRange(startOfMonth, endOfMonth);
     }
 
-    private List<Tasks> getTasksByDateRange(long startDate, long endDate) {
-        List<Tasks> tasksList = new ArrayList<>();
+    private List<Task> getTasksByDateRange(long startDate, long endDate) {
+        List<Task> taskList = new ArrayList<>();
 
-        String query = "SELECT * FROM Tasks WHERE user_id = ? AND dueDate BETWEEN ? AND ? ORDER BY dueDate ASC";
+        String query = "SELECT * FROM tasks WHERE user_id = ? AND due_date BETWEEN ? AND ? ORDER BY due_date ASC";
         try (Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId), String.valueOf(startDate), String.valueOf(endDate)})) {
             while (cursor.moveToNext()) {
-                tasksList.add(parseTask(cursor));
+                taskList.add(parseTask(cursor));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return tasksList;
+        return taskList;
     }
 
-    private Tasks parseTask(Cursor cursor) {
-        Tasks task = new Tasks();
-        task.setTaskId(cursor.getInt(cursor.getColumnIndexOrThrow("taskId")));
+    private Task parseTask(Cursor cursor) {
+        Task task = new Task();
+        task.setTaskId(cursor.getInt(cursor.getColumnIndexOrThrow("task_id")));
         task.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
         task.setNote(cursor.getString(cursor.getColumnIndexOrThrow("note")));
-        task.setDueDate(new Date(cursor.getLong(cursor.getColumnIndexOrThrow("dueDate"))));
-        task.setCreateAt(new Date(cursor.getLong(cursor.getColumnIndexOrThrow("createAt"))));
-        task.setUpdateAt(new Date(cursor.getLong(cursor.getColumnIndexOrThrow("updateAt"))));
-        int isCompleted = cursor.getInt(cursor.getColumnIndexOrThrow("isCompleted"));
+        task.setDueDate(new Date(cursor.getLong(cursor.getColumnIndexOrThrow("due_date"))));
+        int isCompleted = cursor.getInt(cursor.getColumnIndexOrThrow("is_completed"));
         task.setCompleted(isCompleted == 1);
-        task.setUser_id(cursor.getInt(cursor.getColumnIndexOrThrow("user_id")));
-        task.setCategoryId(cursor.getInt(cursor.getColumnIndexOrThrow("categoryId")));
+        task.setUserId(cursor.getInt(cursor.getColumnIndexOrThrow("user_id")));
+        task.setCategoryId(cursor.getInt(cursor.getColumnIndexOrThrow("category_id")));
         return task;
     }
 

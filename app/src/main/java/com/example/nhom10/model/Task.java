@@ -2,28 +2,24 @@ package com.example.nhom10.model;
 
 import java.util.Date;
 
-public class Tasks {
+public class Task {
     private int taskId;
     private String title;
     private String note;
     private Date dueDate;
-    private Date createAt;
-    private Date updateAt;
-    private int user_id;
+    private int userId;
     private int categoryId;
     private boolean isCompleted;
 
-    public Tasks() {
+    public Task() {
     }
 
-    public Tasks(int taskId, String title, String note, Date dueDate, Date createAt, Date updateAt, int user_id, int categoryId, boolean isCompleted) {
+    public Task(int taskId, String title, String note, Date dueDate, int userId, int categoryId, boolean isCompleted) {
         this.taskId = taskId;
         this.title = title;
         this.note = note;
         this.dueDate = dueDate;
-        this.createAt = createAt;
-        this.updateAt = updateAt;
-        this.user_id = user_id;
+        this.userId = userId;
         this.categoryId = categoryId;
         this.isCompleted = isCompleted;
     }
@@ -60,28 +56,12 @@ public class Tasks {
         this.dueDate = dueDate;
     }
 
-    public Date getCreateAt() {
-        return createAt;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setCreateAt(Date createAt) {
-        this.createAt = createAt;
-    }
-
-    public Date getUpdateAt() {
-        return updateAt;
-    }
-
-    public void setUpdateAt(Date updateAt) {
-        this.updateAt = updateAt;
-    }
-
-    public int getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public int getCategoryId() {

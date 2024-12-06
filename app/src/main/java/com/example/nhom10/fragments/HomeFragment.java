@@ -13,15 +13,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nhom10.R;
 import com.example.nhom10.adapter.TasksAdapter;
-import com.example.nhom10.dao.TasksDAO;
-import com.example.nhom10.model.Tasks;
+import com.example.nhom10.dao.TaskDAO;
+import com.example.nhom10.model.Task;
 
 import java.util.List;
 
-
 public class HomeFragment extends Fragment {
 
-    private TasksDAO tasksDAO;
+    private TaskDAO taskDAO;
     private RecyclerView recyclerView;
     private TasksAdapter tasksAdapter;
     private Spinner filterSpinner;
@@ -35,10 +34,10 @@ public class HomeFragment extends Fragment {
         filterSpinner = view.findViewById(R.id.filterSpinner);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        tasksDAO = new TasksDAO(getContext());
-        List<Tasks> tasks = tasksDAO.getTasks();
+        taskDAO = new TaskDAO(getContext());
+        List<Task> tasks = taskDAO.getTasks();
 
-        tasksAdapter = new TasksAdapter(tasks, tasksDAO);
+        tasksAdapter = new TasksAdapter(tasks, taskDAO);
         recyclerView.setAdapter(tasksAdapter);
 
         filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -57,20 +56,20 @@ public class HomeFragment extends Fragment {
     }
 
     private void applyFilter(String filter) {
-        List<Tasks> filteredTasks;
+        List<Task> filteredTasks;
 
         switch (filter) {
             case "Hôm nay":
-                filteredTasks = tasksDAO.getTasksForToday();
+                filteredTasks = taskDAO.getTasksForToday();
                 break;
             case "Tuần này":
-                filteredTasks = tasksDAO.getTasksForThisWeek();
+                filteredTasks = taskDAO.getTasksForThisWeek();
                 break;
             case "Tháng này":
-                filteredTasks = tasksDAO.getTasksForThisMonth();
+                filteredTasks = taskDAO.getTasksForThisMonth();
                 break;
             default:
-                filteredTasks = tasksDAO.getTasks();
+                filteredTasks = taskDAO.getTasks();
                 break;
         }
 

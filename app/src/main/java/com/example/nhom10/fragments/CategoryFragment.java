@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment;
 
 import com.example.nhom10.R;
 
-
 public class CategoryFragment extends Fragment {
 
     @Override
