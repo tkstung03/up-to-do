@@ -12,12 +12,12 @@ public class InitData {
 
 
     public static final String INSERT_TAGS = "INSERT INTO Tags (name, createAt,color) VALUES " +
-            "('Urgent', " + System.currentTimeMillis() + ",red), " +
-            "('Quan trọng', " + System.currentTimeMillis() + ",yellow), " +
-            "('Low Priority', " + System.currentTimeMillis() + ",blue);";
+            "('Urgent', " + System.currentTimeMillis() + ",'red'), " +
+            "('Quan trọng', " + System.currentTimeMillis() + ",'yellow'), " +
+            "('Low Priority', " + System.currentTimeMillis() + ",'blue');";
 
 
-    public static final String INSERT_TASKS = "INSERT INTO Tasks (title, description, dueDate, createAt, updateAt, user_id, categoryId) VALUES " +
+    public static final String INSERT_TASKS = "INSERT INTO Tasks (title, note, dueDate, createAt, updateAt, user_id, categoryId) VALUES " +
             "('Thi Android', '', " + System.currentTimeMillis() + ", " + System.currentTimeMillis() + ", " + System.currentTimeMillis() + ", 1, 1), " +
             "('Ăn tối', 'Ăn no', " + (System.currentTimeMillis() + 86400000) + ", " + System.currentTimeMillis() + ", " + System.currentTimeMillis() + ", 2, 2);";
 

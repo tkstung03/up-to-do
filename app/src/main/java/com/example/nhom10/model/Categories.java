@@ -13,6 +13,4 @@ public class Categories {
     private int categoryId;
     private String name;
     private int userId;
-
-
 }
