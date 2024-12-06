@@ -29,6 +29,7 @@ public class DbHelper extends SQLiteOpenHelper {
             "dueDate INTEGER, " +
             "createAt INTEGER, " +
             "updateAt INTEGER, " +
+            "isCompleted INTEGER DEFAULT 0, " +
             "user_id INTEGER, " +
             "categoryId INTEGER, " +
             "FOREIGN KEY(user_id) REFERENCES Users(userId), " +

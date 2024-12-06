@@ -5,9 +5,9 @@
     <string name="close_nav">Close Navigation Drawer</string>
 
     <string-array name="task_filter_options">
-        <item>Today</item>
-        <item>This Week</item>
-        <item>This Month</item>
-        <item>All Tasks</item>
+        <item>Hôm nay</item>
+        <item>Tuần này</item>
+        <item>Tháng này</item>
+        <item>Tất cả</item>
     </string-array>
 </resources>

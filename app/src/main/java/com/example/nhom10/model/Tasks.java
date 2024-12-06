@@ -11,11 +11,12 @@ public class Tasks {
     private Date updateAt;
     private int user_id;
     private int categoryId;
+    private boolean isCompleted;
 
     public Tasks() {
     }
 
-    public Tasks(int taskId, String title, String note, Date dueDate, Date createAt, Date updateAt, int user_id, int categoryId) {
+    public Tasks(int taskId, String title, String note, Date dueDate, Date createAt, Date updateAt, int user_id, int categoryId, boolean isCompleted) {
         this.taskId = taskId;
         this.title = title;
         this.note = note;
@@ -24,6 +25,7 @@ public class Tasks {
         this.updateAt = updateAt;
         this.user_id = user_id;
         this.categoryId = categoryId;
+        this.isCompleted = isCompleted;
     }
 
     public int getTaskId() {
@@ -88,5 +90,13 @@ public class Tasks {
 
     public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public boolean isCompleted() {
+        return isCompleted;
+    }
+
+    public void setCompleted(boolean completed) {
+        isCompleted = completed;
     }
 }
