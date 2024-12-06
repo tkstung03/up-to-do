@@ -1,6 +1,7 @@
 package com.example.nhom10.activity;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -188,7 +189,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (itemId == R.id.nav_about) {
             openFragment(new AboutFragment());
         } else if (itemId == R.id.nav_logout) {
-            Toast.makeText(this, "Logout!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Logged out!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MainActivity.this, Login.class);
+            startActivity(intent);
+
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
