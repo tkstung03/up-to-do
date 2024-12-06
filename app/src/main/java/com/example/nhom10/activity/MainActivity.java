@@ -1,6 +1,8 @@
 package com.example.nhom10.activity;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -10,14 +12,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
-import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -25,7 +30,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.nhom10.R;
-import com.example.nhom10.databinding.ActivityMainBinding;
+import com.example.nhom10.dao.TasksDAO;
 import com.example.nhom10.fragments.AboutFragment;
 import com.example.nhom10.fragments.CalendarFragment;
 import com.example.nhom10.fragments.CategoryFragment;
@@ -33,10 +38,16 @@ import com.example.nhom10.fragments.HomeFragment;
 import com.example.nhom10.fragments.PersonalFragment;
 import com.example.nhom10.fragments.SettingFragment;
 import com.example.nhom10.fragments.ShareFragment;
+import com.example.nhom10.model.Tasks;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -45,11 +56,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     FloatingActionButton fab;
     BottomNavigationView bottomNavigationView;
     public FragmentManager fragmentManager;
+    private TasksDAO tasksDAO;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        tasksDAO = new TasksDAO(this);
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         fab = findViewById(R.id.fab);
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -70,17 +84,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int itemId = item.getItemId();
-                if(itemId == R.id.bottom_home){
+                if (itemId == R.id.bottom_home) {
                     openFragment(new HomeFragment());
                     return true;
-                }
-                else if(itemId == R.id.bottom_category){
+                } else if (itemId == R.id.bottom_category) {
                     openFragment(new CategoryFragment());
                     return true;
-                }else if(itemId == R.id.bottom_calendar){
+                } else if (itemId == R.id.bottom_calendar) {
                     openFragment(new CalendarFragment());
                     return true;
-                } else if(itemId == R.id.bottom_profile){
+                } else if (itemId == R.id.bottom_profile) {
                     openFragment(new PersonalFragment());
                     return true;
                 }
@@ -99,14 +112,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    private  void openFragment(Fragment fragment) {
+    private void openFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
     }
 
     private void showBottomDialog() {
-
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.bottomsheetlayout);
@@ -118,66 +130,142 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FloatingActionButton fabSave = dialog.findViewById(R.id.fabSave);
         ImageView cancelButton = dialog.findViewById(R.id.cancelButton);
 
-        categoryLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        final String[] selectedCategory = {""};
+        final Calendar selectedDate = Calendar.getInstance();
+        final Calendar selectedTime = Calendar.getInstance();
 
-                dialog.dismiss();
-                Toast.makeText(MainActivity.this,"Category is clicked",Toast.LENGTH_SHORT).show();
-
-            }
+        categoryLayout.setOnClickListener(v -> {
+            // Hiển thị màn hình chọn category
+            // Ví dụ: Hiển thị danh sách category trong một AlertDialog
+            String[] categories = {"Work", "Personal", "Shopping", "Others"};
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Chọn Category");
+            builder.setItems(categories, (dialogInterface, which) -> {
+                selectedCategory[0] = categories[which];
+                Toast.makeText(this, "Đã chọn: " + selectedCategory[0], Toast.LENGTH_SHORT).show();
+            });
+            builder.show();
         });
 
-        dateLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                dialog.dismiss();
-                Toast.makeText(MainActivity.this,"Date is Clicked",Toast.LENGTH_SHORT).show();
-
-            }
+        dateLayout.setOnClickListener(v -> {
+            // Chọn ngày
+            DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+                selectedDate.set(year, month, dayOfMonth);
+                Toast.makeText(this, "Ngày đã chọn: " + dayOfMonth + "/" + (month + 1) + "/" + year, Toast.LENGTH_SHORT).show();
+            }, selectedDate.get(Calendar.YEAR), selectedDate.get(Calendar.MONTH), selectedDate.get(Calendar.DAY_OF_MONTH));
+            datePickerDialog.show();
         });
 
-        timeLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                dialog.dismiss();
-                Toast.makeText(MainActivity.this,"Time is Clicked",Toast.LENGTH_SHORT).show();
-
-            }
+        timeLayout.setOnClickListener(v -> {
+            // Chọn thời gian
+            TimePickerDialog timePickerDialog = new TimePickerDialog(this, (view, hourOfDay, minute) -> {
+                selectedTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                selectedTime.set(Calendar.MINUTE, minute);
+                Toast.makeText(this, "Thời gian đã chọn: " + hourOfDay + ":" + minute, Toast.LENGTH_SHORT).show();
+            }, selectedTime.get(Calendar.HOUR_OF_DAY), selectedTime.get(Calendar.MINUTE), true);
+            timePickerDialog.show();
         });
 
-        remindLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        remindLayout.setOnClickListener(v -> {
+            // Cài nhắc nhở
+            Toast.makeText(this, "Nhắc nhở sẽ được thiết lập sau khi lưu task", Toast.LENGTH_SHORT).show();
+        });
 
-                dialog.dismiss();
-                Toast.makeText(MainActivity.this,"Remind is Clicked",Toast.LENGTH_SHORT).show();
+        fabSave.setOnClickListener(view -> {
+            // Lưu task vào SQLite
+            String taskCategory = selectedCategory[0];
+            String taskDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(selectedDate.getTime());
+            String taskTime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(selectedTime.getTime());
 
+            String title = "Task Title"; // Thay bằng dữ liệu từ EditText nếu có
+            String description = "Task Description"; // Thay bằng dữ liệu từ EditText nếu có
+            Date dueDate = selectedDate.getTime(); // Ngày được chọn từ DatePicker
+            Date createAt = new Date(); // Ngày tạo task là hiện tại
+            Date updateAt = createAt; // Ban đầu updateAt giống createAt
+            int userId = 1; // Gán tạm user ID hoặc lấy từ hệ thống
+            int categoryId = 1; // Gán tạm category ID hoặc lấy từ category được chọn
+
+            if (title.isEmpty()) {
+                Toast.makeText(this, "Vui lòng nhập tiêu đề", Toast.LENGTH_SHORT).show();
+                return;
             }
-        });
-        fabSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                Toast.makeText(MainActivity.this,"Button Save is Clicked",Toast.LENGTH_SHORT).show();
+
+            // Tạo đối tượng Tasks
+            Tasks task = new Tasks(0, title, description, dueDate, createAt, updateAt, userId, categoryId);
+
+            // Lưu task vào database
+            boolean isInserted = tasksDAO.insertTask(task);
+
+            if (isInserted) {
+                Toast.makeText(this, "Task đã được lưu", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Lỗi khi lưu task", Toast.LENGTH_SHORT).show();
             }
+            dialog.dismiss();
         });
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
+
+        cancelButton.setOnClickListener(view -> dialog.dismiss());
 
         dialog.show();
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
         dialog.getWindow().setGravity(Gravity.BOTTOM);
-
     }
+
+    private void setupCategorySelection(Dialog dialog) {
+        // Kết nối các thành phần trong layout mới
+        ListView categoryListView = dialog.findViewById(R.id.categoryListView);
+        ImageView cancelButton = dialog.findViewById(R.id.cancelButton);
+
+        // Dữ liệu mẫu cho danh mục
+        String[] categories = {"Work", "Personal", "Shopping", "Health", "Other"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, categories);
+        categoryListView.setAdapter(adapter);
+
+        // Xử lý khi người dùng chọn một danh mục
+        categoryListView.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedCategory = categories[position];
+            Toast.makeText(MainActivity.this, "Selected Category: " + selectedCategory, Toast.LENGTH_SHORT).show();
+            dialog.dismiss(); // Đóng dialog sau khi chọn
+        });
+
+        // Đóng dialog khi nhấn cancel
+        cancelButton.setOnClickListener(view -> dialog.dismiss());
+    }
+
+
+    private void showCategorySelectionDialog() {
+        final Dialog categoryDialog = new Dialog(this);
+        categoryDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        categoryDialog.setContentView(R.layout.category_selection_bottomsheet);
+
+        ListView categoryListView = categoryDialog.findViewById(R.id.categoryListView);
+        ImageView cancelButton = categoryDialog.findViewById(R.id.cancelButton);
+
+        // Dữ liệu mẫu cho danh mục
+        String[] categories = {"Work", "Personal", "Shopping", "Health", "Other"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, categories);
+        categoryListView.setAdapter(adapter);
+
+        // Xử lý khi người dùng chọn một danh mục
+        categoryListView.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedCategory = categories[position];
+            Toast.makeText(MainActivity.this, "Selected Category: " + selectedCategory, Toast.LENGTH_SHORT).show();
+            categoryDialog.dismiss();
+        });
+
+        // Đóng dialog khi nhấn nút hủy
+        cancelButton.setOnClickListener(view -> categoryDialog.dismiss());
+
+        // Hiển thị dialog
+        categoryDialog.show();
+        categoryDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        categoryDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        categoryDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        categoryDialog.getWindow().setGravity(Gravity.BOTTOM);
+    }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -200,10 +288,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
-        }
-        else {
+        } else {
             super.onBackPressed();
         }
     }

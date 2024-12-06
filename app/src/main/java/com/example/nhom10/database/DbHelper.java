@@ -20,7 +20,7 @@ public class DbHelper extends SQLiteOpenHelper {
             "tagId INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "name TEXT, " +
             "createAt INTEGER," +
-            "color TEXT"+
+            "color TEXT" +
             ");";
 
     private static final String CREATE_TABLE_TASKS = "CREATE TABLE Tasks (" +
