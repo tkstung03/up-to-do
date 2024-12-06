@@ -9,46 +9,48 @@ public class DbHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "group10.db";
     private static final int DB_VERSION = 1;
 
-    private static final String CREATE_TABLE_CATEGORIES = "CREATE TABLE Categories (" +
-            "categoryId INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            "name TEXT, " +
-            "userId INTEGER" +
+    private static final String CREATE_TABLE_USERS = "CREATE TABLE users (" +
+            "user_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "username TEXT NOT NULL UNIQUE, " +
+            "email TEXT NOT NULL UNIQUE, " +
+            "password TEXT NOT NULL" +
             ");";
 
-    private static final String CREATE_TABLE_TAGS = "CREATE TABLE Tags (" +
-            "tagId INTEGER PRIMARY KEY AUTOINCREMENT, " +
+    private static final String CREATE_TABLE_CATEGORIES = "CREATE TABLE categories (" +
+            "category_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "name TEXT, " +
-            "createAt INTEGER," +
-            "color TEXT" +
+            "icon TEXT, " +
+            "color TEXT, " +
+            "user_id INTEGER, " +
+            "FOREIGN KEY(user_id) REFERENCES users(user_id)" +
             ");";
 
-    private static final String CREATE_TABLE_TASKS = "CREATE TABLE Tasks (" +
-            "taskId INTEGER PRIMARY KEY AUTOINCREMENT, " +
+    private static final String CREATE_TABLE_TAGS = "CREATE TABLE tags (" +
+            "tag_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "name TEXT, " +
+            "color TEXT, " +
+            "user_id INTEGER, " +
+            "FOREIGN KEY(user_id) REFERENCES users(user_id)" +
+            ");";
+
+    private static final String CREATE_TABLE_TASKS = "CREATE TABLE tasks (" +
+            "task_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "title TEXT, " +
             "note TEXT, " +
-            "dueDate INTEGER, " +
-            "createAt INTEGER, " +
-            "updateAt INTEGER, " +
-            "isCompleted INTEGER DEFAULT 0, " +
+            "due_date DATE, " +
             "user_id INTEGER, " +
-            "categoryId INTEGER, " +
-            "FOREIGN KEY(user_id) REFERENCES Users(userId), " +
-            "FOREIGN KEY(categoryId) REFERENCES Categories(categoryId)" +
+            "category_id INTEGER, " +
+            "is_completed INTEGER DEFAULT 0, " +
+            "FOREIGN KEY(user_id) REFERENCES users(user_id), " +
+            "FOREIGN KEY(category_id) REFERENCES categories(category_id)" +
             ");";
 
-    private static final String CREATE_TABLE_TASKS_TAGS = "CREATE TABLE Tasks_Tags (" +
-            "taskId INTEGER, " +
-            "tagId INTEGER, " +
-            "PRIMARY KEY (taskId, tagId), " +
-            "FOREIGN KEY(taskId) REFERENCES Tasks(taskId), " +
-            "FOREIGN KEY(tagId) REFERENCES Tags(tagId)" +
-            ");";
-
-    private static final String CREATE_TABLE_USERS = "CREATE TABLE Users (" +
-            "userId INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            "username TEXT, " +
-            "email TEXT, " +
-            "password TEXT" +
+    private static final String CREATE_TABLE_TASKS_TAGS = "CREATE TABLE tasks_tags (" +
+            "task_tag_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "task_id INTEGER NOT NULL, " +
+            "tag_id INTEGER NOT NULL, " +
+            "FOREIGN KEY (task_id) REFERENCES tasks(task_id) ON DELETE CASCADE, " +
+            "FOREIGN KEY (tag_id) REFERENCES tags(tag_id) ON DELETE CASCADE" +
             ");";
 
     public DbHelper(Context context) {
@@ -72,11 +74,11 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS Users");
-        db.execSQL("DROP TABLE IF EXISTS Categories");
-        db.execSQL("DROP TABLE IF EXISTS Tags");
-        db.execSQL("DROP TABLE IF EXISTS Tasks");
-        db.execSQL("DROP TABLE IF EXISTS Tasks_Tags");
+        db.execSQL("DROP TABLE IF EXISTS users");
+        db.execSQL("DROP TABLE IF EXISTS categories");
+        db.execSQL("DROP TABLE IF EXISTS tags");
+        db.execSQL("DROP TABLE IF EXISTS tasks");
+        db.execSQL("DROP TABLE IF EXISTS tasks_tags");
 
         onCreate(db);
     }

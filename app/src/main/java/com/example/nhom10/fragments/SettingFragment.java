@@ -1,15 +1,13 @@
 package com.example.nhom10.fragments;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.nhom10.R;
+import androidx.fragment.app.Fragment;
 
+import com.example.nhom10.R;
 
 public class SettingFragment extends Fragment {
 

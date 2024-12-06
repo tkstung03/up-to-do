@@ -6,14 +6,14 @@ import android.database.sqlite.SQLiteDatabase;
 import com.example.nhom10.database.DbHelper;
 import com.example.nhom10.objects.UserSession;
 
-public class CategoriesDAO {
+public class TaskTagsDAO {
     private SQLiteDatabase db;
-    private int user_id;
-    public CategoriesDAO(Context context) {
+    private int userId;
+
+    public TaskTagsDAO(Context context) {
         DbHelper dbHelper = new DbHelper(context);
         db = dbHelper.getWritableDatabase();
         UserSession userSession = UserSession.getInstance();
-        user_id = userSession.getUserId();
+        userId = userSession.getUserId();
     }
-
 }
