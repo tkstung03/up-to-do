@@ -44,9 +44,9 @@ public class TasksDAO {
         if (cursor.moveToFirst()) {
             do {
                 Tasks task = new Tasks();
-                task.setTaskId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+                task.setTaskId(cursor.getInt(cursor.getColumnIndexOrThrow("taskId")));
                 task.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
-                task.setDescription(cursor.getString(cursor.getColumnIndexOrThrow("description")));
+                task.setNote(cursor.getString(cursor.getColumnIndexOrThrow("note")));
                 task.setDueDate(new Date(cursor.getLong(cursor.getColumnIndexOrThrow("dueDate"))));
                 task.setCreateAt(new Date(cursor.getLong(cursor.getColumnIndexOrThrow("createAt"))));
                 task.setUpdateAt(new Date(cursor.getLong(cursor.getColumnIndexOrThrow("updateAt"))));
@@ -64,7 +64,7 @@ public class TasksDAO {
     public boolean insertTask(Tasks task) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("title", task.getTitle());
-        contentValues.put("description", task.getDescription());
+        contentValues.put("note", task.getNote());
         contentValues.put("dueDate", task.getDueDate().getTime());
         contentValues.put("createAt", task.getCreateAt().getTime());
         contentValues.put("updateAt", task.getUpdateAt().getTime());

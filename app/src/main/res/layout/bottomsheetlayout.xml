@@ -50,7 +50,7 @@
 
 
         <EditText
-            android:id="@+id/edtName"
+            android:id="@+id/editName"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_weight="1"
@@ -163,7 +163,7 @@
             android:src="@drawable/baseline_note_add_24"/>
 
         <EditText
-            android:id="@+id/edtNote"
+            android:id="@+id/editNote"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginLeft="30dp"

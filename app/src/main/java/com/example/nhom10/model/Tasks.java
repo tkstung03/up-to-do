@@ -5,7 +5,7 @@ import java.util.Date;
 public class Tasks {
     private int taskId;
     private String title;
-    private String description;
+    private String note;
     private Date dueDate;
     private Date createAt;
     private Date updateAt;
@@ -15,10 +15,10 @@ public class Tasks {
     public Tasks() {
     }
 
-    public Tasks(int taskId, String title, String description, Date dueDate, Date createAt, Date updateAt, int user_id, int categoryId) {
+    public Tasks(int taskId, String title, String note, Date dueDate, Date createAt, Date updateAt, int user_id, int categoryId) {
         this.taskId = taskId;
         this.title = title;
-        this.description = description;
+        this.note = note;
         this.dueDate = dueDate;
         this.createAt = createAt;
         this.updateAt = updateAt;
@@ -42,12 +42,12 @@ public class Tasks {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
+    public String getNote() {
+        return note;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public Date getDueDate() {

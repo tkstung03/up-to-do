@@ -9,7 +9,6 @@ public class DbHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "group10.db";
     private static final int DB_VERSION = 1;
 
-
     private static final String CREATE_TABLE_CATEGORIES = "CREATE TABLE Categories (" +
             "categoryId INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "name TEXT, " +
@@ -26,7 +25,7 @@ public class DbHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_TASKS = "CREATE TABLE Tasks (" +
             "taskId INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "title TEXT, " +
-            "description TEXT, " +
+            "note TEXT, " +
             "dueDate INTEGER, " +
             "createAt INTEGER, " +
             "updateAt INTEGER, " +
@@ -57,18 +56,21 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
         db.execSQL(CREATE_TABLE_USERS);
         db.execSQL(CREATE_TABLE_CATEGORIES);
         db.execSQL(CREATE_TABLE_TAGS);
         db.execSQL(CREATE_TABLE_TASKS);
         db.execSQL(CREATE_TABLE_TASKS_TAGS);
 
+        db.execSQL(InitData.INSERT_USERS);
+        db.execSQL(InitData.INSERT_CATEGORIES);
+        db.execSQL(InitData.INSERT_TAGS);
+        db.execSQL(InitData.INSERT_TASKS);
+        db.execSQL(InitData.INSERT_TASKS_TAGS);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
         db.execSQL("DROP TABLE IF EXISTS Users");
         db.execSQL("DROP TABLE IF EXISTS Categories");
         db.execSQL("DROP TABLE IF EXISTS Tags");
