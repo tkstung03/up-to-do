@@ -95,7 +95,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragmentManager = getSupportFragmentManager();
         openFragment(new HomeFragment());
 
-        fab.setOnClickListener(view -> showBottomDialog());
+        fab.setOnClickListener(view -> {
+            // Khi nhấn FAB trong CategoryFragment, mở hộp thoại thêm danh mục
+            Fragment currentFragment = fragmentManager.findFragmentById(R.id.fragment_container);
+            if (currentFragment instanceof CategoryFragment) {
+                // Gọi hàm mở hộp thoại thêm danh mục trong CategoryFragment
+                ((CategoryFragment) currentFragment).showAddCategoryDialog();
+            } else {
+                showBottomDialog(); // Nếu không phải CategoryFragment, mở hộp thoại thêm công việc
+            }
+        });
     }
 
     private void openFragment(Fragment fragment) {
