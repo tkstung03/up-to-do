@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ import com.example.nhom10.fragments.PersonalFragment;
 import com.example.nhom10.fragments.SettingFragment;
 import com.example.nhom10.fragments.ShareFragment;
 import com.example.nhom10.model.Task;
+import com.example.nhom10.objects.UserSession;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -207,8 +209,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (itemId == R.id.nav_about) {
             openFragment(new AboutFragment());
         } else if (itemId == R.id.nav_logout) {
-            Toast.makeText(this, "Logged out!", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(MainActivity.this, Login.class);
+            SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove("is_logged_in");
+            editor.remove("user_id");
+            editor.apply();
+            Toast.makeText(this, "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
+            UserSession userSession = UserSession.getInstance();
+            userSession.clearSession();
+            Intent intent = new Intent(MainActivity.this, Welcome.class);
             startActivity(intent);
 
         }
@@ -223,5 +232,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             super.onBackPressed();
         }
+    }
+    public void logOut(){
+        UserSession userSession = UserSession.getInstance();
+        userSession.clearSession();
+        Intent intent = new Intent(MainActivity.this, Welcome.class);
+        startActivity(intent);
+        finish();
+
     }
 }
