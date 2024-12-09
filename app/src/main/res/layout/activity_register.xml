@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -20,20 +19,23 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/imgView_signup_banner"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="28dp"
+        android:textStyle="bold"
         android:text="ĐĂNG KÝ"
-        android:textColor="@color/black"
-        android:textSize="24sp" />
+        android:textColor="@color/lavender"
+        android:textSize="30sp" />
 
-    <!--Ô nhập user-->
+    <!-- Ô nhập user -->
     <ImageView
         android:id="@+id/icon_username_login"
-        android:layout_width="35dp"
-        android:layout_height="40dp"
+        android:layout_width="28dp"
+        android:layout_height="45dp"
         android:layout_below="@+id/register_title"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:layout_marginTop="32dp"
+        android:layout_marginEnd="10dp"
+        android:paddingTop="15dp"
         android:src="@drawable/icon_user" />
 
     <EditText
@@ -48,21 +50,50 @@
         android:textColor="@color/black"
         android:textColorHint="@color/black" />
 
-    <!--Ô nhập pass-->
+    <!-- Ô nhập email -->
     <ImageView
-        android:id="@+id/icon_username_password"
-        android:layout_width="35dp"
-        android:layout_height="50dp"
-        android:layout_below="@+id/icon_username_login"
+        android:id="@+id/icon_email_register"
+        android:layout_width="28dp"
+        android:layout_height="45dp"
+        android:layout_below="@id/icon_username_login"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="10dp"
+        android:paddingTop="15dp"
+        android:src="@drawable/baseline_email_24" />
+
+    <EditText
+        android:id="@+id/edit_email_register"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/edit_username_register"
+        android:layout_toEndOf="@id/icon_email_register"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/black"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black" />
+
+    <!-- Ô nhập pass -->
+    <ImageView
+        android:id="@+id/icon_username_password"
+        android:layout_width="28dp"
+        android:layout_height="45dp"
+        android:layout_below="@id/icon_email_register"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="10dp"
+        android:paddingTop="15dp"
         android:src="@drawable/icon_pass" />
+
     <EditText
         android:id="@+id/edit_password_register"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_below="@+id/edit_username_register"
+        android:layout_below="@+id/edit_email_register"
         android:layout_toEndOf="@+id/icon_username_password"
         android:layout_marginTop="16dp"
         android:backgroundTint="@color/black"
@@ -71,22 +102,25 @@
         android:textColor="@color/black"
         android:textColorHint="@color/black" />
 
-    <!--Ô repass -->
+    <!-- Ô repass -->
     <ImageView
         android:id="@+id/icon_repass"
-        android:layout_width="35dp"
-        android:layout_height="50dp"
+        android:layout_width="28dp"
+        android:layout_height="45dp"
         android:layout_below="@+id/icon_username_password"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="10dp"
+        android:paddingTop="15dp"
         android:src="@drawable/icon_repass" />
+
     <EditText
         android:id="@+id/edit_repassword_register"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_below="@id/edit_password_register"
-        android:layout_toEndOf="@+id/icon_repass"
+        android:layout_toEndOf="@id/icon_repass"
         android:layout_marginTop="16dp"
         android:backgroundTint="@color/black"
         android:hint="Nhập lại mật khẩu"
@@ -96,9 +130,10 @@
 
     <Button
         android:id="@+id/btn_register_register"
-        android:layout_width="match_parent"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/edit_repassword_register"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
         android:backgroundTint="#7F5AF0"
         android:text="Đăng ký"

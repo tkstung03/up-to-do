@@ -1,5 +1,6 @@
 package com.example.nhom10.adapter;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nhom10.R;
+import com.example.nhom10.activity.TaskDetailActivity;
 import com.example.nhom10.dao.TaskDAO;
 import com.example.nhom10.model.Task;
 
@@ -55,6 +57,11 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             taskDAO.updateTaskStatus(task.getTaskId(), isChecked);
 
             task.setCompleted(isChecked);
+        });
+
+        holder.itemView.setOnClickListener(view -> {
+            Intent intent = new Intent(view.getContext(), TaskDetailActivity.class);
+            view.getContext().startActivity(intent);
         });
     }
 
