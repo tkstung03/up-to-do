@@ -15,8 +15,8 @@ import java.util.Date;
 import java.util.List;
 
 public class TaskDAO {
-    private SQLiteDatabase db;
-    private int userId;
+    private final SQLiteDatabase db;
+    private final int userId;
 
     public TaskDAO(Context context) {
         DbHelper dbHelper = new DbHelper(context);

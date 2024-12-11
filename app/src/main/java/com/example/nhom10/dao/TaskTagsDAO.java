@@ -7,8 +7,8 @@ import com.example.nhom10.database.DbHelper;
 import com.example.nhom10.objects.UserSession;
 
 public class TaskTagsDAO {
-    private SQLiteDatabase db;
-    private int userId;
+    private final SQLiteDatabase db;
+    private final int userId;
 
     public TaskTagsDAO(Context context) {
         DbHelper dbHelper = new DbHelper(context);
