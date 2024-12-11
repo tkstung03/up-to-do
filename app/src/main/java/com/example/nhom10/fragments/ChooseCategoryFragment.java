@@ -72,9 +72,9 @@ public class ChooseCategoryFragment extends DialogFragment {
         RecyclerView recyclerView = view.findViewById(R.id.recyclerCategoryList);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
 
-        List<Category> categories = categoryDAO.getAllCategories();
-        CategoryAdapter adapter = new CategoryAdapter(categories, this::onCategorySelected);
-        recyclerView.setAdapter(adapter);
+//        List<Category> categories = categoryDAO.getAllCategories();
+//        CategoryAdapter adapter = new CategoryAdapter(categories, this::onCategorySelected);
+//        recyclerView.setAdapter(adapter);
 
         Button cancelButton = view.findViewById(R.id.buttonCancel);
         cancelButton.setOnClickListener(v -> dismiss());

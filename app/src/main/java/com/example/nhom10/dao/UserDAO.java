@@ -11,8 +11,8 @@ import com.example.nhom10.model.User;
 import com.example.nhom10.objects.UserSession;
 
 public class UserDAO {
-    private SQLiteDatabase db;
-    private int userId;
+    private final SQLiteDatabase db;
+    private final int userId;
 
     public UserDAO(Context context) {
         DbHelper dbHelper = new DbHelper(context);
