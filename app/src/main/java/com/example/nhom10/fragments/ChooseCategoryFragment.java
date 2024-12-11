@@ -12,30 +12,30 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nhom10.R;
-import com.example.nhom10.adapter.CategoryAdapter;
+import com.example.nhom10.adapter.ChooseCategoryAdapter;
 import com.example.nhom10.dao.CategoryDAO;
+import com.example.nhom10.dao.TaskDAO;
 import com.example.nhom10.model.Category;
+import com.example.nhom10.model.Task;
 
 import java.util.List;
 
 public class ChooseCategoryFragment extends DialogFragment {
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
-
+    private static final String ARG_TASK_ID = "taskId";
+    private int taskId;
     private CategoryDAO categoryDAO;
+    private TaskDAO taskDAO;
+    private Category selectedCategory;
+    private ChooseCategoryAdapter adapter;
 
     public ChooseCategoryFragment() {
     }
 
-    public static ChooseCategoryFragment newInstance(String param1, String param2) {
+    public static ChooseCategoryFragment newInstance(int taskId) {
         ChooseCategoryFragment fragment = new ChooseCategoryFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putInt(ARG_TASK_ID, taskId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -57,8 +57,7 @@ public class ChooseCategoryFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            taskId = getArguments().getInt(ARG_TASK_ID);
         }
     }
 
@@ -68,27 +67,41 @@ public class ChooseCategoryFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.fragment_choose_category, container, false);
 
         categoryDAO = new CategoryDAO(getContext());
+        taskDAO = new TaskDAO(getContext());
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerCategoryList);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
 
-//        List<Category> categories = categoryDAO.getAllCategories();
-//        CategoryAdapter adapter = new CategoryAdapter(categories, this::onCategorySelected);
-//        recyclerView.setAdapter(adapter);
+        List<Category> categories = categoryDAO.getAllCategories();
+        adapter = new ChooseCategoryAdapter(categories, this::onCategorySelected);
+        recyclerView.setAdapter(adapter);
+
+        Task currentTask = taskDAO.getTaskById(taskId);
+        if (currentTask != null) {
+            int currentCategoryId = currentTask.getCategoryId();
+            selectedCategory = categoryDAO.getCategoryById(currentCategoryId);
+            adapter.setSelectedCategory(selectedCategory);
+        }
 
         Button cancelButton = view.findViewById(R.id.buttonCancel);
         cancelButton.setOnClickListener(v -> dismiss());
 
-        Button editButton = view.findViewById(R.id.buttonEdit);
-        editButton.setOnClickListener(v -> onEditClicked());
+        Button saveButton = view.findViewById(R.id.buttonSave);
+        saveButton.setOnClickListener(v -> onSaveClicked());
 
         return view;
     }
 
-    private void onEditClicked() {
+    private void onSaveClicked() {
+        if (selectedCategory != null) {
+            taskDAO.updateTaskCategory(taskId, selectedCategory.getCategoryId());
+            dismiss();
+        }
     }
 
     private void onCategorySelected(Category category) {
+        selectedCategory = category;
+        adapter.setSelectedCategory(category);
     }
 
 }

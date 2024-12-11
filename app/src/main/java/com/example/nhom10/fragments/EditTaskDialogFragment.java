@@ -24,11 +24,16 @@ public class EditTaskDialogFragment extends DialogFragment {
     private Button saveButton, cancelButton;
 
     private static final String ARG_TASK_TITLE = "task_title";
+    private static final String ARG_TASK_NOTE = "task_note";
 
-    public static EditTaskDialogFragment newInstance(String currentTitle) {
+    private String taskTitle;
+    private String taskNote;
+
+    public static EditTaskDialogFragment newInstance(String currentTitle, String currentNote) {
         EditTaskDialogFragment fragment = new EditTaskDialogFragment();
         Bundle args = new Bundle();
         args.putString(ARG_TASK_TITLE, currentTitle);
+        args.putString(ARG_TASK_NOTE, currentNote);
         fragment.setArguments(args);
         return fragment;
     }
@@ -46,6 +51,15 @@ public class EditTaskDialogFragment extends DialogFragment {
         }
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            taskTitle = getArguments().getString(ARG_TASK_TITLE);
+            taskNote = getArguments().getString(ARG_TASK_NOTE);
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -54,13 +68,12 @@ public class EditTaskDialogFragment extends DialogFragment {
         textViewTitle = view.findViewById(R.id.textViewTitle);
         editTaskTitle = view.findViewById(R.id.editTaskTitle);
         textViewNote = view.findViewById(R.id.textViewNote);
-        editTextNote = view.findViewById(R.id.editTextNote);
+        editTextNote = view.findViewById(R.id.editTaskNote);
         cancelButton = view.findViewById(R.id.cancelButton);
         saveButton = view.findViewById(R.id.saveButton);
 
-        String currentTitle = getArguments() != null ? getArguments().getString(ARG_TASK_TITLE) : "";
-        editTaskTitle.setText(currentTitle);
-
+        editTaskTitle.setText(taskTitle);
+        editTextNote.setText(taskNote);
 
         textViewTitle.setOnClickListener(v -> {
             textViewTitle.setVisibility(View.GONE);

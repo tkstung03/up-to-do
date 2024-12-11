@@ -72,4 +72,23 @@ public class CategoryDAO {
         }
         return categories;
     }
+
+    public Category getCategoryById(int id) {
+        Category category = null;
+        Cursor cursor = db.query("categories", null, "category_id = ? AND user_id = ?",
+                new String[]{String.valueOf(id), String.valueOf(userId)}, null, null, null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            category = new Category();
+            category.setCategoryId(cursor.getInt(cursor.getColumnIndexOrThrow("category_id")));
+            category.setName(cursor.getString(cursor.getColumnIndexOrThrow("name")));
+            category.setIcon(cursor.getString(cursor.getColumnIndexOrThrow("icon")));
+            category.setColor(cursor.getString(cursor.getColumnIndexOrThrow("color")));
+            category.setUserId(cursor.getInt(cursor.getColumnIndexOrThrow("user_id")));
+            cursor.close();
+        }
+
+        return category;
+    }
+
 }

@@ -25,6 +25,18 @@ public class TaskDAO {
         userId = userSession.getUserId();
     }
 
+    public Task getTaskById(int taskId) {
+        String query = "SELECT * FROM tasks WHERE user_id = ? AND task_id = ?";
+        try (Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId), String.valueOf(taskId)})) {
+            if (cursor.moveToNext()) {
+                return parseTask(cursor);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public List<Task> getTasks() {
         List<Task> taskList = new ArrayList<>();
 
@@ -137,5 +149,16 @@ public class TaskDAO {
     private Date getStartOfMonth(Calendar calendar) {
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         return getStartOfDay(calendar);
+    }
+
+    public void updateTaskCategory(int taskId, int categoryId) {
+        ContentValues values = new ContentValues();
+        values.put("category_id", categoryId);
+        db.update("tasks", values, "task_id = ?", new String[]{String.valueOf(taskId)});
+    }
+
+    public boolean deleteTask(int taskId) {
+        int result = db.delete("tasks", "task_id = ? AND user_id = ?", new String[]{String.valueOf(taskId), String.valueOf(userId)});
+        return result > 0;
     }
 }
