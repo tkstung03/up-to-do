@@ -5,9 +5,9 @@ public class InitData {
             "('tuncs', 'tuncs@gmail.com', '123456'), " +
             "('chuson', 'chuson@gmail.com', '123456');";
 
-    public static final String INSERT_CATEGORIES = "INSERT INTO categories (name, user_id) VALUES " +
-            "('Công việc', 1), " +
-            "('Cá nhân', 2);";
+    public static final String INSERT_CATEGORIES = "INSERT INTO categories (name, icon, color, user_id) VALUES " +
+            "('Công việc','ic_work','#8687E7', 1), " +
+            "('Cá nhân','ic_personal', '#8687E7', 2);";
 
     public static final String INSERT_TAGS = "INSERT INTO tags (name, color, user_id) VALUES " +
             "('Urgent', 'red', 1), " +
