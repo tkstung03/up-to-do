@@ -161,4 +161,14 @@ public class TaskDAO {
         int result = db.delete("tasks", "task_id = ? AND user_id = ?", new String[]{String.valueOf(taskId), String.valueOf(userId)});
         return result > 0;
     }
+
+    public int updateTaskTitleAndNote(int taskId, String newTitle, String newNote) {
+        ContentValues values = new ContentValues();
+        values.put("title", newTitle);
+        values.put("note", newNote);
+
+        return db.update("tasks", values, "task_id = ? AND user_id = ?",
+                new String[]{String.valueOf(taskId), String.valueOf(userId)});
+
+    }
 }

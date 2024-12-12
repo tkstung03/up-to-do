@@ -177,14 +177,14 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/iconUniversity"
+                android:id="@+id/iconCate"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:contentDescription="cc"
                 android:src="@drawable/mortarboard_1" />
 
             <TextView
-                android:id="@+id/textUniversity"
+                android:id="@+id/nameCate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -224,20 +224,36 @@
             app:layout_constraintStart_toEndOf="@id/icon_tag"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/text_tag_value"
+        <LinearLayout
+            android:id="@+id/layoutTagButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/border_textview"
-            android:fontFamily="sans-serif"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:paddingHorizontal="24dp"
             android:paddingVertical="12dp"
-            android:text="Cờ xanh"
-            android:textColor="#FFFFFF"
-            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/iconTags"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="Flags"
+                android:src="@drawable/flag" />
+
+            <TextView
+                android:id="@+id/textTags"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:fontFamily="sans-serif"
+                android:text="2"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

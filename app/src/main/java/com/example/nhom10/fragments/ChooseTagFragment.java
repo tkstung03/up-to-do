@@ -13,32 +13,30 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nhom10.R;
-import com.example.nhom10.adapter.ChooseCategoryAdapter;
-import com.example.nhom10.dao.CategoryDAO;
-import com.example.nhom10.dao.TaskDAO;
-import com.example.nhom10.model.Category;
+import com.example.nhom10.adapter.ChooseTagAdapter;
+import com.example.nhom10.dao.TagDAO;
+import com.example.nhom10.dao.TaskTagsDAO;
+import com.example.nhom10.model.Tag;
 
 import java.util.List;
+import java.util.Set;
 
-public class ChooseCategoryFragment extends DialogFragment {
+public class ChooseTagFragment extends DialogFragment {
 
     private static final String ARG_TASK_ID = "task_id";
-    private static final String ARG_TASK_CATEGORY_ID = "category_id";
     private int taskId;
-    private int categoryId;
-    private CategoryDAO categoryDAO;
-    private TaskDAO taskDAO;
-    private Category selectedCategory;
-    private ChooseCategoryAdapter adapter;
+    private TagDAO tagDAO;
+    private TaskTagsDAO taskTagsDAO;
+    private Set<Tag> selectedTags;
+    private ChooseTagAdapter adapter;
 
-    public ChooseCategoryFragment() {
+    public ChooseTagFragment() {
     }
 
-    public static ChooseCategoryFragment newInstance(int taskId, int categoryId) {
-        ChooseCategoryFragment fragment = new ChooseCategoryFragment();
+    public static ChooseTagFragment newInstance(int taskId) {
+        ChooseTagFragment fragment = new ChooseTagFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_TASK_ID, taskId);
-        args.putInt(ARG_TASK_CATEGORY_ID, categoryId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -61,28 +59,28 @@ public class ChooseCategoryFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             taskId = getArguments().getInt(ARG_TASK_ID);
-            categoryId = getArguments().getInt(ARG_TASK_CATEGORY_ID);
         }
 
         Context context = requireContext();
-        categoryDAO = new CategoryDAO(context);
-        taskDAO = new TaskDAO(context);
+        tagDAO = new TagDAO(context);
+        taskTagsDAO = new TaskTagsDAO(context);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_choose_category, container, false);
+        View view = inflater.inflate(R.layout.fragment_choose_tag, container, false);
 
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerCategoryList);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
 
-        List<Category> categories = categoryDAO.getAllCategories();
-        adapter = new ChooseCategoryAdapter(categories, this::onCategorySelected);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerTagList);
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4));
+
+        List<Tag> tags = tagDAO.getAll();
+        adapter = new ChooseTagAdapter(tags, this::onTagSelected);
         recyclerView.setAdapter(adapter);
 
-        selectedCategory = categoryDAO.getCategoryById(categoryId);
-        adapter.setSelectedCategory(selectedCategory);
+        selectedTags = taskTagsDAO.getAllByTaskId(taskId);
+        adapter.setSelectedTags(selectedTags);
 
         Button cancelButton = view.findViewById(R.id.buttonCancel);
         cancelButton.setOnClickListener(v -> dismiss());
@@ -94,21 +92,24 @@ public class ChooseCategoryFragment extends DialogFragment {
     }
 
     private void onSaveClicked() {
-        if (selectedCategory != null) {
-            taskDAO.updateTaskCategory(taskId, selectedCategory.getCategoryId());
-
-            //Todo
-            Bundle result = new Bundle();
-            result.putBoolean("UPDATED_CATEGORY", true);
-            getParentFragmentManager().setFragmentResult("UPDATED_CATEGORY", result);
-
-            dismiss();
+        taskTagsDAO.deleteByTaskId(taskId);
+        if (!selectedTags.isEmpty()) {
+            taskTagsDAO.create(taskId, selectedTags);
         }
+
+        Bundle result = new Bundle();
+        result.putBoolean("UPDATED_TAG", true);
+        getParentFragmentManager().setFragmentResult("UPDATED_TAG", result);
+
+        dismiss();
     }
 
-    private void onCategorySelected(Category category) {
-        selectedCategory = category;
-        adapter.setSelectedCategory(category);
+    private void onTagSelected(Tag tag) {
+        if (selectedTags.contains(tag)) {
+            selectedTags.remove(tag);
+        } else {
+            selectedTags.add(tag);
+        }
+        adapter.setSelectedTags(selectedTags);
     }
-
 }

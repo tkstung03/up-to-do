@@ -1,5 +1,7 @@
 package com.example.nhom10.model;
 
+import java.util.Objects;
+
 public class Tag {
     private int tagId;
     private String name;
@@ -47,4 +49,18 @@ public class Tag {
     public void setUserId(int userId) {
         this.userId = userId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tag tag = (Tag) o;
+        return tagId == tag.tagId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(tagId);
+    }
+
 }

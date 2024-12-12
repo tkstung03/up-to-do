@@ -53,6 +53,7 @@
             android:paddingHorizontal="16dp"
             android:paddingVertical="8dp"
             android:textColor="@color/white"
+            android:textColorHint="@color/white"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -64,6 +65,7 @@
             android:paddingHorizontal="16dp"
             android:text="Nhập tiêu đề mới"
             android:textColor="@color/white"
+            android:textColorHint="@color/white"
             android:textSize="16sp"
             android:textStyle="bold"
             android:visibility="gone" />

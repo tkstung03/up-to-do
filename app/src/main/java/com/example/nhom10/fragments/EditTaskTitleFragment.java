@@ -14,24 +14,30 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.nhom10.R;
+import com.example.nhom10.dao.TaskDAO;
 
-public class EditTaskDialogFragment extends DialogFragment {
+public class EditTaskTitleFragment extends DialogFragment {
+
+    private static final String ARG_TASK_ID = "task_id";
+    private static final String ARG_TASK_TITLE = "task_title";
+    private static final String ARG_TASK_NOTE = "task_note";
+
+    private int taskId;
+    private String taskTitle;
+    private String taskNote;
 
     private TextView textViewTitle;
     private EditText editTaskTitle;
     private TextView textViewNote;
-    private EditText editTextNote;
+    private EditText editTaskNote;
     private Button saveButton, cancelButton;
 
-    private static final String ARG_TASK_TITLE = "task_title";
-    private static final String ARG_TASK_NOTE = "task_note";
+    private TaskDAO taskDAO;
 
-    private String taskTitle;
-    private String taskNote;
-
-    public static EditTaskDialogFragment newInstance(String currentTitle, String currentNote) {
-        EditTaskDialogFragment fragment = new EditTaskDialogFragment();
+    public static EditTaskTitleFragment newInstance(int currentTaskId, String currentTitle, String currentNote) {
+        EditTaskTitleFragment fragment = new EditTaskTitleFragment();
         Bundle args = new Bundle();
+        args.putInt(ARG_TASK_ID, currentTaskId);
         args.putString(ARG_TASK_TITLE, currentTitle);
         args.putString(ARG_TASK_NOTE, currentNote);
         fragment.setArguments(args);
@@ -55,9 +61,12 @@ public class EditTaskDialogFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            taskId = getArguments().getInt(ARG_TASK_ID);
             taskTitle = getArguments().getString(ARG_TASK_TITLE);
             taskNote = getArguments().getString(ARG_TASK_NOTE);
         }
+
+        taskDAO = new TaskDAO(requireContext());
     }
 
     @Nullable
@@ -68,12 +77,12 @@ public class EditTaskDialogFragment extends DialogFragment {
         textViewTitle = view.findViewById(R.id.textViewTitle);
         editTaskTitle = view.findViewById(R.id.editTaskTitle);
         textViewNote = view.findViewById(R.id.textViewNote);
-        editTextNote = view.findViewById(R.id.editTaskNote);
+        editTaskNote = view.findViewById(R.id.editTaskNote);
         cancelButton = view.findViewById(R.id.cancelButton);
         saveButton = view.findViewById(R.id.saveButton);
 
         editTaskTitle.setText(taskTitle);
-        editTextNote.setText(taskNote);
+        editTaskNote.setText(taskNote);
 
         textViewTitle.setOnClickListener(v -> {
             textViewTitle.setVisibility(View.GONE);
@@ -81,34 +90,36 @@ public class EditTaskDialogFragment extends DialogFragment {
             editTaskTitle.setText(textViewTitle.getText());
 
             textViewNote.setVisibility(View.VISIBLE);
-            editTextNote.setVisibility(View.GONE);
-            textViewNote.setText(editTextNote.getText());
+            editTaskNote.setVisibility(View.GONE);
+            textViewNote.setText(editTaskNote.getText());
         });
 
         textViewNote.setOnClickListener(v -> {
             textViewNote.setVisibility(View.GONE);
-            editTextNote.setVisibility(View.VISIBLE);
-            editTextNote.setText(textViewNote.getText());
+            editTaskNote.setVisibility(View.VISIBLE);
+            editTaskNote.setText(textViewNote.getText());
 
             textViewTitle.setVisibility(View.VISIBLE);
             editTaskTitle.setVisibility(View.GONE);
             textViewTitle.setText(editTaskTitle.getText());
         });
 
+        cancelButton.setOnClickListener(v -> dismiss());
+
         saveButton.setOnClickListener(v -> {
             String newTitle = editTaskTitle.getText().toString();
-            if (getActivity() instanceof DialogListener) {
-                ((DialogListener) getActivity()).onTaskTitleUpdated(newTitle);
-            }
+            String newNote = editTaskNote.getText().toString();
+
+            taskDAO.updateTaskTitleAndNote(taskId, newTitle, newNote);
+
+            Bundle result = new Bundle();
+            result.putBoolean("UPDATED_TITLE", true);
+            getParentFragmentManager().setFragmentResult("UPDATED_TITLE", result);
+
             dismiss();
         });
-
-        cancelButton.setOnClickListener(v -> dismiss());
 
         return view;
     }
 
-    public interface DialogListener {
-        void onTaskTitleUpdated(String newTitle);
-    }
 }
