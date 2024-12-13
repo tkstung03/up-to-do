@@ -19,7 +19,6 @@ import com.example.nhom10.dao.TaskTagsDAO;
 import com.example.nhom10.model.Tag;
 
 import java.util.List;
-import java.util.Set;
 
 public class ChooseTagFragment extends DialogFragment {
 
@@ -27,7 +26,7 @@ public class ChooseTagFragment extends DialogFragment {
     private int taskId;
     private TagDAO tagDAO;
     private TaskTagsDAO taskTagsDAO;
-    private Set<Tag> selectedTags;
+    private List<Tag> selectedTags;
     private ChooseTagAdapter adapter;
 
     public ChooseTagFragment() {
@@ -71,7 +70,6 @@ public class ChooseTagFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_choose_tag, container, false);
 
-
         RecyclerView recyclerView = view.findViewById(R.id.recyclerTagList);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4));
 
@@ -92,13 +90,8 @@ public class ChooseTagFragment extends DialogFragment {
     }
 
     private void onSaveClicked() {
-        taskTagsDAO.deleteByTaskId(taskId);
-        if (!selectedTags.isEmpty()) {
-            taskTagsDAO.create(taskId, selectedTags);
-        }
-
         Bundle result = new Bundle();
-        result.putBoolean("UPDATED_TAG", true);
+        result.putIntArray("updatedTagIds", selectedTags.stream().mapToInt(Tag::getTagId).toArray());
         getParentFragmentManager().setFragmentResult("UPDATED_TAG", result);
 
         dismiss();

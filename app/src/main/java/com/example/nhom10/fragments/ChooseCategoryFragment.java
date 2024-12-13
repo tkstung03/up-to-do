@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.nhom10.R;
 import com.example.nhom10.adapter.ChooseCategoryAdapter;
 import com.example.nhom10.dao.CategoryDAO;
-import com.example.nhom10.dao.TaskDAO;
 import com.example.nhom10.model.Category;
 
 import java.util.List;
@@ -23,22 +22,18 @@ import java.util.List;
 public class ChooseCategoryFragment extends DialogFragment {
 
     private static final String ARG_TASK_ID = "task_id";
-    private static final String ARG_TASK_CATEGORY_ID = "category_id";
     private int taskId;
-    private int categoryId;
     private CategoryDAO categoryDAO;
-    private TaskDAO taskDAO;
     private Category selectedCategory;
     private ChooseCategoryAdapter adapter;
 
     public ChooseCategoryFragment() {
     }
 
-    public static ChooseCategoryFragment newInstance(int taskId, int categoryId) {
+    public static ChooseCategoryFragment newInstance(int taskId) {
         ChooseCategoryFragment fragment = new ChooseCategoryFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_TASK_ID, taskId);
-        args.putInt(ARG_TASK_CATEGORY_ID, categoryId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -61,12 +56,10 @@ public class ChooseCategoryFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             taskId = getArguments().getInt(ARG_TASK_ID);
-            categoryId = getArguments().getInt(ARG_TASK_CATEGORY_ID);
         }
 
         Context context = requireContext();
         categoryDAO = new CategoryDAO(context);
-        taskDAO = new TaskDAO(context);
     }
 
     @Override
@@ -81,7 +74,7 @@ public class ChooseCategoryFragment extends DialogFragment {
         adapter = new ChooseCategoryAdapter(categories, this::onCategorySelected);
         recyclerView.setAdapter(adapter);
 
-        selectedCategory = categoryDAO.getCategoryById(categoryId);
+        selectedCategory = categoryDAO.getCategoryByTaskId(taskId);
         adapter.setSelectedCategory(selectedCategory);
 
         Button cancelButton = view.findViewById(R.id.buttonCancel);
@@ -95,11 +88,8 @@ public class ChooseCategoryFragment extends DialogFragment {
 
     private void onSaveClicked() {
         if (selectedCategory != null) {
-            taskDAO.updateTaskCategory(taskId, selectedCategory.getCategoryId());
-
-            //Todo
             Bundle result = new Bundle();
-            result.putBoolean("UPDATED_CATEGORY", true);
+            result.putInt("updatedCategoryId", selectedCategory.getCategoryId());
             getParentFragmentManager().setFragmentResult("UPDATED_CATEGORY", result);
 
             dismiss();

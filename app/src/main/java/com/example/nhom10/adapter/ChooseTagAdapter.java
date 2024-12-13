@@ -1,5 +1,6 @@
 package com.example.nhom10.adapter;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,15 +14,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.nhom10.R;
 import com.example.nhom10.model.Tag;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class ChooseTagAdapter extends RecyclerView.Adapter<ChooseTagAdapter.TagViewHolder> {
 
-    private List<Tag> tagList;
-    private OnTagClickListener onTagClickListener;
-    private Set<Tag> selectedTags = new HashSet<>();
+    private final List<Tag> tagList;
+    private final OnTagClickListener onTagClickListener;
+    private final List<Tag> selectedTags = new ArrayList<>();
 
     public ChooseTagAdapter(List<Tag> tagList, OnTagClickListener listener) {
         this.tagList = tagList;
@@ -51,7 +51,7 @@ public class ChooseTagAdapter extends RecyclerView.Adapter<ChooseTagAdapter.TagV
             try {
                 int color = Color.parseColor(tag.getColor());
                 holder.imageViewIcon.getBackground().mutate().setTint(color);
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
         holder.textViewName.setText(tag.getName());
@@ -64,7 +64,8 @@ public class ChooseTagAdapter extends RecyclerView.Adapter<ChooseTagAdapter.TagV
         return tagList.size();
     }
 
-    public void setSelectedTags(Set<Tag> tag) {
+    @SuppressLint("NotifyDataSetChanged")
+    public void setSelectedTags(List<Tag> tag) {
         this.selectedTags.clear();
         this.selectedTags.addAll(tag);
         notifyDataSetChanged();

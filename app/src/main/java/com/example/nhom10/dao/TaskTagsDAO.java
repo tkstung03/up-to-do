@@ -10,8 +10,8 @@ import com.example.nhom10.database.DbHelper;
 import com.example.nhom10.model.Tag;
 import com.example.nhom10.objects.UserSession;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TaskTagsDAO {
     private final SQLiteDatabase db;
@@ -24,13 +24,13 @@ public class TaskTagsDAO {
         userId = userSession.getUserId();
     }
 
-    public void create(int taskId, Set<Tag> selectedTags) {
+    public void create(int taskId, int[] selectedTags) {
         db.beginTransaction();
         try {
-            for (Tag tag : selectedTags) {
+            for (int tagId : selectedTags) {
                 ContentValues values = new ContentValues();
                 values.put("task_id", taskId);
-                values.put("tag_id", tag.getTagId());
+                values.put("tag_id", tagId);
 
                 db.insertOrThrow("tasks_tags", null, values);
             }
@@ -43,8 +43,8 @@ public class TaskTagsDAO {
     }
 
 
-    public Set<Tag> getAllByTaskId(int taskId) {
-        Set<Tag> tags = new HashSet<>();
+    public List<Tag> getAllByTaskId(int taskId) {
+        List<Tag> tags = new ArrayList<>();
 
         String query = "SELECT t.tag_id, t.name, t.color FROM tags t " +
                 "JOIN tasks_tags tt ON t.tag_id = tt.tag_id " +

@@ -151,10 +151,10 @@ public class TaskDAO {
         return getStartOfDay(calendar);
     }
 
-    public void updateTaskCategory(int taskId, int categoryId) {
+    public boolean updateTaskCategory(int taskId, int categoryId) {
         ContentValues values = new ContentValues();
         values.put("category_id", categoryId);
-        db.update("tasks", values, "task_id = ?", new String[]{String.valueOf(taskId)});
+        return db.update("tasks", values, "task_id = ?", new String[]{String.valueOf(taskId)}) > 0;
     }
 
     public boolean deleteTask(int taskId) {
@@ -162,13 +162,13 @@ public class TaskDAO {
         return result > 0;
     }
 
-    public int updateTaskTitleAndNote(int taskId, String newTitle, String newNote) {
+    public boolean updateTaskTitleAndNote(int taskId, String newTitle, String newNote) {
         ContentValues values = new ContentValues();
         values.put("title", newTitle);
         values.put("note", newNote);
 
         return db.update("tasks", values, "task_id = ? AND user_id = ?",
-                new String[]{String.valueOf(taskId), String.valueOf(userId)});
+                new String[]{String.valueOf(taskId), String.valueOf(userId)}) > 0;
 
     }
 }
