@@ -73,7 +73,7 @@ public class ChooseTagFragment extends DialogFragment {
         RecyclerView recyclerView = view.findViewById(R.id.recyclerTagList);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4));
 
-        List<Tag> tags = tagDAO.getAll();
+        List<Tag> tags = tagDAO.getAllTags();
         adapter = new ChooseTagAdapter(tags, this::onTagSelected);
         recyclerView.setAdapter(adapter);
 
