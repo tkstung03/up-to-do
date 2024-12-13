@@ -21,8 +21,8 @@ import java.util.List;
 
 public class ChooseCategoryFragment extends DialogFragment {
 
-    private static final String ARG_TASK_ID = "task_id";
-    private int taskId;
+    private static final String ARG_CATEGORY_ID = "category_id";
+    private int categoryId;
     private CategoryDAO categoryDAO;
     private Category selectedCategory;
     private ChooseCategoryAdapter adapter;
@@ -30,10 +30,10 @@ public class ChooseCategoryFragment extends DialogFragment {
     public ChooseCategoryFragment() {
     }
 
-    public static ChooseCategoryFragment newInstance(int taskId) {
+    public static ChooseCategoryFragment newInstance(int categoryId) {
         ChooseCategoryFragment fragment = new ChooseCategoryFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_TASK_ID, taskId);
+        args.putInt(ARG_CATEGORY_ID, categoryId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -55,7 +55,7 @@ public class ChooseCategoryFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            taskId = getArguments().getInt(ARG_TASK_ID);
+            categoryId = getArguments().getInt(ARG_CATEGORY_ID);
         }
 
         Context context = requireContext();
@@ -74,8 +74,11 @@ public class ChooseCategoryFragment extends DialogFragment {
         adapter = new ChooseCategoryAdapter(categories, this::onCategorySelected);
         recyclerView.setAdapter(adapter);
 
-        selectedCategory = categoryDAO.getCategoryByTaskId(taskId);
-        adapter.setSelectedCategory(selectedCategory);
+        int index = categories.indexOf(new Category(categoryId));
+        if (index != -1) {
+            selectedCategory = categories.get(index);
+            adapter.setSelectedCategory(selectedCategory);
+        }
 
         Button cancelButton = view.findViewById(R.id.buttonCancel);
         cancelButton.setOnClickListener(v -> dismiss());

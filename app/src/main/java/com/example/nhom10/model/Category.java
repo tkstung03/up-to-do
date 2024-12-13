@@ -12,6 +12,10 @@ public class Category {
     public Category() {
     }
 
+    public Category(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
     public Category(int categoryId, String name, String icon, String color, int userId) {
         this.categoryId = categoryId;
         this.name = name;

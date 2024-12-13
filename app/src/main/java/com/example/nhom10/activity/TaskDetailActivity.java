@@ -1,5 +1,6 @@
 package com.example.nhom10.activity;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -64,7 +65,7 @@ public class TaskDetailActivity extends AppCompatActivity {
         });
 
         layoutCategoryButton.setOnClickListener(view -> {
-            ChooseCategoryFragment dialogFragment = ChooseCategoryFragment.newInstance(currentTask.getTaskId());
+            ChooseCategoryFragment dialogFragment = ChooseCategoryFragment.newInstance(currentTask.getCategoryId());
             dialogFragment.show(getSupportFragmentManager(), "ChooseCategoryFragment");
         });
 

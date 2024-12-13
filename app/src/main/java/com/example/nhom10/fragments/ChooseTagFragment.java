@@ -18,12 +18,15 @@ import com.example.nhom10.dao.TagDAO;
 import com.example.nhom10.dao.TaskTagsDAO;
 import com.example.nhom10.model.Tag;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ChooseTagFragment extends DialogFragment {
-
     private static final String ARG_TASK_ID = "task_id";
-    private int taskId;
+    private static final String ARG_TAG_IDS = "tag_ids";
+    private Integer taskId;
+    private ArrayList<Integer> tagIds = new ArrayList<>();
     private TagDAO tagDAO;
     private TaskTagsDAO taskTagsDAO;
     private List<Tag> selectedTags;
@@ -36,6 +39,14 @@ public class ChooseTagFragment extends DialogFragment {
         ChooseTagFragment fragment = new ChooseTagFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_TASK_ID, taskId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static ChooseTagFragment newInstance(ArrayList<Integer> tagIds) {
+        ChooseTagFragment fragment = new ChooseTagFragment();
+        Bundle args = new Bundle();
+        args.putIntegerArrayList(ARG_TAG_IDS, tagIds);
         fragment.setArguments(args);
         return fragment;
     }
@@ -57,7 +68,11 @@ public class ChooseTagFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            taskId = getArguments().getInt(ARG_TASK_ID);
+            if (getArguments().containsKey(ARG_TASK_ID)) {
+                taskId = getArguments().getInt(ARG_TASK_ID);
+            } else if (getArguments().containsKey(ARG_TAG_IDS)) {
+                tagIds = getArguments().getIntegerArrayList(ARG_TAG_IDS);
+            }
         }
 
         Context context = requireContext();
@@ -77,7 +92,13 @@ public class ChooseTagFragment extends DialogFragment {
         adapter = new ChooseTagAdapter(tags, this::onTagSelected);
         recyclerView.setAdapter(adapter);
 
-        selectedTags = taskTagsDAO.getAllByTaskId(taskId);
+        if (taskId != null) {
+            selectedTags = taskTagsDAO.getAllByTaskId(taskId);
+        } else {
+            selectedTags = tags.stream()
+                    .filter(tag -> tagIds.contains(tag.getTagId()))
+                    .collect(Collectors.toList());
+        }
         adapter.setSelectedTags(selectedTags);
 
         Button cancelButton = view.findViewById(R.id.buttonCancel);
@@ -91,7 +112,8 @@ public class ChooseTagFragment extends DialogFragment {
 
     private void onSaveClicked() {
         Bundle result = new Bundle();
-        result.putIntArray("updatedTagIds", selectedTags.stream().mapToInt(Tag::getTagId).toArray());
+        int[] updatedTagIds = selectedTags.stream().mapToInt(Tag::getTagId).toArray();
+        result.putIntArray("updatedTagIds", updatedTagIds);
         getParentFragmentManager().setFragmentResult("UPDATED_TAG", result);
 
         dismiss();

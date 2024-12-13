@@ -52,7 +52,7 @@ public class TaskDAO {
         return taskList;
     }
 
-    public boolean insertTask(Task task) {
+    public long insertTask(Task task) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("title", task.getTitle());
         contentValues.put("note", task.getNote());
@@ -60,8 +60,7 @@ public class TaskDAO {
         contentValues.put("user_id", userId);
         contentValues.put("category_id", task.getCategoryId());
 
-        long result = db.insert("tasks", null, contentValues);
-        return result != -1;
+        return db.insert("tasks", null, contentValues);
     }
 
     public void updateTaskStatus(int taskId, boolean isCompleted) {
