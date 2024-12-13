@@ -22,7 +22,7 @@ public class DeleteTaskFragment extends DialogFragment {
     public DeleteTaskFragment() {
     }
 
-    public static DeleteTaskFragment newInstance( String title) {
+    public static DeleteTaskFragment newInstance(String title) {
         DeleteTaskFragment fragment = new DeleteTaskFragment();
         Bundle args = new Bundle();
         args.putString(ARG_TASK_TITLE, title);

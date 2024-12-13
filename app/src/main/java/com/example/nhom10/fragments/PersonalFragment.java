@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 
 import com.example.nhom10.R;
-import com.example.nhom10.activity.MainActivity;
 
 public class PersonalFragment extends Fragment {
 

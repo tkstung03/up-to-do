@@ -42,7 +42,6 @@ public class TaskTagsDAO {
         }
     }
 
-
     public List<Tag> getAllByTaskId(int taskId) {
         List<Tag> tags = new ArrayList<>();
 

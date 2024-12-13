@@ -20,21 +20,23 @@ public class UserDAO {
         UserSession userSession = UserSession.getInstance();
         userId = userSession.getUserId();
     }
-    public boolean checkUser(String username, String password){
+
+    public boolean checkUser(String username, String password) {
         String sqlQuery = "SELECT * FROM users WHERE username = ? AND password = ?";
-        String[] selectionArgs = {username,password};
-        Cursor cursor = db.rawQuery(sqlQuery,selectionArgs);
-        if (cursor.getCount() != 0){
+        String[] selectionArgs = {username, password};
+        Cursor cursor = db.rawQuery(sqlQuery, selectionArgs);
+        if (cursor.getCount() != 0) {
             return true;
         } else {
             return false;
         }
     }
+
     @SuppressLint("Range")
-    public int getUserId(String username, String password){
+    public int getUserId(String username, String password) {
         String sqlQuery = "SELECT user_id FROM users WHERE username = ? AND password = ?";
-        String[] selectionArgs = {username,password};
-        Cursor cursor = db.rawQuery(sqlQuery,selectionArgs);
+        String[] selectionArgs = {username, password};
+        Cursor cursor = db.rawQuery(sqlQuery, selectionArgs);
         int userId = 0;
         if (cursor.moveToFirst()) {
             userId = cursor.getInt(cursor.getColumnIndex("user_id"));
@@ -43,29 +45,30 @@ public class UserDAO {
         return userId;
     }
 
-    public long insert(User obj){
+    public long insert(User obj) {
         ContentValues values = new ContentValues();
-        values.put("username",obj.getUsername());
-        values.put("email",obj.getEmail());
-        values.put("password",obj.getPassword());
+        values.put("username", obj.getUsername());
+        values.put("email", obj.getEmail());
+        values.put("password", obj.getPassword());
         return db.insert("users", null, values);
     }
 
-    public boolean checkExistUser(String username){
+    public boolean checkExistUser(String username) {
         String sqlQuery = "SELECT * FROM users WHERE username = ?";
         String[] selectionArgs = {username};
-        Cursor cursor = db.rawQuery(sqlQuery,selectionArgs );
-        if (cursor.getCount() != 0){
+        Cursor cursor = db.rawQuery(sqlQuery, selectionArgs);
+        if (cursor.getCount() != 0) {
             return true;
         } else {
             return false;
         }
     }
-    public boolean checkExistEmail(String email){
+
+    public boolean checkExistEmail(String email) {
         String sqlQuery = "SELECT * FROM users WHERE email = ?";
         String[] selectionArgs = {email};
-        Cursor cursor = db.rawQuery(sqlQuery,selectionArgs );
-        if (cursor.getCount() != 0){
+        Cursor cursor = db.rawQuery(sqlQuery, selectionArgs);
+        if (cursor.getCount() != 0) {
             return true;
         } else {
             return false;

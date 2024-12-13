@@ -17,17 +17,16 @@ import com.example.nhom10.model.User;
 public class Register extends AppCompatActivity {
     Button btnRegister;
     TextView txtLogin;
-    EditText edtUsername,edtPassword,edtRePassword,edtEmail;
+    EditText edtUsername, edtPassword, edtRePassword, edtEmail;
     UserDAO userDAO;
 
-
-    public void getWidget(){
+    public void getWidget() {
         btnRegister = findViewById(R.id.btn_register_register);
         txtLogin = findViewById(R.id.login_prompt);
-        edtUsername=findViewById(R.id.edit_username_register);
-        edtPassword=findViewById(R.id.edit_password_register);
-        edtRePassword=findViewById(R.id.edit_repassword_register);
-        edtEmail=findViewById(R.id.edit_email_register);
+        edtUsername = findViewById(R.id.edit_username_register);
+        edtPassword = findViewById(R.id.edit_password_register);
+        edtRePassword = findViewById(R.id.edit_repassword_register);
+        edtEmail = findViewById(R.id.edit_email_register);
         userDAO = new UserDAO(this);
     }
 
@@ -61,21 +60,24 @@ public class Register extends AppCompatActivity {
         return password.length() >= 6 && password.matches("[a-zA-Z0-9@]+");
     }
 
-    private boolean isConfirm(String password, String confirmPassword){
+    private boolean isConfirm(String password, String confirmPassword) {
         return password.equals(confirmPassword);
     }
-    private boolean isValidEmail(String email){
+
+    private boolean isValidEmail(String email) {
         String regexEmail = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
         return email.matches(regexEmail);
     }
+
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
-    public void register(){
-        String username=edtUsername.getText().toString();
-        String password=edtPassword.getText().toString();
-        String rePassword=edtRePassword.getText().toString();
-        String email=edtEmail.getText().toString();
+
+    public void register() {
+        String username = edtUsername.getText().toString();
+        String password = edtPassword.getText().toString();
+        String rePassword = edtRePassword.getText().toString();
+        String email = edtEmail.getText().toString();
 
         if (username.isEmpty()) {
             showToast("Vui lòng nhập tên đăng nhập!");
@@ -92,7 +94,7 @@ public class Register extends AppCompatActivity {
             edtRePassword.requestFocus();
             return;
         }
-        if(email.isEmpty()){
+        if (email.isEmpty()) {
             showToast("Vui lòng nhập email!");
             edtEmail.requestFocus();
             return;
@@ -118,7 +120,7 @@ public class Register extends AppCompatActivity {
             return;
         }
 
-        if(userDAO.checkExistUser(username)){
+        if (userDAO.checkExistUser(username)) {
             showToast("Tên đăng nhập đã tồn tại!");
             edtUsername.requestFocus();
             return;
@@ -127,7 +129,7 @@ public class Register extends AppCompatActivity {
             showToast("Email đã tồn tại");
             edtUsername.requestFocus();
         }
-        User newUser = new User(username,email,password);
+        User newUser = new User(username, email, password);
         userDAO.insert(newUser);
         showToast("Đăng ký thành công!");
         Intent intent = new Intent(Register.this, Login.class);

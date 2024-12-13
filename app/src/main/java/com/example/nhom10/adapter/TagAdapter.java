@@ -15,6 +15,7 @@ import java.util.List;
 public class TagAdapter extends BaseAdapter {
     private final Context context;
     private final List<Tag> tags;
+
     public TagAdapter(Context context, List<Tag> tags) {
         this.context = context;
         this.tags = tags;

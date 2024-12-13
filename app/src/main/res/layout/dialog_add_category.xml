@@ -73,7 +73,6 @@
         android:weightSum="1"
         android:padding="10dp">
 
-
         <!-- Các ô màu sắc có thể chọn -->
         <TextView
             android:id="@+id/textView2"

@@ -68,4 +68,22 @@ public class TagDAO {
 
         return db.delete("tags", whereClause, whereArgs);
     }
+
+    public Tag getTagById(int tagId) {
+        Tag tag = null;
+        String selectQuery = "SELECT tag_id, name, color FROM tags WHERE tag_id = ? AND user_id = ?";
+        String[] whereArgs = {String.valueOf(tagId), String.valueOf(userId)};
+
+        Cursor cursor = db.rawQuery(selectQuery, whereArgs);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow("tag_id"));
+            String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+            String color = cursor.getString(cursor.getColumnIndexOrThrow("color"));
+
+            tag = new Tag(id, name, color, userId);
+            cursor.close();
+        }
+        return tag;
+    }
 }

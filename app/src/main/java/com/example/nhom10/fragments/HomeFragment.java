@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nhom10.R;
-import com.example.nhom10.activity.MainActivity;
 import com.example.nhom10.adapter.TasksAdapter;
 import com.example.nhom10.dao.TaskDAO;
 import com.example.nhom10.model.Task;
