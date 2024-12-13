@@ -72,4 +72,46 @@ public class CategoryDAO {
         }
         return categories;
     }
+
+    public Category getCategoryById(int id) {
+        Category category = null;
+        Cursor cursor = db.query("categories", null, "category_id = ? AND user_id = ?",
+                new String[]{String.valueOf(id), String.valueOf(userId)}, null, null, null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            category = new Category();
+            category.setCategoryId(cursor.getInt(cursor.getColumnIndexOrThrow("category_id")));
+            category.setName(cursor.getString(cursor.getColumnIndexOrThrow("name")));
+            category.setIcon(cursor.getString(cursor.getColumnIndexOrThrow("icon")));
+            category.setColor(cursor.getString(cursor.getColumnIndexOrThrow("color")));
+            category.setUserId(cursor.getInt(cursor.getColumnIndexOrThrow("user_id")));
+            cursor.close();
+        }
+
+        return category;
+    }
+
+    public Category getCategoryByTaskId(int taskId) {
+        Category category = null;
+
+        Cursor cursor = db.rawQuery(
+                "SELECT c.category_id, c.name, c.icon, c.color, c.user_id " +
+                        "FROM categories c " +
+                        "JOIN tasks t ON c.category_id = t.category_id " +
+                        "WHERE t.task_id = ? AND c.user_id = ?",
+                new String[]{String.valueOf(taskId), String.valueOf(userId)}
+        );
+
+        if (cursor != null && cursor.moveToFirst()) {
+            category = new Category();
+            category.setCategoryId(cursor.getInt(cursor.getColumnIndexOrThrow("category_id")));
+            category.setName(cursor.getString(cursor.getColumnIndexOrThrow("name")));
+            category.setIcon(cursor.getString(cursor.getColumnIndexOrThrow("icon")));
+            category.setColor(cursor.getString(cursor.getColumnIndexOrThrow("color")));
+            category.setUserId(cursor.getInt(cursor.getColumnIndexOrThrow("user_id")));
+            cursor.close();
+        }
+
+        return category;
+    }
 }

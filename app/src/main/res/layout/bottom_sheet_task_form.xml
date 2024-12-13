@@ -1,179 +1,213 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/dialogbg">
+    android:orientation="vertical">
 
     <ImageView
         android:layout_width="70dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_round_remove_24"
         android:layout_gravity="center|top"
-        android:scaleType="centerCrop"/>
+        android:contentDescription="TODO"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_round_remove_24" />
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
-
-    <TextView
-        android:id="@+id/createText"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAlignment="viewStart"
-        android:text="Thêm nhiệm vụ"
-        android:paddingVertical="10dp"
-        android:textColor="@color/lavender"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="5dp"
-        android:textSize="25dp" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="10dp">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_baseline_clear_24"
-        android:layout_marginLeft="170dp"
-        android:layout_marginTop="8dp"
-        android:id="@+id/cancelButton"/>
+        <TextView
+            android:id="@+id/createText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Thêm nhiệm vụ"
+            android:textColor="@color/textColor"
+            android:textSize="25sp" />
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="Close"
+            android:src="@drawable/ic_baseline_clear_24"
+            app:tint="@color/textColor" />
+
+    </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/layoutName"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
         android:padding="10dp">
-
 
         <EditText
             android:id="@+id/editName"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
             android:ems="10"
             android:hint="Tên nhiệm vụ"
             android:inputType="text"
-            android:textColorHint="@color/lavender"
+            android:textColorHint="@color/textColor"
             android:textSize="16sp" />
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/layoutCategory"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
         android:padding="10dp">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/baseline_folder_open_24"/>
+            android:contentDescription="Category"
+            android:src="@drawable/baseline_folder_open_24"
+            app:tint="@color/textColor" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
             android:text="Chọn một danh mục"
-            android:textColor="@color/lavender"
-            android:layout_marginLeft="30dp"
-            android:textSize="16sp"/>
+            android:textColor="@color/textColor"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutTags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="Tag"
+            android:src="@drawable/flag"
+            app:tint="@color/textColor" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:text="Chọn nhãn"
+            android:textColor="@color/textColor"
+            android:textSize="16sp" />
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/layoutDate"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:padding="10dp">
 
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/baseline_event_available_24"/>
+            android:contentDescription="Date"
+            android:src="@drawable/baseline_event_available_24"
+            app:tint="@color/textColor" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
             android:text="Ngày hoàn thành nhiệm vụ"
-            android:textColor="@color/lavender"
-            android:layout_marginLeft="30dp"
-            android:textSize="16sp"/>
+            android:textColor="@color/textColor"
+            android:textSize="16sp" />
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/layoutTime"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:padding="10dp">
 
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/baseline_access_time_24"/>
+            android:contentDescription="Time"
+            android:src="@drawable/baseline_access_time_24"
+            app:tint="@color/textColor" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
             android:text="Thời gian hoàn thành nhiệm vụ"
-            android:textColor="@color/lavender"
-            android:layout_marginLeft="30dp"
-            android:textSize="16sp"/>
+            android:textColor="@color/textColor"
+            android:textSize="16sp" />
 
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/layoutRemind"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:padding="10dp">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/baseline_notifications_24"/>
+            android:contentDescription="Noti"
+            android:src="@drawable/baseline_notifications_24"
+            app:tint="@color/textColor" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
             android:text="Nhắc nhở nhiệm vụ"
-            android:textColor="@color/lavender"
-            android:layout_marginLeft="30dp"
-            android:textSize="16sp"/>
+            android:textColor="@color/textColor"
+            android:textSize="16sp" />
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/layoutNote"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:padding="10dp">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/baseline_note_add_24"/>
+            android:contentDescription="Note"
+            android:src="@drawable/baseline_note_add_24"
+            app:tint="@color/textColor" />
 
         <EditText
             android:id="@+id/editNote"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_marginLeft="30dp"
+            android:layout_marginStart="30dp"
             android:layout_weight="1"
             android:ems="10"
             android:hint="Thêm một lưu ý"
             android:inputType="text"
             android:paddingHorizontal="0dp"
             android:paddingTop="0dp"
-            android:textColorHint="@color/lavender"
+            android:textColorHint="@color/textColor"
             android:textSize="16sp" />
 
     </LinearLayout>
@@ -188,8 +222,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="16dp"
+            android:backgroundTint="?attr/colorPrimary"
             android:contentDescription="Lưu"
             app:maxImageSize="40dp"
-            app:srcCompat="@drawable/baseline_check_24" />
+            app:srcCompat="@drawable/baseline_check_24"
+            app:tint="?attr/colorOnPrimary" />
     </FrameLayout>
 </LinearLayout>

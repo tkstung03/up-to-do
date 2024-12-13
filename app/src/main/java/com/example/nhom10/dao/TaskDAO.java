@@ -25,6 +25,18 @@ public class TaskDAO {
         userId = userSession.getUserId();
     }
 
+    public Task getTaskById(int taskId) {
+        String query = "SELECT * FROM tasks WHERE user_id = ? AND task_id = ?";
+        try (Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId), String.valueOf(taskId)})) {
+            if (cursor.moveToNext()) {
+                return parseTask(cursor);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public List<Task> getTasks() {
         List<Task> taskList = new ArrayList<>();
 
@@ -40,7 +52,7 @@ public class TaskDAO {
         return taskList;
     }
 
-    public boolean insertTask(Task task) {
+    public long insertTask(Task task) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("title", task.getTitle());
         contentValues.put("note", task.getNote());
@@ -48,8 +60,7 @@ public class TaskDAO {
         contentValues.put("user_id", userId);
         contentValues.put("category_id", task.getCategoryId());
 
-        long result = db.insert("tasks", null, contentValues);
-        return result != -1;
+        return db.insert("tasks", null, contentValues);
     }
 
     public void updateTaskStatus(int taskId, boolean isCompleted) {
@@ -137,5 +148,26 @@ public class TaskDAO {
     private Date getStartOfMonth(Calendar calendar) {
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         return getStartOfDay(calendar);
+    }
+
+    public boolean updateTaskCategory(int taskId, int categoryId) {
+        ContentValues values = new ContentValues();
+        values.put("category_id", categoryId);
+        return db.update("tasks", values, "task_id = ?", new String[]{String.valueOf(taskId)}) > 0;
+    }
+
+    public boolean deleteTask(int taskId) {
+        int result = db.delete("tasks", "task_id = ? AND user_id = ?", new String[]{String.valueOf(taskId), String.valueOf(userId)});
+        return result > 0;
+    }
+
+    public boolean updateTaskTitleAndNote(int taskId, String newTitle, String newNote) {
+        ContentValues values = new ContentValues();
+        values.put("title", newTitle);
+        values.put("note", newNote);
+
+        return db.update("tasks", values, "task_id = ? AND user_id = ?",
+                new String[]{String.valueOf(taskId), String.valueOf(userId)}) > 0;
+
     }
 }
