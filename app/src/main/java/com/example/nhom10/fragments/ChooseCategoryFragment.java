@@ -90,18 +90,25 @@ public class ChooseCategoryFragment extends DialogFragment {
     }
 
     private void onSaveClicked() {
+        Bundle result = new Bundle();
         if (selectedCategory != null) {
-            Bundle result = new Bundle();
             result.putInt("updatedCategoryId", selectedCategory.getCategoryId());
-            getParentFragmentManager().setFragmentResult("UPDATED_CATEGORY", result);
-
-            dismiss();
+        } else {
+            result.putInt("updatedCategoryId", -1);
         }
+        getParentFragmentManager().setFragmentResult("UPDATED_CATEGORY", result);
+
+        dismiss();
     }
 
     private void onCategorySelected(Category category) {
-        selectedCategory = category;
-        adapter.setSelectedCategory(category);
+        if (selectedCategory != null && selectedCategory.equals(category)) {
+            selectedCategory = null;
+            adapter.setSelectedCategory(null);
+        } else {
+            selectedCategory = category;
+            adapter.setSelectedCategory(category);
+        }
     }
 
 }

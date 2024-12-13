@@ -1,6 +1,5 @@
 package com.example.nhom10.activity;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.LinearLayout;

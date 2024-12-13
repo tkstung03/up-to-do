@@ -39,7 +39,6 @@
 
     </LinearLayout>
 
-
     <LinearLayout
         android:id="@+id/layoutName"
         android:layout_width="match_parent"
@@ -63,10 +62,12 @@
         android:id="@+id/layoutCategory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="10dp">
 
         <ImageView
+            android:id="@+id/imageViewCateIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="Category"
@@ -74,6 +75,7 @@
             app:tint="@color/textColor" />
 
         <TextView
+            android:id="@+id/textViewCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
@@ -81,29 +83,56 @@
             android:textColor="@color/textColor"
             android:textSize="16sp" />
 
+        <TextView
+            android:id="@+id/textViewCategoryName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:background="@drawable/category_background"
+            android:text="Công việc"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/layoutTags"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="10dp">
 
         <ImageView
+            android:id="@+id/imageViewTagIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="Tag"
             android:src="@drawable/flag"
             app:tint="@color/textColor" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:text="Chọn nhãn"
-            android:textColor="@color/textColor"
-            android:textSize="16sp" />
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:text="Chọn nhãn"
+                android:textColor="@color/textColor"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:id="@+id/layoutTagsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" />
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -114,22 +143,44 @@
         android:orientation="horizontal"
         android:padding="10dp">
 
-
         <ImageView
+            android:id="@+id/imageViewDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="Date"
             android:src="@drawable/baseline_event_available_24"
             app:tint="@color/textColor" />
 
-        <TextView
+        <LinearLayout
+            android:id="@+id/layoutDateBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:text="Ngày hoàn thành nhiệm vụ"
-            android:textColor="@color/textColor"
-            android:textSize="16sp" />
+            android:layout_weight="1"
+            android:orientation="vertical">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:text="Ngày hoàn thành nhiệm vụ"
+                android:textColor="@color/textColor"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/textViewDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:text="12/12/2024"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imageViewCloseDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:srcCompat="@drawable/baseline_close_24" />
     </LinearLayout>
 
     <LinearLayout
@@ -139,22 +190,44 @@
         android:orientation="horizontal"
         android:padding="10dp">
 
-
         <ImageView
+            android:id="@+id/imageViewTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="Time"
             android:src="@drawable/baseline_access_time_24"
             app:tint="@color/textColor" />
 
-        <TextView
+        <LinearLayout
+            android:id="@+id/layoutTimeBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:text="Thời gian hoàn thành nhiệm vụ"
-            android:textColor="@color/textColor"
-            android:textSize="16sp" />
+            android:layout_weight="1"
+            android:orientation="vertical">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:text="Thời gian hoàn thành nhiệm vụ"
+                android:textColor="@color/textColor"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/textViewTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:text="20:20"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imageViewCloseTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:srcCompat="@drawable/baseline_close_24" />
     </LinearLayout>
 
     <LinearLayout
@@ -190,6 +263,7 @@
         android:padding="10dp">
 
         <ImageView
+            android:id="@+id/imageViewNote"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="Note"

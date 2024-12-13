@@ -1,5 +1,7 @@
 package com.example.nhom10.activity;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -39,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        createNotificationChannel();
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         FloatingActionButton floatingActionButton = findViewById(R.id.fab);
@@ -137,4 +141,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         finish();
 
     }
+
+    private void createNotificationChannel() {
+        CharSequence name = "ReminderChannel";
+        String description = "Kênh cho nhắc nhở nhiệm vụ";
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+        NotificationChannel channel = new NotificationChannel("REMINDER_CHANNEL", name, importance);
+        channel.setDescription(description);
+
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        if (notificationManager != null) {
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
 }
