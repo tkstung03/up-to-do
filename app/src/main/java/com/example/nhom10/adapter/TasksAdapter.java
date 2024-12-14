@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,7 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nhom10.R;
 import com.example.nhom10.activity.TaskDetailActivity;
+import com.example.nhom10.dao.CategoryDAO;
 import com.example.nhom10.dao.TaskDAO;
+import com.example.nhom10.dao.TaskTagsDAO;
+import com.example.nhom10.model.Category;
 import com.example.nhom10.model.Task;
 
 import java.text.SimpleDateFormat;
@@ -25,10 +29,14 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
     private List<Task> taskList;
     private final TaskDAO taskDAO;
+    private final CategoryDAO categoryDAO;
+    private final TaskTagsDAO taskTagsDAO;
 
-    public TasksAdapter(List<Task> taskList, TaskDAO taskDAO) {
+    public TasksAdapter(List<Task> taskList, TaskDAO taskDAO, CategoryDAO categoryDAO, TaskTagsDAO taskTagsDAO) {
         this.taskList = taskList;
         this.taskDAO = taskDAO;
+        this.categoryDAO = categoryDAO;
+        this.taskTagsDAO = taskTagsDAO;
     }
 
     @NonNull
@@ -50,8 +58,32 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             String formattedDate = dateFormat.format(dueDate);
             holder.taskTime.setText(formattedDate);
         } else {
-            holder.taskTime.setText("No due date");
+            holder.taskTime.setText("Vô thời hạn");
         }
+
+        Category category = categoryDAO.getCategoryById(task.getCategoryId());
+        if (category != null) {
+            holder.textViewCate.setText(category.getName());
+            if (category.getIcon() != null && !category.getIcon().isEmpty()) {
+                int iconResId = holder.itemView.getContext().getResources().getIdentifier(
+                        category.getIcon(), "drawable", holder.itemView.getContext().getPackageName()
+                );
+
+                if (iconResId != 0) {
+                    holder.imageViewCate.setImageResource(iconResId);
+                } else {
+                    holder.imageViewCate.setImageResource(R.drawable.ic_block);
+                }
+            } else {
+                holder.imageViewCate.setImageResource(R.drawable.ic_block);
+            }
+        } else {
+            holder.textViewCate.setText("Chưa có");
+            holder.imageViewCate.setImageResource(R.drawable.ic_block);
+        }
+
+        int tagCount = taskTagsDAO.getTagCountByTaskId(task.getTaskId());
+        holder.textViewTags.setText(String.valueOf(tagCount));
 
         holder.taskCheckBox.setChecked(task.isCompleted());
         holder.taskCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -79,16 +111,22 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         notifyDataSetChanged();
     }
 
-    static class TaskViewHolder extends RecyclerView.ViewHolder {
+    public static class TaskViewHolder extends RecyclerView.ViewHolder {
         TextView taskTitle;
         TextView taskTime;
         CheckBox taskCheckBox;
+        ImageView imageViewCate;
+        TextView textViewCate;
+        TextView textViewTags;
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
             taskTitle = itemView.findViewById(R.id.taskTitle);
             taskTime = itemView.findViewById(R.id.taskTime);
             taskCheckBox = itemView.findViewById(R.id.checkbox);
+            imageViewCate = itemView.findViewById(R.id.iconCate);
+            textViewCate = itemView.findViewById(R.id.nameCate);
+            textViewTags = itemView.findViewById(R.id.textTags);
         }
     }
 }

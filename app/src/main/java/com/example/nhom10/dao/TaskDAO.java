@@ -56,7 +56,11 @@ public class TaskDAO {
         ContentValues contentValues = new ContentValues();
         contentValues.put("title", task.getTitle());
         contentValues.put("note", task.getNote());
-        contentValues.put("due_date", task.getDueDate().getTime());
+        if (task.getDueDate() != null) {
+            contentValues.put("due_date", task.getDueDate().getTime());
+        } else {
+            contentValues.putNull("due_date");
+        }
         contentValues.put("user_id", userId);
         contentValues.put("category_id", task.getCategoryId());
 
@@ -116,7 +120,12 @@ public class TaskDAO {
         task.setTaskId(cursor.getInt(cursor.getColumnIndexOrThrow("task_id")));
         task.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
         task.setNote(cursor.getString(cursor.getColumnIndexOrThrow("note")));
-        task.setDueDate(new Date(cursor.getLong(cursor.getColumnIndexOrThrow("due_date"))));
+        int dueDateIndex = cursor.getColumnIndexOrThrow("due_date");
+        if (!cursor.isNull(dueDateIndex)) {
+            task.setDueDate(new Date(cursor.getLong(dueDateIndex)));
+        } else {
+            task.setDueDate(null);
+        }
         int isCompleted = cursor.getInt(cursor.getColumnIndexOrThrow("is_completed"));
         task.setCompleted(isCompleted == 1);
         task.setUserId(cursor.getInt(cursor.getColumnIndexOrThrow("user_id")));

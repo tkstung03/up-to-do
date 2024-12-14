@@ -34,7 +34,8 @@ import com.example.nhom10.dao.TaskTagsDAO;
 import com.example.nhom10.model.Category;
 import com.example.nhom10.model.Tag;
 import com.example.nhom10.model.Task;
-import com.example.nhom10.service.ReminderReceiver;
+import com.example.nhom10.receiver.ReminderReceiver;
+import com.example.nhom10.utils.Utils;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -50,6 +51,7 @@ public class TaskBottomDialogFragment extends BottomSheetDialogFragment {
     private CategoryDAO categoryDAO;
     private TaskTagsDAO taskTagsDAO;
     private int categoryId = -1;
+    private long timeToRemind = -1;
     private final ArrayList<Integer> tagIds = new ArrayList<>();
 
     private TextView textViewCategory;
@@ -57,6 +59,9 @@ public class TaskBottomDialogFragment extends BottomSheetDialogFragment {
     private ImageView imageViewCateIcon;
     private LinearLayout tagsContainer;
     private ImageView imageViewTagIcon;
+    private ImageView imageViewCloseRm;
+    private TextView textViewRm;
+    private ImageView imageViewRm;
 
     public static TaskBottomDialogFragment newInstance() {
         return new TaskBottomDialogFragment();
@@ -96,7 +101,7 @@ public class TaskBottomDialogFragment extends BottomSheetDialogFragment {
         LinearLayout tagsLayout = view.findViewById(R.id.layoutTags);
         LinearLayout dateLayout = view.findViewById(R.id.layoutDateBtn);
         LinearLayout timeLayout = view.findViewById(R.id.layoutTimeBtn);
-        LinearLayout remindLayout = view.findViewById(R.id.layoutRemind);
+        LinearLayout layoutTimeRmBtn = view.findViewById(R.id.layoutTimeRmBtn);
         FloatingActionButton fabSave = view.findViewById(R.id.fabSave);
         ImageView cancelButton = view.findViewById(R.id.cancelButton);
 
@@ -105,6 +110,9 @@ public class TaskBottomDialogFragment extends BottomSheetDialogFragment {
         imageViewCateIcon = view.findViewById(R.id.imageViewCateIcon);
         tagsContainer = view.findViewById(R.id.layoutTagsContainer);
         imageViewTagIcon = view.findViewById(R.id.imageViewTagIcon);
+        imageViewCloseRm = view.findViewById(R.id.imageViewCloseRm);
+        textViewRm = view.findViewById(R.id.textViewRm);
+        imageViewRm = view.findViewById(R.id.imageViewRm);
 
         ImageView imageViewCloseDate = view.findViewById(R.id.imageViewCloseDate);
         ImageView imageViewCloseTime = view.findViewById(R.id.imageViewCloseTime);
@@ -129,7 +137,7 @@ public class TaskBottomDialogFragment extends BottomSheetDialogFragment {
             dialogFragment.show(getParentFragmentManager(), "ChooseTagFragment");
         });
 
-        remindLayout.setOnClickListener(v -> showDateTimePickerDialog());
+        layoutTimeRmBtn.setOnClickListener(v -> showDateTimePickerDialog());
 
         //Lắng nghe sự kiện thay đổi input
         editTextNote.addTextChangedListener(new TextWatcher() {
@@ -151,17 +159,28 @@ public class TaskBottomDialogFragment extends BottomSheetDialogFragment {
             }
         });
 
-        final Calendar selectedDate = Calendar.getInstance();
+        imageViewCloseRm.setOnClickListener(v -> {
+            timeToRemind = -1;
+            textViewRm.setText("");
+            textViewRm.setVisibility(View.GONE);
+            imageViewCloseRm.setVisibility(View.GONE);
+            imageViewRm.clearColorFilter();
+        });
+
+        final Calendar initialDate = Calendar.getInstance();
+        final Calendar[] selectedDate = {null};
         dateLayout.setOnClickListener(v -> {
-            DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(), (datePicker, year, month, dayOfMonth) -> {
-                selectedDate.set(year, month, dayOfMonth);
+            DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(), (dp, year, month, dayOfMonth) -> {
+                initialDate.set(year, month, dayOfMonth);
+
+                selectedDate[0] = initialDate;
 
                 textViewDate.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
                 textViewDate.setVisibility(View.VISIBLE);
                 imageViewCloseDate.setVisibility(View.VISIBLE);
                 imageViewDate.setColorFilter(ContextCompat.getColor(requireContext(), R.color.lavender));
 
-            }, selectedDate.get(Calendar.YEAR), selectedDate.get(Calendar.MONTH), selectedDate.get(Calendar.DAY_OF_MONTH));
+            }, initialDate.get(Calendar.YEAR), initialDate.get(Calendar.MONTH), initialDate.get(Calendar.DAY_OF_MONTH));
             datePickerDialog.show();
         });
 
@@ -172,18 +191,21 @@ public class TaskBottomDialogFragment extends BottomSheetDialogFragment {
             imageViewDate.clearColorFilter();
         });
 
-        final Calendar selectedTime = Calendar.getInstance();
+        final Calendar initialTime = Calendar.getInstance();
+        final Calendar[] selectedTime = {null};
         timeLayout.setOnClickListener(v -> {
-            TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(), (timePicker, hourOfDay, minute) -> {
-                selectedTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                selectedTime.set(Calendar.MINUTE, minute);
+            TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(), (tp, hourOfDay, minute) -> {
+                initialTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                initialTime.set(Calendar.MINUTE, minute);
+
+                selectedTime[0] = initialTime;
 
                 textViewTime.setText(String.format("%02d:%02d", hourOfDay, minute));
                 textViewTime.setVisibility(View.VISIBLE);
                 imageViewCloseTime.setVisibility(View.VISIBLE);
                 imageViewTime.setColorFilter(ContextCompat.getColor(requireContext(), R.color.lavender));
 
-            }, selectedTime.get(Calendar.HOUR_OF_DAY), selectedTime.get(Calendar.MINUTE), true);
+            }, initialTime.get(Calendar.HOUR_OF_DAY), initialTime.get(Calendar.MINUTE), true);
             timePickerDialog.show();
         });
 
@@ -203,11 +225,9 @@ public class TaskBottomDialogFragment extends BottomSheetDialogFragment {
                 return;
             }
 
-            selectedDate.set(Calendar.HOUR_OF_DAY, selectedTime.get(Calendar.HOUR_OF_DAY));
-            selectedDate.set(Calendar.MINUTE, selectedTime.get(Calendar.MINUTE));
-            selectedDate.set(Calendar.SECOND, selectedTime.get(Calendar.SECOND));
-            selectedDate.set(Calendar.MILLISECOND, selectedTime.get(Calendar.MILLISECOND));
-            Date dueDate = selectedDate.getTime();
+            Calendar date = selectedDate[0];
+            Calendar time = selectedTime[0];
+            Date dueDate = Utils.combineDateAndTime(date, time);
 
             Task task = new Task();
             task.setTitle(title);
@@ -220,6 +240,12 @@ public class TaskBottomDialogFragment extends BottomSheetDialogFragment {
             if (taskId != -1) {
                 task.setTaskId((int) taskId);
                 taskTagsDAO.create(task.getTaskId(), tagIds.stream().mapToInt(Integer::intValue).toArray());
+
+                //Cài đặt thông báo
+                if (timeToRemind != -1 && timeToRemind > System.currentTimeMillis()) {
+                    setReminder(timeToRemind, "Nhắc nhở nhiệm vụ", task.getTitle());
+                }
+
                 Toast.makeText(requireContext(), "Nhiệm vụ đã được lưu", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(requireContext(), "Lỗi khi lưu nhiêm vụ", Toast.LENGTH_SHORT).show();
@@ -244,18 +270,13 @@ public class TaskBottomDialogFragment extends BottomSheetDialogFragment {
                 selectedDateTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 selectedDateTime.set(Calendar.MINUTE, minute);
 
-                // Hiển thị thông báo xác nhận
-                new androidx.appcompat.app.AlertDialog.Builder(requireContext())
-                        .setTitle("Xác nhận nhắc nhở")
-                        .setMessage("Bạn muốn đặt nhắc nhở vào lúc: " +
-                                String.format("%02d:%02d, %02d/%02d/%d",
-                                        hourOfDay, minute,
-                                        dayOfMonth, month + 1, year))
-                        .setPositiveButton("Lưu", (dialog, which) -> {
-                            setReminder(selectedDateTime.getTimeInMillis());
-                        })
-                        .setNegativeButton("Hủy", null)
-                        .show();
+                String s = String.format("%02d:%02d, %02d/%02d/%d", hourOfDay, minute, dayOfMonth, month + 1, year);
+                textViewRm.setText(s);
+                textViewRm.setVisibility(View.VISIBLE);
+                imageViewCloseRm.setVisibility(View.VISIBLE);
+                imageViewRm.setColorFilter(ContextCompat.getColor(requireContext(), R.color.lavender));
+
+                timeToRemind = selectedDateTime.getTimeInMillis();
 
             }, selectedDateTime.get(Calendar.HOUR_OF_DAY), selectedDateTime.get(Calendar.MINUTE), true);
             timePickerDialog.show();
@@ -263,15 +284,20 @@ public class TaskBottomDialogFragment extends BottomSheetDialogFragment {
         datePickerDialog.show();
     }
 
-    private void setReminder(long reminderTimeMillis) {
+    private void setReminder(long reminderTimeMillis, String title, String message) {
         Context context = requireContext();
         Intent intent = new Intent(context, ReminderReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
+        intent.putExtra("title", title);
+        intent.putExtra("message", message);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                context,
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
         AlarmManager alarmManager = ContextCompat.getSystemService(context, AlarmManager.class);
         if (alarmManager != null) {
             alarmManager.set(AlarmManager.RTC_WAKEUP, reminderTimeMillis, pendingIntent);
-            Toast.makeText(context, "Đã đặt nhắc nhở!", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -19,11 +19,14 @@ import com.example.nhom10.fragments.EditTaskTitleFragment;
 import com.example.nhom10.model.Category;
 import com.example.nhom10.model.Task;
 
+import java.util.Calendar;
+import java.util.Date;
+
 public class TaskDetailActivity extends AppCompatActivity {
 
     private ImageView imageViewEditTitleTask, buttonClose, iconCate;
     private LinearLayout layoutCategoryButton, layoutTagButton;
-    private TextView textViewDelete, textViewTitle, textViewNote, textViewTagCount, textViewNameCate;
+    private TextView textViewDelete, textViewTitle, textViewNote, textViewTagCount, textViewNameCate, textViewTime;
 
     private TaskTagsDAO taskTagsDAO;
     private TaskDAO taskDAO;
@@ -50,6 +53,7 @@ public class TaskDetailActivity extends AppCompatActivity {
         textViewTagCount = findViewById(R.id.textTags);
         iconCate = findViewById(R.id.iconCate);
         textViewNameCate = findViewById(R.id.nameCate);
+        textViewTime = findViewById(R.id.text_task_time_value);
 
         loadTaskDetails(taskId);
 
@@ -139,6 +143,7 @@ public class TaskDetailActivity extends AppCompatActivity {
             currentTask = taskDAO.getTaskById(taskId);
             if (currentTask != null) {
                 updateViewTitle();
+                updateViewTime();
                 updateViewCategory();
                 updateViewTags();
             } else {
@@ -151,6 +156,26 @@ public class TaskDetailActivity extends AppCompatActivity {
     private void updateViewTitle() {
         textViewTitle.setText(currentTask.getTitle());
         textViewNote.setText(currentTask.getNote());
+    }
+
+    private void updateViewTime() {
+        Date date = currentTask.getDueDate();
+        String formattedTime;
+        if (date == null) {
+            formattedTime = "Chưa có";
+        } else {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+
+            int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+            int minute = calendar.get(Calendar.MINUTE);
+            int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+            int month = calendar.get(Calendar.MONTH);
+            int year = calendar.get(Calendar.YEAR);
+
+            formattedTime = String.format("%02d:%02d, %02d/%02d/%d", hourOfDay, minute, dayOfMonth, month + 1, year);
+        }
+        textViewTime.setText(formattedTime);
     }
 
     private void updateViewTags() {

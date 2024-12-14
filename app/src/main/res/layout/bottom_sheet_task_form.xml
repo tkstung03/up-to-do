@@ -238,19 +238,43 @@
         android:padding="10dp">
 
         <ImageView
+            android:id="@+id/imageViewRm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="Noti"
             android:src="@drawable/baseline_notifications_24"
             app:tint="@color/textColor" />
 
-        <TextView
+        <LinearLayout
+            android:id="@+id/layoutTimeRmBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:text="Nhắc nhở nhiệm vụ"
-            android:textColor="@color/textColor"
-            android:textSize="16sp" />
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:text="Nhắc nhở nhiệm vụ"
+                android:textColor="@color/textColor"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/textViewRm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:text="20:20"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imageViewCloseRm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:srcCompat="@drawable/baseline_close_24" />
 
     </LinearLayout>
 

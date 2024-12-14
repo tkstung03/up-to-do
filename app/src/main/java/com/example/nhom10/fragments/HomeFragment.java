@@ -7,13 +7,16 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nhom10.R;
 import com.example.nhom10.adapter.TasksAdapter;
+import com.example.nhom10.dao.CategoryDAO;
 import com.example.nhom10.dao.TaskDAO;
+import com.example.nhom10.dao.TaskTagsDAO;
 import com.example.nhom10.model.Task;
 
 import java.util.List;
@@ -21,23 +24,30 @@ import java.util.List;
 public class HomeFragment extends Fragment {
 
     private TaskDAO taskDAO;
-    private RecyclerView recyclerView;
+    private CategoryDAO categoryDAO;
     private TasksAdapter tasksAdapter;
-    private Spinner filterSpinner;
+    private TaskTagsDAO taskTagsDAO;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        taskDAO = new TaskDAO(getContext());
+        categoryDAO = new CategoryDAO(getContext());
+        taskTagsDAO = new TaskTagsDAO(getContext());
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        recyclerView = view.findViewById(R.id.recyclerView);
-        filterSpinner = view.findViewById(R.id.filterSpinner);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+        Spinner filterSpinner = view.findViewById(R.id.filterSpinner);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        taskDAO = new TaskDAO(getContext());
         List<Task> tasks = taskDAO.getTasks();
-
-        tasksAdapter = new TasksAdapter(tasks, taskDAO);
+        tasksAdapter = new TasksAdapter(tasks, taskDAO, categoryDAO, taskTagsDAO);
         recyclerView.setAdapter(tasksAdapter);
 
         filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

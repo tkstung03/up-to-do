@@ -11,7 +11,7 @@
         android:layout_height="40dp"
         android:layout_gravity="center_vertical"
         android:src="@drawable/ic_question"
-        android:layout_weight="0"/>
+        android:layout_weight="0" />
 
     <TextView
         android:id="@+id/categoryName"
@@ -22,7 +22,7 @@
         android:text="Category Name"
         android:textStyle="bold"
         android:textSize="20sp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
     <!-- Nút xóa -->
     <ImageView
@@ -35,7 +35,8 @@
         android:focusable="true"
         android:src="@drawable/baseline_delete_24"
         android:layout_weight="0"
-        android:foreground="?attr/selectableItemBackground"/>
+        android:foreground="?attr/selectableItemBackground" />
+
     <ImageView
         android:id="@+id/editIcon"
         android:layout_width="40dp"
@@ -45,5 +46,5 @@
         android:focusable="true"
         android:src="@drawable/ic_edit"
         android:layout_weight="0"
-        android:foreground="?attr/selectableItemBackground"/>
+        android:foreground="?attr/selectableItemBackground" />
 </LinearLayout>
