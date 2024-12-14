@@ -28,7 +28,7 @@
                 android:id="@+id/taskTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Do Math Homework"
+                android:text="Làm bài tập toán"
                 android:textColor="@android:color/white"
                 android:textSize="16sp" />
 
@@ -36,7 +36,7 @@
                 android:id="@+id/taskTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Today At 16:45"
+                android:text="14/12/2024"
                 android:textColor="@color/gray"
                 android:textSize="14sp" />
         </LinearLayout>
@@ -46,20 +46,66 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/buttonCategory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cate" />
+        <LinearLayout
+            android:id="@+id/layoutCategoryButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/border_textview"
+            android:backgroundTint="?attr/colorPrimary"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="8dp">
 
-        <Button
-            android:id="@+id/buttonTag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:text="Tag" />
+            <ImageView
+                android:id="@+id/iconCate"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="cc"
+                android:src="@drawable/mortarboard_1" />
+
+            <TextView
+                android:id="@+id/nameCate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:fontFamily="sans-serif"
+                android:text="University"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutTagButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/border_textview"
+            android:backgroundTint="@color/gray"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <ImageView
+                android:id="@+id/iconTags"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="Flags"
+                android:src="@drawable/flag" />
+
+            <TextView
+                android:id="@+id/textTags"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:fontFamily="sans-serif"
+                android:text="2"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+        </LinearLayout>
+
     </LinearLayout>
 </FrameLayout>

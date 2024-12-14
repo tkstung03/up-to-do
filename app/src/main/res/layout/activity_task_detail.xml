@@ -34,6 +34,7 @@
             android:background="@null"
             android:contentDescription="Repeat"
             android:src="@drawable/baseline_repeat_24"
+            android:visibility="gone"
             app:tint="@color/textColor" />
 
     </LinearLayout>
@@ -335,6 +336,7 @@
         android:gravity="center"
         android:orientation="horizontal"
         android:padding="16dp"
+        android:visibility="gone"
         android:weightSum="1">
 
         <Button
