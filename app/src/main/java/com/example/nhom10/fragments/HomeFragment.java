@@ -1,10 +1,13 @@
 package com.example.nhom10.fragments;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.Spinner;
 
 import androidx.annotation.Nullable;
@@ -25,7 +28,8 @@ public class HomeFragment extends Fragment {
 
     private TaskDAO taskDAO;
     private CategoryDAO categoryDAO;
-    private TasksAdapter tasksAdapter;
+    private TasksAdapter tasksAdapter1;
+    private TasksAdapter tasksAdapter2;
     private TaskTagsDAO taskTagsDAO;
 
     @Override
@@ -42,7 +46,7 @@ public class HomeFragment extends Fragment {
         super.onResume();
 
         List<Task> tasks = taskDAO.getTasks();
-        tasksAdapter.updateTasks(tasks);
+        tasksAdapter1.updateTasks(tasks);
     }
 
     @Override
@@ -50,15 +54,53 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
-        Spinner filterSpinner = view.findViewById(R.id.filterSpinner);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        EditText searchBar = view.findViewById(R.id.searchBar);
 
-        List<Task> tasks = taskDAO.getTasks();
-        tasksAdapter = new TasksAdapter(tasks, taskDAO, categoryDAO, taskTagsDAO);
-        recyclerView.setAdapter(tasksAdapter);
+        RecyclerView recyclerView1 = view.findViewById(R.id.recyclerView1);
+        RecyclerView recyclerView2 = view.findViewById(R.id.recyclerView2);
+        Spinner spnTimeFilter = view.findViewById(R.id.spnTimeFilter);
+        Spinner spnStatusFilter = view.findViewById(R.id.spnStatusFilter);
 
-        filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        recyclerView1.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView2.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        List<Task> tasks1 = taskDAO.getTasks();
+        List<Task> tasks2 = taskDAO.getTasks();
+
+        tasksAdapter1 = new TasksAdapter(tasks1, taskDAO, categoryDAO, taskTagsDAO);
+        recyclerView1.setAdapter(tasksAdapter1);
+
+        tasksAdapter2 = new TasksAdapter(tasks2, taskDAO, categoryDAO, taskTagsDAO);
+        recyclerView1.setAdapter(tasksAdapter2);
+
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                filterTasksBySearch(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+
+        spnTimeFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedFilter = parent.getItemAtPosition(position).toString();
+                applyFilter(selectedFilter);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        spnStatusFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedFilter = parent.getItemAtPosition(position).toString();
@@ -71,6 +113,11 @@ public class HomeFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void filterTasksBySearch(String keyword) {
+        //  List<Task> filteredTasks = taskDAO.getTasksBySearch(keyword);
+        //  tasksAdapter.updateTasks(filteredTasks);
     }
 
     private void applyFilter(String filter) {
@@ -91,6 +138,6 @@ public class HomeFragment extends Fragment {
                 break;
         }
 
-        tasksAdapter.updateTasks(filteredTasks);
+        tasksAdapter1.updateTasks(filteredTasks);
     }
 }
