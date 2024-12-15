@@ -74,6 +74,13 @@ public class TaskDAO {
         db.update("tasks", values, "task_id = ?", new String[]{String.valueOf(taskId)});
     }
 
+    public boolean updateTaskDueDate(int taskId, Date dueDate) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("due_date", dueDate.getTime());
+        int rowsAffected = db.update("tasks", contentValues, "task_id = ?", new String[]{String.valueOf(taskId)});
+        return rowsAffected > 0;
+    }
+
     public List<Task> getTasksForToday() {
         Calendar calendar = Calendar.getInstance();
         long startOfDay = getStartOfDay(calendar).getTime();

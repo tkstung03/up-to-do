@@ -1,5 +1,7 @@
 package com.example.nhom10.activity;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,8 +21,10 @@ import com.example.nhom10.fragments.EditTaskTitleFragment;
 import com.example.nhom10.model.Category;
 import com.example.nhom10.model.Task;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class TaskDetailActivity extends AppCompatActivity {
 
@@ -80,6 +84,43 @@ public class TaskDetailActivity extends AppCompatActivity {
         textViewDelete.setOnClickListener(view -> {
             DeleteTaskFragment dialogFragment = DeleteTaskFragment.newInstance(currentTask.getTitle());
             dialogFragment.show(getSupportFragmentManager(), "DeleteTaskFragment");
+        });
+
+        final Calendar calendar = Calendar.getInstance();
+        textViewTime.setOnClickListener(view -> {
+            // Hiển thị DatePickerDialog để chọn ngày
+            DatePickerDialog datePickerDialog = new DatePickerDialog(view.getContext(),
+                    (view1, year, month, dayOfMonth) -> {
+                        calendar.set(Calendar.YEAR, year);
+                        calendar.set(Calendar.MONTH, month);
+                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                        // Hiển thị TimePickerDialog để chọn giờ và phút
+                        TimePickerDialog timePickerDialog = new TimePickerDialog(view.getContext(),
+                                (view2, hourOfDay, minute) -> {
+                                    calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                                    calendar.set(Calendar.MINUTE, minute);
+
+                                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+                                    String formattedDateTime = sdf.format(calendar.getTime());
+                                    textViewTime.setText(formattedDateTime);
+
+                                    boolean isUpdated = taskDAO.updateTaskDueDate(currentTask.getTaskId(), calendar.getTime());
+                                    if (isUpdated) {
+                                        currentTask.setDueDate(calendar.getTime());
+                                    }
+                                },
+                                calendar.get(Calendar.HOUR_OF_DAY),
+                                calendar.get(Calendar.MINUTE),
+                                true
+                        );
+                        timePickerDialog.show();
+                    },
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH)
+            );
+            datePickerDialog.show();
         });
 
         buttonClose.setOnClickListener(view -> finish());

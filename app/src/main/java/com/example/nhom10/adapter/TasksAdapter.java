@@ -2,14 +2,19 @@ package com.example.nhom10.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nhom10.R;
@@ -63,6 +68,8 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
         Category category = categoryDAO.getCategoryById(task.getCategoryId());
         if (category != null) {
+
+            //Xử lý icon
             holder.textViewCate.setText(category.getName());
             if (category.getIcon() != null && !category.getIcon().isEmpty()) {
                 int iconResId = holder.itemView.getContext().getResources().getIdentifier(
@@ -80,6 +87,21 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         } else {
             holder.textViewCate.setText("Chưa có");
             holder.imageViewCate.setImageResource(R.drawable.ic_block);
+        }
+
+        // Xử lý màu
+        Drawable originalDrawable = holder.layoutCategoryButton.getBackground();
+        GradientDrawable backgroundDrawable;
+        if (originalDrawable instanceof GradientDrawable) {
+            backgroundDrawable = (GradientDrawable) originalDrawable.mutate();
+        } else {
+            backgroundDrawable = new GradientDrawable();
+        }
+        if (category != null && category.getColor() != null && !category.getColor().isEmpty()) {
+            int parsedColor = Color.parseColor(category.getColor());
+            backgroundDrawable.setColor(parsedColor);
+        } else {
+            backgroundDrawable.setColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.lavender));
         }
 
         int tagCount = taskTagsDAO.getTagCountByTaskId(task.getTaskId());
@@ -118,6 +140,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         ImageView imageViewCate;
         TextView textViewCate;
         TextView textViewTags;
+        LinearLayout layoutCategoryButton;
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -127,6 +150,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             imageViewCate = itemView.findViewById(R.id.iconCate);
             textViewCate = itemView.findViewById(R.id.nameCate);
             textViewTags = itemView.findViewById(R.id.textTags);
+            layoutCategoryButton = itemView.findViewById(R.id.layoutCategoryButton);
         }
     }
 }
