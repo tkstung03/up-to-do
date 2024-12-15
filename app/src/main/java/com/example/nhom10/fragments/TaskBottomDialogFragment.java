@@ -1,12 +1,9 @@
 package com.example.nhom10.fragments;
 
-import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -34,7 +31,7 @@ import com.example.nhom10.dao.TaskTagsDAO;
 import com.example.nhom10.model.Category;
 import com.example.nhom10.model.Tag;
 import com.example.nhom10.model.Task;
-import com.example.nhom10.receiver.ReminderReceiver;
+import com.example.nhom10.utils.ReminderUtils;
 import com.example.nhom10.utils.Utils;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -235,7 +232,7 @@ public class TaskBottomDialogFragment extends BottomSheetDialogFragment {
             task.setDueDate(dueDate);
             task.setCategoryId(categoryId);
 
-            long taskId = taskDAO.insertTask(task);
+            long taskId = taskDAO.save(task);
 
             if (taskId != -1) {
                 task.setTaskId((int) taskId);
@@ -243,7 +240,8 @@ public class TaskBottomDialogFragment extends BottomSheetDialogFragment {
 
                 //Cài đặt thông báo
                 if (timeToRemind != -1 && timeToRemind > System.currentTimeMillis()) {
-                    setReminder(timeToRemind, "Nhắc nhở nhiệm vụ", task.getTitle());
+                    taskDAO.updateTaskReminderTime(taskId, new Date(timeToRemind));
+                    ReminderUtils.setReminder(requireContext(), timeToRemind, (int) taskId, "Nhắc nhở nhiệm vụ");
                 }
 
                 Toast.makeText(requireContext(), "Nhiệm vụ đã được lưu", Toast.LENGTH_SHORT).show();
@@ -282,23 +280,6 @@ public class TaskBottomDialogFragment extends BottomSheetDialogFragment {
             timePickerDialog.show();
         }, selectedDateTime.get(Calendar.YEAR), selectedDateTime.get(Calendar.MONTH), selectedDateTime.get(Calendar.DAY_OF_MONTH));
         datePickerDialog.show();
-    }
-
-    private void setReminder(long reminderTimeMillis, String title, String message) {
-        Context context = requireContext();
-        Intent intent = new Intent(context, ReminderReceiver.class);
-        intent.putExtra("title", title);
-        intent.putExtra("message", message);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                context,
-                0,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-        );
-        AlarmManager alarmManager = ContextCompat.getSystemService(context, AlarmManager.class);
-        if (alarmManager != null) {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, reminderTimeMillis, pendingIntent);
-        }
     }
 
     private void handleUpdatedCategory(String s, Bundle bundle) {

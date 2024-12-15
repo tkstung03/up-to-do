@@ -20,6 +20,7 @@ import com.example.nhom10.dao.TaskDAO;
 import com.example.nhom10.dao.TaskTagsDAO;
 import com.example.nhom10.model.Task;
 import com.example.nhom10.model.TaskGroup;
+import com.example.nhom10.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -82,15 +83,13 @@ public class HomeFragment extends Fragment {
 
     private List<TaskGroup> getTaskGroups() {
         List<TaskGroup> parentList = new ArrayList<>();
-        List<Task> allTasks = taskDAO.getTasks();
+        List<Task> allTasks = taskDAO.findAll();
 
         // Phân loại Task theo nhóm
         List<Task> todayTasks = new ArrayList<>();
         List<Task> tomorrowTasks = new ArrayList<>();
         List<Task> thisWeekTasks = new ArrayList<>();
         List<Task> thisMonthTasks = new ArrayList<>();
-        List<Task> allTasksList = new ArrayList<>();
-        List<Task> completedTasks = new ArrayList<>();
 
         // Lấy ngày hiện tại
         Calendar calendar = Calendar.getInstance();
@@ -120,16 +119,15 @@ public class HomeFragment extends Fragment {
             Date taskDueDate = task.getDueDate();
             if (taskDueDate == null) continue;
 
-            if (isSameDay(taskDueDate, today)) {
+            if (Utils.isSameDay(taskDueDate, today)) {
                 todayTasks.add(task);
-            } else if (isSameDay(taskDueDate, tomorrow)) {
+            } else if (Utils.isSameDay(taskDueDate, tomorrow)) {
                 tomorrowTasks.add(task);
             } else if (taskDueDate.after(today) && taskDueDate.before(weekEnd)) {
                 thisWeekTasks.add(task);
             } else if (taskDueDate.after(weekEnd) && taskDueDate.before(monthEnd)) {
                 thisMonthTasks.add(task);
             }
-            allTasksList.add(task);
         }
 
         // Tạo các TaskGroup
@@ -137,18 +135,9 @@ public class HomeFragment extends Fragment {
         parentList.add(new TaskGroup("Ngày mai", "#6ebcf4", tomorrowTasks));
         parentList.add(new TaskGroup("Trong suốt tuần", "#708ddb", thisWeekTasks));
         parentList.add(new TaskGroup("Tháng này", "#9471e8", thisMonthTasks));
-        parentList.add(new TaskGroup("Tất cả", "#b75be2", allTasksList));
-        parentList.add(new TaskGroup("Đã hoàn thành", "#00bfae", completedTasks));
+        parentList.add(new TaskGroup("Tất cả", "#b75be2", allTasks));
 
         return parentList;
     }
 
-    private boolean isSameDay(Date date1, Date date2) {
-        Calendar cal1 = Calendar.getInstance();
-        Calendar cal2 = Calendar.getInstance();
-        cal1.setTime(date1);
-        cal2.setTime(date2);
-        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
-    }
 }

@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DbHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "group10.db";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
 
     private static final String CREATE_TABLE_USERS = "CREATE TABLE users (" +
             "user_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -38,6 +38,7 @@ public class DbHelper extends SQLiteOpenHelper {
             "title TEXT, " +
             "note TEXT, " +
             "due_date DATE, " +
+            "reminder_time DATE, " +
             "user_id INTEGER, " +
             "category_id INTEGER, " +
             "is_completed INTEGER DEFAULT 0, " +

@@ -113,7 +113,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:fontFamily="sans-serif"
-            android:text="Thời gian :"
+            android:text="Thời gian"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/icon_task_time"
@@ -157,7 +157,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:fontFamily="sans-serif"
-            android:text="Danh mục :"
+            android:text="Danh mục"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/icon_category"
@@ -218,7 +218,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:fontFamily="sans-serif"
-            android:text="Thẻ :"
+            android:text="Thẻ"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/icon_tag"
@@ -259,13 +259,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/icon_sub_task"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:contentDescription="Task Time Icon"
+            android:contentDescription="Sub Task Icon"
             android:src="@drawable/hierarchy"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -278,7 +279,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:fontFamily="sans-serif"
-            android:text="Nhiệm vụ phụ :"
+            android:text="Nhiệm vụ phụ"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/icon_sub_task"
@@ -292,7 +293,7 @@
             android:fontFamily="sans-serif"
             android:paddingHorizontal="24dp"
             android:paddingVertical="12dp"
-            android:text="Cờ xanh"
+            android:text="Chưa làm"
             android:textColor="#FFFFFF"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -306,10 +307,54 @@
         android:padding="16dp">
 
         <ImageView
-            android:id="@+id/icon_sub_task2"
+            android:id="@+id/icon_reminder"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:contentDescription="Task Time Icon"
+            android:contentDescription="Reminder Icon"
+            android:src="@drawable/baseline_notifications_none_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/textColor" />
+
+        <TextView
+            android:id="@+id/text_reminder_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:fontFamily="sans-serif"
+            android:text="Nhắc nhở"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/icon_reminder"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_reminder_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_textview"
+            android:fontFamily="sans-serif"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="12dp"
+            android:text="Today At 16:46"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/icon_trash"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:contentDescription="Trash Icon"
             android:src="@drawable/trash"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -325,29 +370,10 @@
             android:textColor="#FF4949"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/icon_sub_task2"
+            app:layout_constraintStart_toEndOf="@id/icon_trash"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:visibility="gone"
-        android:weightSum="1">
-
-        <Button
-            android:id="@+id/btnEdit"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:backgroundTint="?attr/colorPrimary"
-            android:text="Chỉnh sửa"
-            android:textColor="?attr/colorOnPrimary" />
-
-    </LinearLayout>
 
 </LinearLayout>
