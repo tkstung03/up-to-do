@@ -6,9 +6,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.Spinner;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -16,37 +14,31 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nhom10.R;
-import com.example.nhom10.adapter.TasksAdapter;
+import com.example.nhom10.adapter.TaskGroupAdapter;
 import com.example.nhom10.dao.CategoryDAO;
 import com.example.nhom10.dao.TaskDAO;
 import com.example.nhom10.dao.TaskTagsDAO;
 import com.example.nhom10.model.Task;
+import com.example.nhom10.model.TaskGroup;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
 
     private TaskDAO taskDAO;
     private CategoryDAO categoryDAO;
-    private TasksAdapter tasksAdapter1;
-    private TasksAdapter tasksAdapter2;
     private TaskTagsDAO taskTagsDAO;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        taskDAO = new TaskDAO(getContext());
-        categoryDAO = new CategoryDAO(getContext());
-        taskTagsDAO = new TaskTagsDAO(getContext());
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        List<Task> tasks = taskDAO.getTasks();
-        tasksAdapter1.updateTasks(tasks);
+        taskDAO = new TaskDAO(requireContext());
+        categoryDAO = new CategoryDAO(requireContext());
+        taskTagsDAO = new TaskTagsDAO(requireContext());
     }
 
     @Override
@@ -56,23 +48,19 @@ public class HomeFragment extends Fragment {
 
         EditText searchBar = view.findViewById(R.id.searchBar);
 
-        RecyclerView recyclerView1 = view.findViewById(R.id.recyclerView1);
-        RecyclerView recyclerView2 = view.findViewById(R.id.recyclerView2);
-        Spinner spnTimeFilter = view.findViewById(R.id.spnTimeFilter);
-        Spinner spnStatusFilter = view.findViewById(R.id.spnStatusFilter);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        recyclerView1.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView2.setLayoutManager(new LinearLayoutManager(getContext()));
+        List<TaskGroup> parentItemList = getTaskGroups();
+        TaskGroupAdapter parentAdapter = new TaskGroupAdapter(parentItemList, taskDAO, categoryDAO, taskTagsDAO);
+        recyclerView.setAdapter(parentAdapter);
 
-        List<Task> tasks1 = taskDAO.getTasks();
-        List<Task> tasks2 = taskDAO.getTasks();
+        handleSearch(searchBar);
 
-        tasksAdapter1 = new TasksAdapter(tasks1, taskDAO, categoryDAO, taskTagsDAO);
-        recyclerView1.setAdapter(tasksAdapter1);
+        return view;
+    }
 
-        tasksAdapter2 = new TasksAdapter(tasks2, taskDAO, categoryDAO, taskTagsDAO);
-        recyclerView1.setAdapter(tasksAdapter2);
-
+    private void handleSearch(EditText searchBar) {
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
@@ -87,57 +75,80 @@ public class HomeFragment extends Fragment {
             public void afterTextChanged(Editable editable) {
             }
         });
-
-        spnTimeFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedFilter = parent.getItemAtPosition(position).toString();
-                applyFilter(selectedFilter);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        spnStatusFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedFilter = parent.getItemAtPosition(position).toString();
-                applyFilter(selectedFilter);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        return view;
     }
 
     private void filterTasksBySearch(String keyword) {
-        //  List<Task> filteredTasks = taskDAO.getTasksBySearch(keyword);
-        //  tasksAdapter.updateTasks(filteredTasks);
     }
 
-    private void applyFilter(String filter) {
-        List<Task> filteredTasks;
+    private List<TaskGroup> getTaskGroups() {
+        List<TaskGroup> parentList = new ArrayList<>();
+        List<Task> allTasks = taskDAO.getTasks();
 
-        switch (filter) {
-            case "Hôm nay":
-                filteredTasks = taskDAO.getTasksForToday();
-                break;
-            case "Tuần này":
-                filteredTasks = taskDAO.getTasksForThisWeek();
-                break;
-            case "Tháng này":
-                filteredTasks = taskDAO.getTasksForThisMonth();
-                break;
-            default:
-                filteredTasks = taskDAO.getTasks();
-                break;
+        // Phân loại Task theo nhóm
+        List<Task> todayTasks = new ArrayList<>();
+        List<Task> tomorrowTasks = new ArrayList<>();
+        List<Task> thisWeekTasks = new ArrayList<>();
+        List<Task> thisMonthTasks = new ArrayList<>();
+        List<Task> allTasksList = new ArrayList<>();
+        List<Task> completedTasks = new ArrayList<>();
+
+        // Lấy ngày hiện tại
+        Calendar calendar = Calendar.getInstance();
+        Date today = calendar.getTime();
+
+        // Lấy ngày mai
+        calendar.add(Calendar.DAY_OF_YEAR, 1);
+        Date tomorrow = calendar.getTime();
+
+        // Lấy thời điểm đầu và cuối của tuần
+        calendar.setTime(today);
+        calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+        Date weekStart = calendar.getTime();
+
+        calendar.add(Calendar.DAY_OF_YEAR, 6);
+        Date weekEnd = calendar.getTime();
+
+        // Lấy thời điểm đầu và cuối của tháng
+        calendar.setTime(today);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        Date monthStart = calendar.getTime();
+
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        Date monthEnd = calendar.getTime();
+
+        for (Task task : allTasks) {
+            Date taskDueDate = task.getDueDate();
+            if (taskDueDate == null) continue;
+
+            if (isSameDay(taskDueDate, today)) {
+                todayTasks.add(task);
+            } else if (isSameDay(taskDueDate, tomorrow)) {
+                tomorrowTasks.add(task);
+            } else if (taskDueDate.after(today) && taskDueDate.before(weekEnd)) {
+                thisWeekTasks.add(task);
+            } else if (taskDueDate.after(weekEnd) && taskDueDate.before(monthEnd)) {
+                thisMonthTasks.add(task);
+            }
+            allTasksList.add(task);
         }
 
-        tasksAdapter1.updateTasks(filteredTasks);
+        // Tạo các TaskGroup
+        parentList.add(new TaskGroup("Hôm nay", "#fcbb6d", todayTasks));
+        parentList.add(new TaskGroup("Ngày mai", "#6ebcf4", tomorrowTasks));
+        parentList.add(new TaskGroup("Trong suốt tuần", "#708ddb", thisWeekTasks));
+        parentList.add(new TaskGroup("Tháng này", "#9471e8", thisMonthTasks));
+        parentList.add(new TaskGroup("Tất cả", "#b75be2", allTasksList));
+        parentList.add(new TaskGroup("Đã hoàn thành", "#00bfae", completedTasks));
+
+        return parentList;
+    }
+
+    private boolean isSameDay(Date date1, Date date2) {
+        Calendar cal1 = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+        cal1.setTime(date1);
+        cal2.setTime(date2);
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
     }
 }
