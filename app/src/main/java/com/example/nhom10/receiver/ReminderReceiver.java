@@ -26,7 +26,7 @@ public class ReminderReceiver extends BroadcastReceiver {
         } else {
             TaskDAO taskDAO = new TaskDAO(context);
             Task task = taskDAO.findById(taskId);
-            if (task == null) {
+            if (task == null || task.isCompleted()) {
                 return;
             }
 

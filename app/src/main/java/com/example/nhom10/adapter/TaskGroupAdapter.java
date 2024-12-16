@@ -80,7 +80,7 @@ public class TaskGroupAdapter extends RecyclerView.Adapter<TaskGroupAdapter.Pare
             itemView.setOnClickListener(v -> {
                 isExpanded = !isExpanded;
                 childRecyclerView.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
-                arrowIcon.setImageResource(isExpanded ? R.drawable.baseline_keyboard_arrow_right_24 : R.drawable.baseline_keyboard_arrow_down_24);
+                arrowIcon.setImageResource(isExpanded ? R.drawable.baseline_keyboard_arrow_down_24 : R.drawable.baseline_keyboard_arrow_right_24);
             });
         }
 
@@ -93,7 +93,7 @@ public class TaskGroupAdapter extends RecyclerView.Adapter<TaskGroupAdapter.Pare
             int childCount = taskGroup.getTaskList().size();
             itemCount.setText(String.valueOf(childCount));
 
-            arrowIcon.setImageResource(isExpanded ? R.drawable.baseline_keyboard_arrow_right_24 : R.drawable.baseline_keyboard_arrow_down_24);
+            arrowIcon.setImageResource(isExpanded ? R.drawable.baseline_keyboard_arrow_down_24 : R.drawable.baseline_keyboard_arrow_right_24);
             childRecyclerView.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
 
             childRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
