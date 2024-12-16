@@ -6,7 +6,7 @@
     android:background="#363636"
     android:gravity="center|top"
     android:orientation="vertical"
-    android:padding="20dp"
+    android:padding="8dp"
     tools:context=".fragments.DeleteTaskFragment">
 
     <TextView
@@ -18,6 +18,13 @@
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="16dp"
+        android:background="@color/white" />
 
     <TextView
         android:id="@+id/dialog_message"

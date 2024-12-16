@@ -244,6 +244,11 @@ public class TaskBottomDialogFragment extends BottomSheetDialogFragment {
                     ReminderUtils.setReminder(requireContext(), timeToRemind, (int) taskId, "Nhắc nhở nhiệm vụ");
                 }
 
+                //Gửi yêu cầu cập nhật dữ liệu
+                Bundle result = new Bundle();
+                result.putBoolean("isTaskAdded", true);
+                getParentFragmentManager().setFragmentResult("taskAdded", result);
+
                 Toast.makeText(requireContext(), "Nhiệm vụ đã được lưu", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(requireContext(), "Lỗi khi lưu nhiêm vụ", Toast.LENGTH_SHORT).show();

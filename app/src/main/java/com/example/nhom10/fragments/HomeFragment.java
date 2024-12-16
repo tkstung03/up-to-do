@@ -32,6 +32,7 @@ public class HomeFragment extends Fragment {
     private TaskDAO taskDAO;
     private CategoryDAO categoryDAO;
     private TaskTagsDAO taskTagsDAO;
+    private RecyclerView recyclerView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,6 +41,14 @@ public class HomeFragment extends Fragment {
         taskDAO = new TaskDAO(requireContext());
         categoryDAO = new CategoryDAO(requireContext());
         taskTagsDAO = new TaskTagsDAO(requireContext());
+
+        // Lắng nghe kết quả từ dialog
+        getParentFragmentManager().setFragmentResultListener("taskAdded", this, (requestKey, result) -> {
+            boolean isTaskAdded = result.getBoolean("isTaskAdded", false);
+            if (isTaskAdded) {
+                updateRecyclerView();
+            }
+        });
     }
 
     @Override
@@ -49,7 +58,7 @@ public class HomeFragment extends Fragment {
 
         EditText searchBar = view.findViewById(R.id.searchBar);
 
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         List<TaskGroup> parentItemList = getTaskGroups();
@@ -59,6 +68,20 @@ public class HomeFragment extends Fragment {
         handleSearch(searchBar);
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateRecyclerView();
+    }
+
+    private void updateRecyclerView() {
+        List<TaskGroup> updatedTaskGroups = getTaskGroups();
+        TaskGroupAdapter adapter = (TaskGroupAdapter) recyclerView.getAdapter();
+        if (adapter != null) {
+            adapter.updateTaskGroups(updatedTaskGroups);
+        }
     }
 
     private void handleSearch(EditText searchBar) {
@@ -79,6 +102,32 @@ public class HomeFragment extends Fragment {
     }
 
     private void filterTasksBySearch(String keyword) {
+        List<TaskGroup> originalTaskGroups = getTaskGroups();
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            updateRecyclerView();
+            return;
+        }
+
+        List<TaskGroup> filteredTaskGroups = new ArrayList<>();
+        for (TaskGroup group : originalTaskGroups) {
+            List<Task> filteredTasks = new ArrayList<>();
+            for (Task task : group.getTaskList()) {
+                if (task.getTitle().toLowerCase().contains(keyword.toLowerCase()) ||
+                        (task.getNote() != null && task.getNote().toLowerCase().contains(keyword.toLowerCase()))) {
+                    filteredTasks.add(task);
+                }
+            }
+
+            if (!filteredTasks.isEmpty()) {
+                filteredTaskGroups.add(new TaskGroup(group.getTitle(), group.getColor(), filteredTasks));
+            }
+        }
+
+        TaskGroupAdapter adapter = (TaskGroupAdapter) recyclerView.getAdapter();
+        if (adapter != null) {
+            adapter.updateTaskGroups(filteredTaskGroups);
+        }
     }
 
     private List<TaskGroup> getTaskGroups() {
@@ -102,7 +151,6 @@ public class HomeFragment extends Fragment {
         // Lấy thời điểm đầu và cuối của tuần
         calendar.setTime(today);
         calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
-        Date weekStart = calendar.getTime();
 
         calendar.add(Calendar.DAY_OF_YEAR, 6);
         Date weekEnd = calendar.getTime();
@@ -110,7 +158,6 @@ public class HomeFragment extends Fragment {
         // Lấy thời điểm đầu và cuối của tháng
         calendar.setTime(today);
         calendar.set(Calendar.DAY_OF_MONTH, 1);
-        Date monthStart = calendar.getTime();
 
         calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
         Date monthEnd = calendar.getTime();
