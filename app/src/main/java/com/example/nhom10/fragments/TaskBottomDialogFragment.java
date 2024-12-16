@@ -86,7 +86,7 @@ public class TaskBottomDialogFragment extends BottomSheetDialogFragment {
                 BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) d;
                 FrameLayout bottomSheet = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
                 if (bottomSheet != null) {
-                    bottomSheet.setBackgroundResource(R.drawable.dialogbg);
+                    bottomSheet.setBackgroundResource(R.drawable.bottom_sheet_background);
                 }
             });
         }
@@ -352,7 +352,7 @@ public class TaskBottomDialogFragment extends BottomSheetDialogFragment {
             TextView tagView = new TextView(requireContext());
             tagView.setText(tag.getName());
             tagView.setPadding(16, 8, 16, 8);
-            tagView.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.tags_background));
+            tagView.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.tn_tag_background));
 
             GradientDrawable backgroundDrawable = (GradientDrawable) tagView.getBackground();
             String color = tag.getColor();

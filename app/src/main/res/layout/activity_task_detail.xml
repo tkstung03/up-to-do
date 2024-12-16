@@ -48,6 +48,7 @@
             android:id="@+id/checkbox"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:buttonTint="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -83,7 +84,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:contentDescription="Edit Task"
-            android:src="@drawable/edit_2"
+            android:src="@drawable/ic_edit_2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -123,7 +124,7 @@
             android:id="@+id/text_task_time_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/border_textview"
+            android:background="@drawable/tn_border_textview"
             android:fontFamily="sans-serif"
             android:paddingHorizontal="24dp"
             android:paddingVertical="12dp"
@@ -167,7 +168,7 @@
             android:id="@+id/layoutCategoryButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/border_textview"
+            android:background="@drawable/tn_border_textview"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingHorizontal="24dp"
@@ -181,7 +182,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:contentDescription="cc"
-                android:src="@drawable/mortarboard_1" />
+                android:src="@drawable/ic_mortarboard_1" />
 
             <TextView
                 android:id="@+id/nameCate"
@@ -228,7 +229,7 @@
             android:id="@+id/layoutTagButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/border_textview"
+            android:background="@drawable/tn_border_textview"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingHorizontal="24dp"
@@ -242,7 +243,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:contentDescription="Flags"
-                android:src="@drawable/flag" />
+                android:src="@drawable/ic_flag" />
 
             <TextView
                 android:id="@+id/textTags"
@@ -267,7 +268,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:contentDescription="Sub Task Icon"
-            android:src="@drawable/hierarchy"
+            android:src="@drawable/ic_hierarchy"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -289,7 +290,7 @@
             android:id="@+id/text_sub_task_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/border_textview"
+            android:background="@drawable/tn_border_textview"
             android:fontFamily="sans-serif"
             android:paddingHorizontal="24dp"
             android:paddingVertical="12dp"
@@ -333,7 +334,7 @@
             android:id="@+id/text_reminder_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/border_textview"
+            android:background="@drawable/tn_border_textview"
             android:fontFamily="sans-serif"
             android:paddingHorizontal="24dp"
             android:paddingVertical="12dp"
@@ -355,7 +356,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:contentDescription="Trash Icon"
-            android:src="@drawable/trash"
+            android:src="@drawable/ic_trash"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -374,6 +375,5 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </LinearLayout>

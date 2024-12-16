@@ -88,7 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
-            android:background="@drawable/category_background"
+            android:background="@drawable/tn_category_background"
             android:text="Công việc"
             android:textColor="@color/white"
             android:textSize="16sp"
@@ -109,7 +109,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="Tag"
-            android:src="@drawable/flag"
+            android:src="@drawable/ic_flag"
             app:tint="@color/textColor" />
 
         <LinearLayout

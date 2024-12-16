@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/dialogbg"
+    android:background="@drawable/bottom_sheet_background"
     android:padding="16dp">
 
     <!-- Tiêu đề và nút đóng dialog -->
@@ -95,7 +95,7 @@
             android:layout_gravity="center_vertical"
             android:clickable="true"
             android:focusable="true"
-            android:background="@drawable/circle_bg"
+            android:background="@drawable/tt_circle_bg"
             android:foreground="?attr/selectableItemBackground" />
 
         <ImageView
@@ -107,7 +107,7 @@
             android:layout_gravity="center_vertical"
             android:clickable="true"
             android:focusable="true"
-            android:background="@drawable/circle_bg"
+            android:background="@drawable/tt_circle_bg"
             android:foreground="?attr/selectableItemBackground" />
 
         <ImageView
@@ -119,7 +119,7 @@
             android:layout_gravity="center_vertical"
             android:clickable="true"
             android:focusable="true"
-            android:background="@drawable/circle_bg"
+            android:background="@drawable/tt_circle_bg"
             android:foreground="?attr/selectableItemBackground" />
 
         <ImageView
@@ -131,7 +131,7 @@
             android:layout_gravity="center_vertical"
             android:clickable="true"
             android:focusable="true"
-            android:background="@drawable/circle_bg"
+            android:background="@drawable/tt_circle_bg"
             android:foreground="?attr/selectableItemBackground" />
 
         <ImageView
@@ -142,7 +142,7 @@
             android:layout_gravity="center_vertical"
             android:clickable="true"
             android:focusable="true"
-            android:background="@drawable/circle_bg"
+            android:background="@drawable/tt_circle_bg"
             android:foreground="?attr/selectableItemBackground" />
 
     </LinearLayout>
