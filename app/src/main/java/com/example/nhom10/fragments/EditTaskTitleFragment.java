@@ -50,15 +50,15 @@ public class EditTaskTitleFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            taskTitle = getArguments().getString(ARG_TASK_TITLE);
-            taskNote = getArguments().getString(ARG_TASK_NOTE);
+            taskTitle = getArguments().getString(ARG_TASK_TITLE, "");
+            taskNote = getArguments().getString(ARG_TASK_NOTE, "");
         }
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.edit_task_dialog, container, false);
+        View view = inflater.inflate(R.layout.fragment_edit_task_title, container, false);
 
         TextView textViewTitle = view.findViewById(R.id.textViewTitle);
         editTaskTitle = view.findViewById(R.id.editTaskTitle);
@@ -67,10 +67,14 @@ public class EditTaskTitleFragment extends DialogFragment {
         Button cancelButton = view.findViewById(R.id.cancelButton);
         Button saveButton = view.findViewById(R.id.saveButton);
 
-        textViewTitle.setText(taskTitle);
-        editTaskTitle.setText(taskTitle);
-        textViewNote.setText(taskNote);
-        editTaskNote.setText(taskNote);
+        if (!taskTitle.isEmpty()) {
+            textViewTitle.setText(taskTitle);
+            editTaskTitle.setText(taskTitle);
+        }
+        if (!taskNote.isEmpty()) {
+            textViewNote.setText(taskNote);
+            editTaskNote.setText(taskNote);
+        }
 
         textViewTitle.setOnClickListener(v -> {
             textViewTitle.setVisibility(View.GONE);

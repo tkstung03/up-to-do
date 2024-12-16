@@ -3,6 +3,7 @@ package com.example.nhom10.activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ import com.example.nhom10.fragments.DeleteTaskFragment;
 import com.example.nhom10.fragments.EditTaskTitleFragment;
 import com.example.nhom10.model.Category;
 import com.example.nhom10.model.Task;
+import com.example.nhom10.utils.ReminderUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -28,9 +30,14 @@ import java.util.Locale;
 
 public class TaskDetailActivity extends AppCompatActivity {
 
-    private ImageView imageViewEditTitleTask, buttonClose, iconCate;
-    private LinearLayout layoutCategoryButton, layoutTagButton;
-    private TextView textViewDelete, textViewTitle, textViewNote, textViewTagCount, textViewNameCate, textViewTime;
+    private CheckBox checkBox;
+    private ImageView iconCate;
+    private TextView textViewTitle;
+    private TextView textViewNote;
+    private TextView textViewTagCount;
+    private TextView textViewNameCate;
+    private TextView textViewTime;
+    private TextView textViewReminder;
 
     private TaskTagsDAO taskTagsDAO;
     private TaskDAO taskDAO;
@@ -47,17 +54,20 @@ public class TaskDetailActivity extends AppCompatActivity {
         categoryDAO = new CategoryDAO(this);
         int taskId = getIntent().getIntExtra("task_id", -1);
 
-        imageViewEditTitleTask = findViewById(R.id.edit_icon);
-        layoutCategoryButton = findViewById(R.id.layoutCategoryButton);
-        layoutTagButton = findViewById(R.id.layoutTagButton);
-        buttonClose = findViewById(R.id.buttonClose);
-        textViewDelete = findViewById(R.id.text_delete);
+        ImageView imageViewEditTitleTask = findViewById(R.id.edit_icon);
+        LinearLayout layoutCategoryButton = findViewById(R.id.layoutCategoryButton);
+        LinearLayout layoutTagButton = findViewById(R.id.layoutTagButton);
+        ImageView buttonClose = findViewById(R.id.buttonClose);
+        TextView textViewDelete = findViewById(R.id.text_delete);
+
+        checkBox = findViewById(R.id.checkbox);
+        iconCate = findViewById(R.id.iconCate);
         textViewTitle = findViewById(R.id.task_title);
         textViewNote = findViewById(R.id.task_subtitle);
         textViewTagCount = findViewById(R.id.textTags);
-        iconCate = findViewById(R.id.iconCate);
         textViewNameCate = findViewById(R.id.nameCate);
         textViewTime = findViewById(R.id.text_task_time_value);
+        textViewReminder = findViewById(R.id.text_reminder_value);
 
         loadTaskDetails(taskId);
 
@@ -86,16 +96,45 @@ public class TaskDetailActivity extends AppCompatActivity {
             dialogFragment.show(getSupportFragmentManager(), "DeleteTaskFragment");
         });
 
+        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            taskDAO.updateTaskStatus(currentTask.getTaskId(), isChecked);
+
+            currentTask.setCompleted(isChecked);
+        });
+
+        updateDueDate();
+        updateReminderTime();
+        textViewTime.setOnLongClickListener(view -> {
+            long isUpdated = taskDAO.updateTaskDueDate(currentTask.getTaskId(), null);
+            if (isUpdated > 0) {
+                textViewTime.setText("Chưa có");
+                currentTask.setDueDate(null);
+            }
+            return false;
+        });
+        textViewReminder.setOnLongClickListener(view -> {
+            long isUpdated = taskDAO.updateTaskReminderTime(currentTask.getTaskId(), null);
+            if (isUpdated > 0) {
+                textViewReminder.setText("Chưa có");
+                currentTask.setReminderTime(null);
+
+                ReminderUtils.cancelReminder(this, currentTask.getTaskId());
+            }
+            return false;
+        });
+
+        buttonClose.setOnClickListener(view -> finish());
+    }
+
+    private void updateDueDate() {
         final Calendar calendar = Calendar.getInstance();
         textViewTime.setOnClickListener(view -> {
-            // Hiển thị DatePickerDialog để chọn ngày
             DatePickerDialog datePickerDialog = new DatePickerDialog(view.getContext(),
                     (view1, year, month, dayOfMonth) -> {
                         calendar.set(Calendar.YEAR, year);
                         calendar.set(Calendar.MONTH, month);
                         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-                        // Hiển thị TimePickerDialog để chọn giờ và phút
                         TimePickerDialog timePickerDialog = new TimePickerDialog(view.getContext(),
                                 (view2, hourOfDay, minute) -> {
                                     calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
@@ -105,8 +144,8 @@ public class TaskDetailActivity extends AppCompatActivity {
                                     String formattedDateTime = sdf.format(calendar.getTime());
                                     textViewTime.setText(formattedDateTime);
 
-                                    boolean isUpdated = taskDAO.updateTaskDueDate(currentTask.getTaskId(), calendar.getTime());
-                                    if (isUpdated) {
+                                    long isUpdated = taskDAO.updateTaskDueDate(currentTask.getTaskId(), calendar.getTime());
+                                    if (isUpdated > 0) {
                                         currentTask.setDueDate(calendar.getTime());
                                     }
                                 },
@@ -122,16 +161,55 @@ public class TaskDetailActivity extends AppCompatActivity {
             );
             datePickerDialog.show();
         });
+    }
 
-        buttonClose.setOnClickListener(view -> finish());
+    private void updateReminderTime() {
+        final Calendar calendar = Calendar.getInstance();
+        textViewReminder.setOnClickListener(view -> {
+            DatePickerDialog datePickerDialog = new DatePickerDialog(view.getContext(),
+                    (view1, year, month, dayOfMonth) -> {
+                        calendar.set(Calendar.YEAR, year);
+                        calendar.set(Calendar.MONTH, month);
+                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                        TimePickerDialog timePickerDialog = new TimePickerDialog(view.getContext(),
+                                (view2, hourOfDay, minute) -> {
+                                    calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                                    calendar.set(Calendar.MINUTE, minute);
+
+                                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+                                    String formattedDateTime = sdf.format(calendar.getTime());
+                                    textViewReminder.setText(formattedDateTime);
+
+                                    long isUpdated = taskDAO.updateTaskReminderTime(currentTask.getTaskId(), calendar.getTime());
+                                    if (isUpdated > 0) {
+                                        currentTask.setReminderTime(calendar.getTime());
+
+                                        //Cập nhật lại thông báo
+                                        ReminderUtils.cancelReminder(this, currentTask.getTaskId());
+                                        ReminderUtils.setReminder(this, currentTask.getReminderTime().getTime(), currentTask.getTaskId(), null);
+                                    }
+                                },
+                                calendar.get(Calendar.HOUR_OF_DAY),
+                                calendar.get(Calendar.MINUTE),
+                                true
+                        );
+                        timePickerDialog.show();
+                    },
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH)
+            );
+            datePickerDialog.show();
+        });
     }
 
     private void handleUpdatedTitle(String s, Bundle bundle) {
         String newTitle = bundle.getString("updatedTitle");
         String newNote = bundle.getString("updatedNote");
 
-        boolean isUpdate = taskDAO.updateTaskTitleAndNote(currentTask.getTaskId(), newTitle, newNote);
-        if (isUpdate) {
+        long isUpdate = taskDAO.updateTaskTitleAndNote(currentTask.getTaskId(), newTitle, newNote);
+        if (isUpdate > 0) {
             currentTask.setTitle(newTitle);
             currentTask.setNote(newNote);
 
@@ -145,8 +223,8 @@ public class TaskDetailActivity extends AppCompatActivity {
     private void handleUpdatedCategory(String s, Bundle bundle) {
         int newCategoryId = bundle.getInt("updatedCategoryId");
 
-        boolean isUpdate = taskDAO.updateTaskCategory(currentTask.getTaskId(), newCategoryId);
-        if (isUpdate) {
+        long isUpdate = taskDAO.updateTaskCategory(currentTask.getTaskId(), newCategoryId);
+        if (isUpdate > 0) {
             currentTask.setCategoryId(newCategoryId);
 
             updateViewCategory();
@@ -169,9 +247,8 @@ public class TaskDetailActivity extends AppCompatActivity {
     }
 
     private void handleDeletedTask(String s, Bundle bundle) {
-        boolean isDeleted = taskDAO.deleteTask(currentTask.getTaskId());
-
-        if (isDeleted) {
+        long isDeleted = taskDAO.delete(currentTask.getTaskId());
+        if (isDeleted > 0) {
             Toast.makeText(this, "Đã xóa nhiệm vụ", Toast.LENGTH_SHORT).show();
             finish();
         } else {
@@ -181,10 +258,12 @@ public class TaskDetailActivity extends AppCompatActivity {
 
     private void loadTaskDetails(int taskId) {
         if (taskId != -1) {
-            currentTask = taskDAO.getTaskById(taskId);
+            currentTask = taskDAO.findById(taskId);
             if (currentTask != null) {
+                updateViewTaskStatus();
                 updateViewTitle();
                 updateViewTime();
+                updateViewReminderTime();
                 updateViewCategory();
                 updateViewTags();
             } else {
@@ -192,6 +271,10 @@ public class TaskDetailActivity extends AppCompatActivity {
                 finish();
             }
         }
+    }
+
+    private void updateViewTaskStatus() {
+        checkBox.setChecked(currentTask.isCompleted());
     }
 
     private void updateViewTitle() {
@@ -217,6 +300,26 @@ public class TaskDetailActivity extends AppCompatActivity {
             formattedTime = String.format("%02d:%02d, %02d/%02d/%d", hourOfDay, minute, dayOfMonth, month + 1, year);
         }
         textViewTime.setText(formattedTime);
+    }
+
+    private void updateViewReminderTime() {
+        Date date = currentTask.getReminderTime();
+        String formattedTime;
+        if (date == null) {
+            formattedTime = "Chưa có";
+        } else {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+
+            int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+            int minute = calendar.get(Calendar.MINUTE);
+            int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+            int month = calendar.get(Calendar.MONTH);
+            int year = calendar.get(Calendar.YEAR);
+
+            formattedTime = String.format("%02d:%02d, %02d/%02d/%d", hourOfDay, minute, dayOfMonth, month + 1, year);
+        }
+        textViewReminder.setText(formattedTime);
     }
 
     private void updateViewTags() {

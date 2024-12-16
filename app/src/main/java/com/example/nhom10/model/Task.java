@@ -7,6 +7,7 @@ public class Task {
     private String title;
     private String note;
     private Date dueDate;
+    private Date reminderTime;
     private int userId;
     private int categoryId;
     private boolean isCompleted;
@@ -14,11 +15,12 @@ public class Task {
     public Task() {
     }
 
-    public Task(int taskId, String title, String note, Date dueDate, int userId, int categoryId, boolean isCompleted) {
+    public Task(int taskId, String title, String note, Date dueDate, Date reminderTime, int userId, int categoryId, boolean isCompleted) {
         this.taskId = taskId;
         this.title = title;
         this.note = note;
         this.dueDate = dueDate;
+        this.reminderTime = reminderTime;
         this.userId = userId;
         this.categoryId = categoryId;
         this.isCompleted = isCompleted;
@@ -56,6 +58,14 @@ public class Task {
         this.dueDate = dueDate;
     }
 
+    public Date getReminderTime() {
+        return reminderTime;
+    }
+
+    public void setReminderTime(Date reminderTime) {
+        this.reminderTime = reminderTime;
+    }
+
     public int getUserId() {
         return userId;
     }
@@ -79,4 +89,5 @@ public class Task {
     public void setCompleted(boolean completed) {
         isCompleted = completed;
     }
+
 }

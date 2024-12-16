@@ -14,9 +14,9 @@ public class InitData {
             "('Quan trọng', 'yellow', 2), " +
             "('Low Priority', 'blue', 1);";
 
-    public static final String INSERT_TASKS = "INSERT INTO tasks (title, note, due_date, user_id, category_id, is_completed) VALUES " +
-            "('Thi Android', '', '2024-12-07', 1, 1, 0), " +
-            "('Ăn tối', 'Ăn no', '2024-12-07', 2, 2, 0);";
+    public static final String INSERT_TASKS = "INSERT INTO tasks (title, note, due_date, reminder_time, user_id, category_id, is_completed) VALUES " +
+            "('Thi Android', '', '2024-12-27', '', 1, 1, 0), " +
+            "('Thi KTPM', 'Ăn no', '2024-12-28', '', 2, 2, 0);";
 
     public static final String INSERT_TASKS_TAGS = "INSERT INTO tasks_tags (task_id, tag_id) VALUES " +
             "(1, 1), " +

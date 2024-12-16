@@ -1,5 +1,6 @@
 package com.example.nhom10.adapter;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +38,7 @@ public class TaskGroupAdapter extends RecyclerView.Adapter<TaskGroupAdapter.Pare
     @NonNull
     @Override
     public ParentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_parent, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.task_group_item, parent, false);
         return new ParentViewHolder(view);
     }
 
@@ -50,6 +51,13 @@ public class TaskGroupAdapter extends RecyclerView.Adapter<TaskGroupAdapter.Pare
     @Override
     public int getItemCount() {
         return taskGroupList.size();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void updateTaskGroups(List<TaskGroup> newTaskGroups) {
+        this.taskGroupList.clear();
+        this.taskGroupList.addAll(newTaskGroups);
+        notifyDataSetChanged();
     }
 
     public static class ParentViewHolder extends RecyclerView.ViewHolder {
