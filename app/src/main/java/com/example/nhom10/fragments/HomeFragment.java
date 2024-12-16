@@ -20,6 +20,7 @@ import com.example.nhom10.dao.TaskDAO;
 import com.example.nhom10.dao.TaskTagsDAO;
 import com.example.nhom10.model.Task;
 import com.example.nhom10.model.TaskGroup;
+import com.example.nhom10.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,6 +32,7 @@ public class HomeFragment extends Fragment {
     private TaskDAO taskDAO;
     private CategoryDAO categoryDAO;
     private TaskTagsDAO taskTagsDAO;
+    private RecyclerView recyclerView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,6 +41,14 @@ public class HomeFragment extends Fragment {
         taskDAO = new TaskDAO(requireContext());
         categoryDAO = new CategoryDAO(requireContext());
         taskTagsDAO = new TaskTagsDAO(requireContext());
+
+        // Lắng nghe kết quả từ dialog
+        getParentFragmentManager().setFragmentResultListener("taskAdded", this, (requestKey, result) -> {
+            boolean isTaskAdded = result.getBoolean("isTaskAdded", false);
+            if (isTaskAdded) {
+                updateRecyclerView();
+            }
+        });
     }
 
     @Override
@@ -48,7 +58,7 @@ public class HomeFragment extends Fragment {
 
         EditText searchBar = view.findViewById(R.id.searchBar);
 
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         List<TaskGroup> parentItemList = getTaskGroups();
@@ -58,6 +68,20 @@ public class HomeFragment extends Fragment {
         handleSearch(searchBar);
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateRecyclerView();
+    }
+
+    private void updateRecyclerView() {
+        List<TaskGroup> updatedTaskGroups = getTaskGroups();
+        TaskGroupAdapter adapter = (TaskGroupAdapter) recyclerView.getAdapter();
+        if (adapter != null) {
+            adapter.updateTaskGroups(updatedTaskGroups);
+        }
     }
 
     private void handleSearch(EditText searchBar) {
@@ -78,19 +102,43 @@ public class HomeFragment extends Fragment {
     }
 
     private void filterTasksBySearch(String keyword) {
+        List<TaskGroup> originalTaskGroups = getTaskGroups();
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            updateRecyclerView();
+            return;
+        }
+
+        List<TaskGroup> filteredTaskGroups = new ArrayList<>();
+        for (TaskGroup group : originalTaskGroups) {
+            List<Task> filteredTasks = new ArrayList<>();
+            for (Task task : group.getTaskList()) {
+                if (task.getTitle().toLowerCase().contains(keyword.toLowerCase()) ||
+                        (task.getNote() != null && task.getNote().toLowerCase().contains(keyword.toLowerCase()))) {
+                    filteredTasks.add(task);
+                }
+            }
+
+            if (!filteredTasks.isEmpty()) {
+                filteredTaskGroups.add(new TaskGroup(group.getTitle(), group.getColor(), filteredTasks));
+            }
+        }
+
+        TaskGroupAdapter adapter = (TaskGroupAdapter) recyclerView.getAdapter();
+        if (adapter != null) {
+            adapter.updateTaskGroups(filteredTaskGroups);
+        }
     }
 
     private List<TaskGroup> getTaskGroups() {
         List<TaskGroup> parentList = new ArrayList<>();
-        List<Task> allTasks = taskDAO.getTasks();
+        List<Task> allTasks = taskDAO.findAll();
 
         // Phân loại Task theo nhóm
         List<Task> todayTasks = new ArrayList<>();
         List<Task> tomorrowTasks = new ArrayList<>();
         List<Task> thisWeekTasks = new ArrayList<>();
         List<Task> thisMonthTasks = new ArrayList<>();
-        List<Task> allTasksList = new ArrayList<>();
-        List<Task> completedTasks = new ArrayList<>();
 
         // Lấy ngày hiện tại
         Calendar calendar = Calendar.getInstance();
@@ -103,7 +151,6 @@ public class HomeFragment extends Fragment {
         // Lấy thời điểm đầu và cuối của tuần
         calendar.setTime(today);
         calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
-        Date weekStart = calendar.getTime();
 
         calendar.add(Calendar.DAY_OF_YEAR, 6);
         Date weekEnd = calendar.getTime();
@@ -111,7 +158,6 @@ public class HomeFragment extends Fragment {
         // Lấy thời điểm đầu và cuối của tháng
         calendar.setTime(today);
         calendar.set(Calendar.DAY_OF_MONTH, 1);
-        Date monthStart = calendar.getTime();
 
         calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
         Date monthEnd = calendar.getTime();
@@ -120,16 +166,15 @@ public class HomeFragment extends Fragment {
             Date taskDueDate = task.getDueDate();
             if (taskDueDate == null) continue;
 
-            if (isSameDay(taskDueDate, today)) {
+            if (Utils.isSameDay(taskDueDate, today)) {
                 todayTasks.add(task);
-            } else if (isSameDay(taskDueDate, tomorrow)) {
+            } else if (Utils.isSameDay(taskDueDate, tomorrow)) {
                 tomorrowTasks.add(task);
             } else if (taskDueDate.after(today) && taskDueDate.before(weekEnd)) {
                 thisWeekTasks.add(task);
             } else if (taskDueDate.after(weekEnd) && taskDueDate.before(monthEnd)) {
                 thisMonthTasks.add(task);
             }
-            allTasksList.add(task);
         }
 
         // Tạo các TaskGroup
@@ -137,18 +182,9 @@ public class HomeFragment extends Fragment {
         parentList.add(new TaskGroup("Ngày mai", "#6ebcf4", tomorrowTasks));
         parentList.add(new TaskGroup("Trong suốt tuần", "#708ddb", thisWeekTasks));
         parentList.add(new TaskGroup("Tháng này", "#9471e8", thisMonthTasks));
-        parentList.add(new TaskGroup("Tất cả", "#b75be2", allTasksList));
-        parentList.add(new TaskGroup("Đã hoàn thành", "#00bfae", completedTasks));
+        parentList.add(new TaskGroup("Tất cả", "#b75be2", allTasks));
 
         return parentList;
     }
 
-    private boolean isSameDay(Date date1, Date date2) {
-        Calendar cal1 = Calendar.getInstance();
-        Calendar cal2 = Calendar.getInstance();
-        cal1.setTime(date1);
-        cal2.setTime(date2);
-        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
-    }
 }

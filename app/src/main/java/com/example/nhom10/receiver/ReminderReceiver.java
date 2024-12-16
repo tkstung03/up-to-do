@@ -10,19 +10,34 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.example.nhom10.R;
 import com.example.nhom10.activity.MainActivity;
+import com.example.nhom10.dao.TaskDAO;
+import com.example.nhom10.model.Task;
 
 public class ReminderReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
         String title = intent.getStringExtra("title");
-        String message = intent.getStringExtra("message");
-        if (title == null) title = "Nhắc nhở nhiệm vụ";
-        if (message == null) message = "Đã đến lúc hoàn thành nhiệm vụ!";
-        showNotification(context, title, message);
+        int taskId = intent.getIntExtra("taskId", 1);
+        boolean isCancel = intent.getBooleanExtra("isCancel", false);
+
+        if (isCancel) {
+            cancelNotification(context, taskId);
+        } else {
+            TaskDAO taskDAO = new TaskDAO(context);
+            Task task = taskDAO.findById(taskId);
+            if (task == null) {
+                return;
+            }
+
+            if (title == null) title = "Nhắc nhở nhiệm vụ";
+            String message = task.getTitle();
+
+            showNotification(context, taskId, title, message);
+        }
     }
 
-    private void showNotification(Context context, String title, String message) {
+    private void showNotification(Context context, int taskId, String title, String message) {
         // Tạo Intent để mở MainActivity khi người dùng nhấp vào thông báo
         Intent intent = new Intent(context, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -46,7 +61,11 @@ public class ReminderReceiver extends BroadcastReceiver {
 
         // Hiển thị thông báo
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(1, builder.build());
+        notificationManager.notify(taskId, builder.build());
     }
 
+    private void cancelNotification(Context context, int notificationId) {
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.cancel(notificationId);
+    }
 }

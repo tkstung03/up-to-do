@@ -11,9 +11,9 @@
         android:id="@+id/iconTag"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:background="@drawable/rounded_background"
+        android:background="@drawable/tn_rounded_background"
         android:padding="8dp"
-        android:src="@drawable/flag"
+        android:src="@drawable/ic_flag"
         app:tint="@color/black" />
 
     <TextView

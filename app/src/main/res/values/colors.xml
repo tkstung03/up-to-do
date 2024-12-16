@@ -45,4 +45,5 @@
 
     <color name="textColor">#000000</color>
     <color name="backgroundColor">#FFFFFF</color>
+    <color name="taskBackgroundColor">#F5F5F5</color>
 </resources>
