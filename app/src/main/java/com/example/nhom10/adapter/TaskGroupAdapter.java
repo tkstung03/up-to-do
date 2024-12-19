@@ -1,7 +1,6 @@
 package com.example.nhom10.adapter;
 
 import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,15 +84,18 @@ public class TaskGroupAdapter extends RecyclerView.Adapter<TaskGroupAdapter.Pare
         }
 
         public void bind(TaskGroup taskGroup, TaskDAO taskDAO, CategoryDAO categoryDAO, TaskTagsDAO taskTagsDAO) {
-            String colorString = taskGroup.getColor();
-            int color = Color.parseColor(colorString);
-            header.setBackgroundColor(color);
+            header.setBackgroundColor(taskGroup.getColor());
 
             parentTitle.setText(taskGroup.getTitle());
+            parentTitle.setTextColor(taskGroup.getTextColor());
+
             int childCount = taskGroup.getTaskList().size();
             itemCount.setText(String.valueOf(childCount));
+            itemCount.setTextColor(taskGroup.getTextColor());
 
             arrowIcon.setImageResource(isExpanded ? R.drawable.baseline_keyboard_arrow_down_24 : R.drawable.baseline_keyboard_arrow_right_24);
+            arrowIcon.setColorFilter(taskGroup.getTextColor());
+
             childRecyclerView.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
 
             childRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));

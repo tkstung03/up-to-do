@@ -54,72 +54,8 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-        final Task task = taskList.get(position);
-        holder.taskTitle.setText(task.getTitle());
-
-        Date dueDate = task.getDueDate();
-        if (dueDate != null) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-            String formattedDate = dateFormat.format(dueDate);
-            holder.taskTime.setText(formattedDate);
-        } else {
-            holder.taskTime.setText("Vô thời hạn");
-        }
-
-        Category category = categoryDAO.getCategoryById(task.getCategoryId());
-        if (category != null) {
-
-            //Xử lý icon
-            holder.textViewCate.setText(category.getName());
-            if (category.getIcon() != null && !category.getIcon().isEmpty()) {
-                int iconResId = holder.itemView.getContext().getResources().getIdentifier(
-                        category.getIcon(), "drawable", holder.itemView.getContext().getPackageName()
-                );
-
-                if (iconResId != 0) {
-                    holder.imageViewCate.setImageResource(iconResId);
-                } else {
-                    holder.imageViewCate.setImageResource(R.drawable.ic_block);
-                }
-            } else {
-                holder.imageViewCate.setImageResource(R.drawable.ic_block);
-            }
-        } else {
-            holder.textViewCate.setText("Chưa có");
-            holder.imageViewCate.setImageResource(R.drawable.ic_block);
-        }
-
-        // Xử lý màu
-        Drawable originalDrawable = holder.layoutCategoryButton.getBackground();
-        GradientDrawable backgroundDrawable;
-        if (originalDrawable instanceof GradientDrawable) {
-            backgroundDrawable = (GradientDrawable) originalDrawable.mutate();
-        } else {
-            backgroundDrawable = new GradientDrawable();
-        }
-        if (category != null && category.getColor() != null && !category.getColor().isEmpty()) {
-            int parsedColor = Color.parseColor(category.getColor());
-            backgroundDrawable.setColor(parsedColor);
-        } else {
-            backgroundDrawable.setColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.lavender));
-        }
-
-        int tagCount = taskTagsDAO.getTagCountByTaskId(task.getTaskId());
-        holder.textViewTags.setText(String.valueOf(tagCount));
-
-        holder.taskCheckBox.setChecked(task.isCompleted());
-        holder.taskCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            taskDAO.updateTaskStatus(task.getTaskId(), isChecked);
-
-            task.setCompleted(isChecked);
-        });
-
-        holder.itemView.setOnClickListener(view -> {
-            int taskId = task.getTaskId();
-            Intent intent = new Intent(view.getContext(), TaskDetailActivity.class);
-            intent.putExtra("task_id", taskId);
-            view.getContext().startActivity(intent);
-        });
+        Task task = taskList.get(position);
+        holder.bind(task, taskDAO, categoryDAO, taskTagsDAO);
     }
 
     @Override
@@ -151,6 +87,75 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             textViewCate = itemView.findViewById(R.id.nameCate);
             textViewTags = itemView.findViewById(R.id.textTags);
             layoutCategoryButton = itemView.findViewById(R.id.layoutCategoryButton);
+        }
+
+        public void bind(Task task, TaskDAO taskDAO, CategoryDAO categoryDAO, TaskTagsDAO taskTagsDAO) {
+            taskTitle.setText(task.getTitle());
+
+            Date dueDate = task.getDueDate();
+            if (dueDate != null) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                String formattedDate = dateFormat.format(dueDate);
+                taskTime.setText(formattedDate);
+            } else {
+                taskTime.setText("Vô thời hạn");
+            }
+
+            Category category = categoryDAO.getCategoryById(task.getCategoryId());
+            if (category != null) {
+
+                //Xử lý icon
+                textViewCate.setText(category.getName());
+                if (category.getIcon() != null && !category.getIcon().isEmpty()) {
+                    int iconResId = itemView.getContext().getResources().getIdentifier(
+                            category.getIcon(), "drawable", itemView.getContext().getPackageName()
+                    );
+
+                    if (iconResId != 0) {
+                        imageViewCate.setImageResource(iconResId);
+                    } else {
+                        imageViewCate.setImageResource(R.drawable.ic_block);
+                    }
+                } else {
+                    imageViewCate.setImageResource(R.drawable.ic_block);
+                }
+            } else {
+                textViewCate.setText("Chưa có");
+                imageViewCate.setImageResource(R.drawable.ic_block);
+            }
+
+            // Xử lý màu
+            Drawable originalDrawable = layoutCategoryButton.getBackground();
+            GradientDrawable backgroundDrawable;
+            if (originalDrawable instanceof GradientDrawable) {
+                backgroundDrawable = (GradientDrawable) originalDrawable.mutate();
+            } else {
+                backgroundDrawable = new GradientDrawable();
+            }
+            if (category != null && category.getColor() != null && !category.getColor().isEmpty()) {
+                int parsedColor = Color.parseColor(category.getColor());
+                backgroundDrawable.setColor(parsedColor);
+            } else {
+                backgroundDrawable.setColor(ContextCompat.getColor(itemView.getContext(), R.color.lavender));
+            }
+
+            int tagCount = taskTagsDAO.getTagCountByTaskId(task.getTaskId());
+            textViewTags.setText(String.valueOf(tagCount));
+
+            taskCheckBox.setChecked(task.isCompleted());
+            taskCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                long isUpdate = taskDAO.updateTaskStatus(task.getTaskId(), isChecked);
+                if (isUpdate > 0) {
+                    task.setCompleted(isChecked);
+                }
+            });
+
+            itemView.setOnClickListener(view -> {
+                int taskId = task.getTaskId();
+                Intent intent = new Intent(view.getContext(), TaskDetailActivity.class);
+                intent.putExtra("task_id", taskId);
+                view.getContext().startActivity(intent);
+            });
         }
     }
 }

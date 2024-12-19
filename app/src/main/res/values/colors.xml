@@ -46,4 +46,13 @@
     <color name="textColor">#000000</color>
     <color name="backgroundColor">#FFFFFF</color>
     <color name="taskBackgroundColor">#F5F5F5</color>
+
+    <color name="overdue_color">#f28c8f</color>
+    <color name="no_deadline_color">#fcbb6d</color>
+    <color name="today_color">#57cd6d</color>
+    <color name="completed_color">#f5f5f5</color>
+    <color name="tomorrow_color">#6ebcf4</color>
+    <color name="this_week_color">#708ddb</color>
+    <color name="this_month_color">#9471e8</color>
+    <color name="all_tasks_color">#b75be2</color>
 </resources>

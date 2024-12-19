@@ -1,15 +1,19 @@
 package com.example.nhom10.model;
 
+import com.example.nhom10.R;
+
 import java.util.List;
 
 public class TaskGroup {
     private String title;
-    private String color;
+    private int color;
+    private int textColor;
     private List<Task> taskList;
 
-    public TaskGroup(String title, String color, List<Task> taskList) {
+    public TaskGroup(String title, int color, int textColor, List<Task> taskList) {
         this.title = title;
         this.color = color;
+        this.textColor = textColor;
         this.taskList = taskList;
     }
 
@@ -21,12 +25,20 @@ public class TaskGroup {
         this.title = title;
     }
 
-    public String getColor() {
+    public int getColor() {
         return color;
     }
 
-    public void setColor(String color) {
+    public void setColor(int color) {
         this.color = color;
+    }
+
+    public int getTextColor() {
+        return textColor;
+    }
+
+    public void setTextColor(int textColor) {
+        this.textColor = textColor;
     }
 
     public List<Task> getTaskList() {

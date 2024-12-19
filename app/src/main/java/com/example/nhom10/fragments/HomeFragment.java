@@ -1,5 +1,6 @@
 package com.example.nhom10.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,9 +24,9 @@ import com.example.nhom10.model.Task;
 import com.example.nhom10.model.TaskGroup;
 import com.example.nhom10.utils.Utils;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
@@ -120,7 +122,7 @@ public class HomeFragment extends Fragment {
             }
 
             if (!filteredTasks.isEmpty()) {
-                filteredTaskGroups.add(new TaskGroup(group.getTitle(), group.getColor(), filteredTasks));
+                filteredTaskGroups.add(new TaskGroup(group.getTitle(), group.getColor(), group.getTextColor(), filteredTasks));
             }
         }
 
@@ -134,57 +136,65 @@ public class HomeFragment extends Fragment {
         List<TaskGroup> parentList = new ArrayList<>();
         List<Task> allTasks = taskDAO.findAll();
 
-        // Phân loại Task theo nhóm
+        List<Task> overdueTasks = new ArrayList<>();
+        List<Task> noDeadlineTasks = new ArrayList<>();
+        List<Task> completedTasks = new ArrayList<>();
         List<Task> todayTasks = new ArrayList<>();
         List<Task> tomorrowTasks = new ArrayList<>();
         List<Task> thisWeekTasks = new ArrayList<>();
         List<Task> thisMonthTasks = new ArrayList<>();
 
-        // Lấy ngày hiện tại
-        Calendar calendar = Calendar.getInstance();
-        Date today = calendar.getTime();
-
-        // Lấy ngày mai
-        calendar.add(Calendar.DAY_OF_YEAR, 1);
-        Date tomorrow = calendar.getTime();
-
-        // Lấy thời điểm đầu và cuối của tuần
-        calendar.setTime(today);
-        calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
-
-        calendar.add(Calendar.DAY_OF_YEAR, 6);
-        Date weekEnd = calendar.getTime();
-
-        // Lấy thời điểm đầu và cuối của tháng
-        calendar.setTime(today);
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-
-        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-        Date monthEnd = calendar.getTime();
+        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = today.plusDays(1);
+        LocalDate weekStart = today.with(ChronoField.DAY_OF_WEEK, 1);
+        LocalDate weekEnd = weekStart.plusDays(6);
+        LocalDate monthEnd = today.withDayOfMonth(today.lengthOfMonth());
 
         for (Task task : allTasks) {
-            Date taskDueDate = task.getDueDate();
-            if (taskDueDate == null) continue;
+            if (task.isCompleted()) {
+                completedTasks.add(task);
+                continue;
+            }
 
-            if (Utils.isSameDay(taskDueDate, today)) {
+            if (task.getDueDate() == null) {
+                noDeadlineTasks.add(task);
+                continue;
+            }
+
+            LocalDate taskDueDate = Utils.convertToLocalDate(task.getDueDate());
+            if (taskDueDate.isBefore(today)) {
+                overdueTasks.add(task);
+            } else if (taskDueDate.isEqual(today)) {
                 todayTasks.add(task);
-            } else if (Utils.isSameDay(taskDueDate, tomorrow)) {
+            } else if (taskDueDate.isEqual(tomorrow)) {
                 tomorrowTasks.add(task);
-            } else if (taskDueDate.after(today) && taskDueDate.before(weekEnd)) {
+            } else if (!taskDueDate.isBefore(today) && taskDueDate.isBefore(weekEnd.plusDays(1))) {
                 thisWeekTasks.add(task);
-            } else if (taskDueDate.after(weekEnd) && taskDueDate.before(monthEnd)) {
+            } else if (!taskDueDate.isBefore(weekEnd.plusDays(1)) && taskDueDate.isBefore(monthEnd.plusDays(1))) {
                 thisMonthTasks.add(task);
             }
         }
 
-        // Tạo các TaskGroup
-        parentList.add(new TaskGroup("Hôm nay", "#fcbb6d", todayTasks));
-        parentList.add(new TaskGroup("Ngày mai", "#6ebcf4", tomorrowTasks));
-        parentList.add(new TaskGroup("Trong suốt tuần", "#708ddb", thisWeekTasks));
-        parentList.add(new TaskGroup("Tháng này", "#9471e8", thisMonthTasks));
-        parentList.add(new TaskGroup("Tất cả", "#b75be2", allTasks));
+        parentList.add(createTaskGroup("Quá hạn", R.color.overdue_color, R.color.white, overdueTasks));
+        parentList.add(createTaskGroup("Không có hạn", R.color.no_deadline_color, R.color.white, noDeadlineTasks));
+        parentList.add(createTaskGroup("Hôm nay", R.color.today_color, R.color.white, todayTasks));
+        parentList.add(createTaskGroup("Đã hoàn thành", R.color.completed_color, R.color.black, completedTasks));
+        parentList.add(createTaskGroup("Ngày mai", R.color.tomorrow_color, R.color.white, tomorrowTasks));
+        parentList.add(createTaskGroup("Trong suốt tuần", R.color.this_week_color, R.color.white, thisWeekTasks));
+        parentList.add(createTaskGroup("Tháng này", R.color.this_month_color, R.color.white, thisMonthTasks));
+        parentList.add(createTaskGroup("Tất cả", R.color.all_tasks_color, R.color.white, allTasks));
 
         return parentList;
+    }
+
+    private TaskGroup createTaskGroup(String title, int bgColorRes, int textColorRes, List<Task> tasks) {
+        Context context = requireContext();
+        return new TaskGroup(
+                title,
+                ContextCompat.getColor(context, bgColorRes),
+                ContextCompat.getColor(context, textColorRes),
+                tasks
+        );
     }
 
 }
