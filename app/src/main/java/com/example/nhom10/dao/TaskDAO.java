@@ -140,4 +140,8 @@ public class TaskDAO {
     public long delete(int taskId) {
         return db.delete("tasks", "task_id = ? AND user_id = ?", new String[]{String.valueOf(taskId), String.valueOf(userId)});
     }
+    public int getTaskCompletedByDay(Date findDate){
+
+        return 0;
+    }
 }
