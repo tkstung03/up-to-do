@@ -44,6 +44,20 @@ public class UserDAO {
         cursor.close();
         return userId;
     }
+
+    @SuppressLint("Range")
+    public int getUserIdByEmail(String email) {
+        int userId = 0;
+        String sqlQuery = "SELECT user_id FROM users WHERE email = ?";
+        String[] selectionArgs = {email};
+        Cursor cursor = db.rawQuery(sqlQuery, selectionArgs);
+        if (cursor.moveToFirst()) {
+            userId = cursor.getInt(cursor.getColumnIndex("user_id"));
+        }
+        cursor.close();
+        return userId;
+    }
+
     public boolean checkUserById(int userId, String password) {
         String sqlQuery = "SELECT * FROM users WHERE user_id = ? AND password = ?";
         String[] selectionArgs = {String.valueOf(userId), password};

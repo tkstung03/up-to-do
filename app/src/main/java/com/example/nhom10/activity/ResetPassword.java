@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.nhom10.R;
+import com.example.nhom10.dao.UserDAO;
 import com.example.nhom10.utils.EmailSender;
 
 import java.security.SecureRandom;
@@ -19,23 +20,29 @@ import javax.mail.MessagingException;
 
 public class ResetPassword extends AppCompatActivity {
 
-    EditText edtEmail;
+    EditText edtUsername, edtEmail;
     Button btnSendEmail;
+    UserDAO userDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
 
+        edtUsername = findViewById(R.id.edtTenTK);
         edtEmail = findViewById(R.id.edt_email_forgot_password);
         btnSendEmail = findViewById(R.id.btn_send_email);
+
+        userDAO = new UserDAO(this);
 
         btnSendEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String username = edtUsername.getText().toString();
                 String email = edtEmail.getText().toString();
-                if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(ResetPassword.this, "Vui lòng nhập email", Toast.LENGTH_SHORT).show();
+
+                if (TextUtils.isEmpty(username) || TextUtils.isEmpty(email)) {
+                    Toast.makeText(ResetPassword.this, "Vui lòng nhập đủ tên tài khoản và email", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -44,7 +51,11 @@ public class ResetPassword extends AppCompatActivity {
                     return;
                 }
 
-                sendPasswordResetEmail(email);
+                if (userDAO.checkExistUser(username) && userDAO.checkExistEmail(email)) {
+                    sendPasswordResetEmail(email);
+                } else {
+                    Toast.makeText(ResetPassword.this, "Thông tin không khớp với dữ liệu trong hệ thống", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -52,9 +63,16 @@ public class ResetPassword extends AppCompatActivity {
     private void sendPasswordResetEmail(String email) {
         String newPassword = generateNewPassword();
 
-        sendEmail(email, newPassword);
-
-        finish();
+        int userId = userDAO.getUserIdByEmail(email);
+        if (userId != 0) {
+            boolean isUpdated = userDAO.updatePassword(userId, newPassword);
+            if (isUpdated) {
+                sendEmail(email, newPassword);
+                finish();
+            } else {
+                Toast.makeText(this, "Có lỗi xảy ra khi cập nhật mật khẩu", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private String generateNewPassword() {
