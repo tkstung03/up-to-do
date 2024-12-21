@@ -95,8 +95,8 @@ public class ResetPassword extends AppCompatActivity {
 
     private void sendEmail(String toEmail, String newPassword) {
         // Email credentials
-        String fromEmail = "nhahanggame111@gmail.com";
-        String appPassword = "jowmvpsxozjaoblc";
+        String fromEmail = "contact.nhom10@gmail.com";
+        String appPassword = "ikwy fnvs bphu uvqo";
 
         // Nội dung email
         String subject = "Khôi phục mật khẩu";
