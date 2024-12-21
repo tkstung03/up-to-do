@@ -3,9 +3,11 @@ package com.example.nhom10.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,22 +19,41 @@ import com.example.nhom10.objects.UserSession;
 
 public class Login extends AppCompatActivity {
 
-    TextView register;
+    TextView register, quenmk;
     Button btnLogin;
     EditText edtUsername, edtPassword;
     UserDAO userDAO;
+    ImageView eyeIcon;
+    boolean isPasswordVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         getWidget();
+
+        eyeIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                togglePasswordVisibility();
+            }
+        });
+
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 login();
             }
         });
+
+        quenmk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Login.this, ResetPassword.class);
+                startActivity(intent);
+            }
+        });
+
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -44,9 +65,11 @@ public class Login extends AppCompatActivity {
 
     public void getWidget() {
         register = findViewById(R.id.register_prompt);
+        quenmk = findViewById(R.id.quenmk);
         btnLogin = findViewById(R.id.btn_login);
         edtUsername = findViewById(R.id.txt_username);
         edtPassword = findViewById(R.id.txt_password);
+        eyeIcon = findViewById(R.id.eye_icon);
         userDAO = new UserDAO(this);
     }
 
@@ -79,6 +102,17 @@ public class Login extends AppCompatActivity {
         } else {
             Toast.makeText(Login.this, "Sai tên đăng nhập hoặc mật khẩu", Toast.LENGTH_SHORT).show();
         }
+    }
+    private void togglePasswordVisibility() {
+        if (isPasswordVisible) {
+            edtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            eyeIcon.setImageResource(R.drawable.ic_visibility_off);
+        } else {
+            edtPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            eyeIcon.setImageResource(R.drawable.ic_visibility);
+        }
+        isPasswordVisible = !isPasswordVisible;
+        edtPassword.setSelection(edtPassword.getText().length());
     }
 
 }
