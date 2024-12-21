@@ -24,7 +24,7 @@ import com.example.nhom10.fragments.CalendarFragment;
 import com.example.nhom10.fragments.CategoryFragment;
 import com.example.nhom10.fragments.HomeFragment;
 import com.example.nhom10.fragments.PersonalFragment;
-import com.example.nhom10.fragments.SettingFragment;
+import com.example.nhom10.fragments.ChangePasswordFragment;
 import com.example.nhom10.fragments.ShareFragment;
 import com.example.nhom10.fragments.TaskBottomDialogFragment;
 import com.example.nhom10.objects.UserSession;
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.nav_settings) {
-            openFragment(new SettingFragment());
+            openFragment(new ChangePasswordFragment());
         } else if (itemId == R.id.nav_share) {
             openFragment(new ShareFragment());
         } else if (itemId == R.id.nav_about) {

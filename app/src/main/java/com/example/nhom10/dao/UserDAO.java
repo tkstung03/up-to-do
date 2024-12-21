@@ -44,6 +44,21 @@ public class UserDAO {
         cursor.close();
         return userId;
     }
+    public boolean checkUserById(int userId, String password) {
+        String sqlQuery = "SELECT * FROM users WHERE user_id = ? AND password = ?";
+        String[] selectionArgs = {String.valueOf(userId), password};
+        Cursor cursor = db.rawQuery(sqlQuery, selectionArgs);
+        boolean userExists = cursor.getCount() > 0;
+        cursor.close();
+        return userExists;
+    }
+    public boolean updatePassword(int userId, String newPassword) {
+        ContentValues values = new ContentValues();
+        values.put("password", newPassword);
+
+        int rowsAffected = db.update("users", values, "user_id = ?", new String[]{String.valueOf(userId)});
+        return rowsAffected > 0;
+    }
 
     public long insert(User obj) {
         ContentValues values = new ContentValues();
