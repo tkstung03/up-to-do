@@ -62,15 +62,15 @@ public class ChangePasswordFragment extends Fragment {
         String newPassword = edtNewPassword.getText().toString().trim();
         String confirmPassword = edtConfirmPassword.getText().toString().trim();
 
-        // Validate inputs
+        // Validate
         if (TextUtils.isEmpty(oldPassword) || TextUtils.isEmpty(newPassword) || TextUtils.isEmpty(confirmPassword)) {
             Toast.makeText(getContext(), "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
             if (TextUtils.isEmpty(oldPassword)) {
-                edtOldPassword.requestFocus(); // Set focus to old password field
+                edtOldPassword.requestFocus();
             } else if (TextUtils.isEmpty(newPassword)) {
-                edtNewPassword.requestFocus(); // Set focus to new password field
+                edtNewPassword.requestFocus();
             } else if (TextUtils.isEmpty(confirmPassword)) {
-                edtConfirmPassword.requestFocus(); // Set focus to confirm password field
+                edtConfirmPassword.requestFocus();
             }
             return;
         }
@@ -82,10 +82,8 @@ public class ChangePasswordFragment extends Fragment {
             return;
         }
 
-        // Get current userId from UserSession
         int userId = UserSession.getInstance().getUserId();
 
-        // Check if the old password is correct
         if (!userDAO.checkUserById(userId, oldPassword)) {
             Toast.makeText(getContext(), "Mật khẩu cũ không đúng", Toast.LENGTH_SHORT).show();
             edtOldPassword.requestFocus();
