@@ -23,6 +23,7 @@ import com.example.nhom10.R;
 import com.example.nhom10.activity.TaskDetailActivity;
 import com.example.nhom10.dao.CategoryDAO;
 import com.example.nhom10.dao.TaskDAO;
+import com.example.nhom10.dao.TaskTagsDAO;
 import com.example.nhom10.model.Category;
 import com.example.nhom10.model.Task;
 
@@ -38,6 +39,7 @@ public class TaskArrayAdapter extends ArrayAdapter {
     ArrayList<Task> list = null;
     TaskDAO taskDAO ;
     CategoryDAO categoryDAO;
+    TaskTagsDAO taskTagsDAO;
     public TaskArrayAdapter(@NonNull Activity context, int resource, @NonNull List objects) {
         super(context, resource, objects);
         this.context = context;
@@ -52,6 +54,7 @@ public class TaskArrayAdapter extends ArrayAdapter {
         convertView = inflater.inflate(layoutID, null);
         taskDAO=new TaskDAO(convertView.getContext());
         categoryDAO=new CategoryDAO(convertView.getContext());
+        taskTagsDAO =new TaskTagsDAO(convertView.getContext());
         TextView taskTitle = convertView.findViewById(R.id.taskTitle);
         TextView taskTime = convertView.findViewById(R.id.taskTime);
         CheckBox taskCheckBox = convertView.findViewById(R.id.checkbox);
@@ -61,7 +64,7 @@ public class TaskArrayAdapter extends ArrayAdapter {
         LinearLayout layoutCategoryButton = convertView.findViewById(R.id.layoutCategoryButton);
 
         Task task = list.get(position);
-
+        taskTitle.setText(task.getTitle());
         Date dueDate = task.getDueDate();
         if (dueDate != null) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -109,7 +112,8 @@ public class TaskArrayAdapter extends ArrayAdapter {
             backgroundDrawable.setColor(ContextCompat.getColor(convertView.getContext(), R.color.lavender));
         }
 
-
+        int tagCount = taskTagsDAO.getTagCountByTaskId(task.getTaskId());
+        textViewTags.setText(String.valueOf(tagCount));
 
         taskCheckBox.setChecked(task.isCompleted());
         taskCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {

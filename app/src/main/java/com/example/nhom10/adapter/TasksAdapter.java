@@ -44,10 +44,6 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         this.taskTagsDAO = taskTagsDAO;
     }
 
-    public TasksAdapter(List<Task> taskList, TaskDAO taskDAO) {
-        this.taskList = taskList;
-        this.taskDAO = taskDAO;
-    }
 
     @NonNull
     @Override
