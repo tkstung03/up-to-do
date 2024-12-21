@@ -25,12 +25,11 @@ public class UserDAO {
         String sqlQuery = "SELECT * FROM users WHERE username = ? AND password = ?";
         String[] selectionArgs = {username, password};
         Cursor cursor = db.rawQuery(sqlQuery, selectionArgs);
-        if (cursor.getCount() > 0) {
-            cursor.close();
+        if (cursor.getCount() != 0) {
             return true;
+        } else {
+            return false;
         }
-        cursor.close();
-        return false;
     }
 
     @SuppressLint("Range")
