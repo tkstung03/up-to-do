@@ -11,8 +11,12 @@
         <item>Tất cả</item>
     </string-array>
 
+
     <string-array name="status_filter_options">
         <item>Hoàn thành</item>
         <item>Chưa hoàn thành</item>
     </string-array>
+
+    <string name="back"><![CDATA[<]]></string>
+    <string name="forward"><![CDATA[>]]></string>
 </resources>

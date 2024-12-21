@@ -33,15 +33,20 @@ import java.util.Locale;
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHolder> {
 
     private List<Task> taskList;
-    private final TaskDAO taskDAO;
-    private final CategoryDAO categoryDAO;
-    private final TaskTagsDAO taskTagsDAO;
+    private  TaskDAO taskDAO;
+    private  CategoryDAO categoryDAO;
+    private  TaskTagsDAO taskTagsDAO;
 
     public TasksAdapter(List<Task> taskList, TaskDAO taskDAO, CategoryDAO categoryDAO, TaskTagsDAO taskTagsDAO) {
         this.taskList = taskList;
         this.taskDAO = taskDAO;
         this.categoryDAO = categoryDAO;
         this.taskTagsDAO = taskTagsDAO;
+    }
+
+    public TasksAdapter(List<Task> taskList, TaskDAO taskDAO) {
+        this.taskList = taskList;
+        this.taskDAO = taskDAO;
     }
 
     @NonNull
