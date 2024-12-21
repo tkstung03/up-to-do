@@ -127,7 +127,7 @@ public class ResetPassword extends AppCompatActivity {
                 "            <p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.</p>" +
                 "        </div>" +
                 "        <div class='footer'>" +
-                "            <p>© 2023 Up todo. Mọi quyền được bảo lưu.</p>" +
+                "            <p>© 2024 Up todo. Mọi quyền được bảo lưu.</p>" +
                 "        </div>" +
                 "    </div>" +
                 "</body>" +
