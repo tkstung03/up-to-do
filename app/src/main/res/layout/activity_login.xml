@@ -37,7 +37,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="10dp"
         android:paddingTop="10dp"
-        android:src="@drawable/icon_user" />
+        android:src="@drawable/ic_personal" />
 
     <EditText
         android:id="@+id/txt_username"
@@ -46,10 +46,8 @@
         android:layout_below="@id/login_title"
         android:layout_marginTop="32dp"
         android:layout_toEndOf="@+id/icon_username_login"
-        android:backgroundTint="@color/black"
         android:hint="Nhập email"
-        android:textColor="@color/black"
-        android:textColorHint="@color/black" />
+        android:autofillHints="username"/>
 
     <ImageView
         android:id="@+id/icon_username_password"
@@ -61,39 +59,62 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="10dp"
         android:paddingTop="10dp"
-        android:src="@drawable/icon_pass" />
+        android:src="@drawable/baseline_lock_24" />
 
-    <EditText
-        android:id="@+id/txt_password"
+    <RelativeLayout
+        android:id="@+id/rePass"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_below="@id/txt_username"
-        android:layout_marginTop="16dp"
-        android:layout_toEndOf="@+id/icon_username_password"
-        android:backgroundTint="@color/black"
-        android:hint="Mật khẩu"
-        android:inputType="textPassword"
-        android:textColor="@color/black"
-        android:textColorHint="@color/black" />
+        android:layout_toRightOf="@+id/icon_username_login"
+        android:layout_marginTop="16dp">
+
+        <EditText
+            android:id="@+id/txt_password"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toStartOf="@+id/eye_icon"
+            android:hint="Mật khẩu"
+            android:autofillHints="password"
+            android:inputType="textPassword"
+            android:paddingEnd="40dp"/>
+
+        <ImageView
+            android:id="@+id/eye_icon"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:padding="8dp"
+            android:src="@drawable/ic_visibility_off" />
+    </RelativeLayout>
 
     <Button
         android:id="@+id/btn_login"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/txt_password"
+        android:layout_below="@id/rePass"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="30dp"
         android:backgroundTint="#7F5AF0"
         android:text="Đăng nhập"
         android:textColor="#FFFFFF" />
 
     <TextView
-        android:id="@+id/register_prompt"
+        android:id="@+id/quenmk"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/btn_login"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="6dp"
+        android:text="Quên mật khẩu?"
+        android:textColor="@color/gray" />
+    <TextView
+        android:id="@+id/register_prompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/quenmk"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
         android:text="Bạn chưa có tài khoản? Đăng ký"
         android:textColor="@color/red" />
 </RelativeLayout>

@@ -15,6 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/UpToDo"
         tools:targetApi="31">
+        <activity
+            android:name=".activity.ResetPassword"
+            android:exported="false" />
 
         <receiver android:name=".receiver.ReminderReceiver" />
 
