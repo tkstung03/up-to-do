@@ -7,8 +7,8 @@
 
         <item
             android:id="@+id/nav_settings"
-            android:icon="@drawable/baseline_settings_24"
-            android:title="Cài đặt" />
+            android:icon="@drawable/ic_password"
+            android:title= "Đổi mật khẩu"/>
 
         <item
             android:id="@+id/nav_share"
