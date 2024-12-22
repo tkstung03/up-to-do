@@ -4,10 +4,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,6 +39,10 @@ public class TagManagement extends AppCompatActivity {
         // Thiết lập ID người dùng tạm thời
         UserSession.getInstance().setUserId(1);
         tagDAO = new TagDAO(this);
+
+        ImageButton btnBack = findViewById(R.id.btnBack);
+        btnBack.setColorFilter(ContextCompat.getColor(this, R.color.black));
+        btnBack.setOnClickListener(v -> finish());
 
         recyclerViewTags = findViewById(R.id.recyclerViewTags);
         fabAddTag = findViewById(R.id.fabAddTag);
