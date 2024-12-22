@@ -3,11 +3,11 @@ package com.example.nhom10.fragments;
 import static com.example.nhom10.utils.CalendarUtils.daysInWeekArray;
 import static com.example.nhom10.utils.CalendarUtils.monthYearFromDate;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.nhom10.R;
 import com.example.nhom10.adapter.CalendarAdapter;
 import com.example.nhom10.adapter.TaskArrayAdapter;
-import com.example.nhom10.adapter.TasksAdapter;
 import com.example.nhom10.dao.TaskDAO;
 import com.example.nhom10.model.Task;
 import com.example.nhom10.utils.CalendarUtils;
@@ -31,15 +30,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 public class CalendarFragment extends Fragment implements CalendarAdapter.OnItemListener {
 
     private TextView monthYearText;
     private RecyclerView calendarRecyclerView;
-    Button btnNext, btnPrev;
-    ListView lvTask;
-    TasksAdapter adapter;
-    TaskDAO taskDAO;
+    private Button btnNext, btnPrev;
+    private ListView lvTask;
+    private TaskDAO taskDAO;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,7 +48,6 @@ public class CalendarFragment extends Fragment implements CalendarAdapter.OnItem
         setTasksForSelectedDate(selectedDate);
         setWeekView();
         return view;
-
     }
 
     private void initWidgets(View view) {
@@ -61,6 +57,13 @@ public class CalendarFragment extends Fragment implements CalendarAdapter.OnItem
         btnPrev = view.findViewById(R.id.btnPrevWeek);
         taskDAO = new TaskDAO(view.getContext());
         lvTask = view.findViewById(R.id.lvTask);
+
+        monthYearText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDatePicker();
+            }
+        });
 
         btnPrev.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,7 +77,6 @@ public class CalendarFragment extends Fragment implements CalendarAdapter.OnItem
                 nextWeekAction(view);
             }
         });
-
     }
 
     private void setWeekView() {
@@ -85,18 +87,20 @@ public class CalendarFragment extends Fragment implements CalendarAdapter.OnItem
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 7);
         calendarRecyclerView.setLayoutManager(layoutManager);
         calendarRecyclerView.setAdapter(calendarAdapter);
-
     }
-
 
     public void previousWeekAction(View view) {
         CalendarUtils.selectedDate = CalendarUtils.selectedDate.minusWeeks(1);
         setWeekView();
+        Date selectedDate = java.sql.Date.valueOf(CalendarUtils.selectedDate.toString());
+        setTasksForSelectedDate(selectedDate);
     }
 
     public void nextWeekAction(View view) {
         CalendarUtils.selectedDate = CalendarUtils.selectedDate.plusWeeks(1);
         setWeekView();
+        Date selectedDate = java.sql.Date.valueOf(CalendarUtils.selectedDate.toString());
+        setTasksForSelectedDate(selectedDate);
     }
 
     @Override
@@ -108,12 +112,10 @@ public class CalendarFragment extends Fragment implements CalendarAdapter.OnItem
     }
 
     private void setTasksForSelectedDate(Date selectedDate) {
-
         List<Task> tasks = taskDAO.findAll().stream()
                 .filter(task -> {
                     Date taskDueDate = task.getDueDate();
                     if (taskDueDate != null) {
-
                         Calendar taskCalendar = Calendar.getInstance();
                         taskCalendar.setTime(taskDueDate);
                         taskCalendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -134,10 +136,24 @@ public class CalendarFragment extends Fragment implements CalendarAdapter.OnItem
                 })
                 .collect(Collectors.toList());
 
-
         TaskArrayAdapter arrayAdapter = new TaskArrayAdapter(getActivity(), R.layout.item_task, tasks);
         lvTask.setAdapter(arrayAdapter);
     }
 
-
+    private void showDatePicker() {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                (view, year1, month1, dayOfMonth) -> {
+                    Calendar selectedDateCalendar = Calendar.getInstance();
+                    selectedDateCalendar.set(year1, month1, dayOfMonth);
+                    Date selectedDate = selectedDateCalendar.getTime();
+                    CalendarUtils.selectedDate = LocalDate.of(year1, month1 + 1, dayOfMonth);
+                    setWeekView();
+                    setTasksForSelectedDate(selectedDate);
+                }, year, month, day);
+        datePickerDialog.show();
+    }
 }
