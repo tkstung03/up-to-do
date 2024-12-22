@@ -1,14 +1,17 @@
 package com.example.nhom10.fragments;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,6 +24,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.nhom10.R;
+import com.example.nhom10.activity.MainActivity;
 import com.example.nhom10.adapter.CategoryAdapter;
 import com.example.nhom10.dao.CategoryDAO;
 import com.example.nhom10.model.Category;
@@ -38,30 +42,34 @@ public class CategoryFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // Inflate layout cho Fragment
+
         View view = inflater.inflate(R.layout.fragment_category, container, false);
 
-        // Khởi tạo các thành phần giao diện
         listView = view.findViewById(R.id.categoryListView);
-
-        // Khởi tạo DAO và danh sách dữ liệu
         categoryDAO = new CategoryDAO(requireContext());
-        categoryList = categoryDAO.getAllCategories(); // Lấy dữ liệu từ cơ sở dữ liệu
+        categoryList = categoryDAO.getAllCategories();
 
-        // Nếu danh sách rỗng, thêm dữ liệu mẫu
         if (categoryList.isEmpty()) {
             addSampleCategories();
         }
 
-        // Thiết lập adapter
         adapter = new CategoryAdapter(requireContext(), categoryList, categoryDAO);
         listView.setAdapter(adapter);
 
-        // Xử lý sự kiện khi nhấn vào một danh mục
-        listView.setOnItemClickListener((parent, view1, position, id) -> {
-            Category category = categoryList.get(position);
-            Toast.makeText(requireContext(), "Selected: " + category.getName(), Toast.LENGTH_SHORT).show();
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Category category = categoryList.get(position);
+                // Kiểm tra xem có thực sự vào đây không
+                Log.d("CategoryFragment", "Item clicked: " + category.getName());
+                Toast.makeText(getActivity(), "Ok", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                intent.putExtra("category_id", category.getCategoryId());
+                intent.putExtra("category_name", category.getName());
+                startActivity(intent);
+            }
         });
+
 
         return view;
     }
@@ -71,7 +79,6 @@ public class CategoryFragment extends Fragment {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_add_category);
 
-        // Ánh xạ các phần tử trong layout
         ImageView closeButton = dialog.findViewById(R.id.cancelButton);
         TextView createText = dialog.findViewById(R.id.createText);
         EditText editCategoryName = dialog.findViewById(R.id.editCategoryName);
@@ -92,25 +99,21 @@ public class CategoryFragment extends Fragment {
 
         FloatingActionButton fabSaveCategory = dialog.findViewById(R.id.fabSave);
 
-        // Các giá trị mặc định
         final String[] selectedColor = {"#FFFFFF"};  // Màu mặc định là màu trắng
         final String[] selectedIcon = {"baseline_home_24"};  // Biểu tượng mặc định
 
-        // Sự kiện cho các ô màu sắc
         color1.setOnClickListener(v -> selectedColor[0] = "#FF0000"); // Màu đỏ
         color2.setOnClickListener(v -> selectedColor[0] = "#33B5E5"); // Màu xanh
         color3.setOnClickListener(v -> selectedColor[0] = "#99CC00"); // Màu xanh lá
         color4.setOnClickListener(v -> selectedColor[0] = "FFBB33"); // Màu cam
         color5.setOnClickListener(v -> selectedColor[0] = "#AA66CC"); // Màu tím
 
-        // Sự kiện cho các biểu tượng
         icon1.setOnClickListener(v -> selectedIcon[0] = "baseline_home_24");
         icon2.setOnClickListener(v -> selectedIcon[0] = "ic_work");
         icon3.setOnClickListener(v -> selectedIcon[0] = "ic_personal");
         icon4.setOnClickListener(v -> selectedIcon[0] = "ic_cart");
         icon5.setOnClickListener(v -> selectedIcon[0] = "ic_question");
 
-        // Khi nhấn nút lưu, thực hiện thêm danh mục vào cơ sở dữ liệu
         fabSaveCategory.setOnClickListener(view -> {
             String categoryName = editCategoryName.getText().toString();
             if (categoryName.isEmpty()) {
@@ -118,16 +121,13 @@ public class CategoryFragment extends Fragment {
                 return;
             }
 
-            // Tạo đối tượng Category mới với thông tin đã cập nhật
             Category category = new Category(0, categoryName, selectedIcon[0], selectedColor[0], 0);
 
-            // Lưu vào cơ sở dữ liệu
             boolean isInserted = categoryDAO.insertCategory(category);
 
             if (isInserted) {
                 Toast.makeText(requireContext(), "Danh mục đã được thêm", Toast.LENGTH_SHORT).show();
 
-                // Cập nhật lại danh sách và thông báo cho adapter
                 categoryList.clear();
                 categoryList.addAll(categoryDAO.getAllCategories());
                 adapter.notifyDataSetChanged();  // Thông báo adapter cập nhật danh sách
@@ -139,7 +139,6 @@ public class CategoryFragment extends Fragment {
             dialog.dismiss();
         });
 
-        // Khi nhấn nút đóng, đóng dialog
         closeButton.setOnClickListener(view -> dialog.dismiss());
 
         dialog.show();
@@ -149,13 +148,9 @@ public class CategoryFragment extends Fragment {
         dialog.getWindow().setGravity(Gravity.BOTTOM);
     }
 
-    // Hàm thêm dữ liệu mẫu vào danh sách
     private void addSampleCategories() {
-        // Sử dụng dữ liệu mẫu có sẵn trong InitData để thêm vào cơ sở dữ liệu
         categoryDAO.insertCategory(new Category(0, "Công việc", "ic_work", null, 1));
         categoryDAO.insertCategory(new Category(0, "Cá nhân", "ic_personal", null, 2));
-
-        // Cập nhật lại danh sách sau khi thêm
         categoryList.clear();
         categoryList.addAll(categoryDAO.getAllCategories());
     }

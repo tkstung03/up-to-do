@@ -20,6 +20,10 @@
         <receiver android:name=".receiver.ReminderReceiver" />
 
         <activity
+            android:name=".activity.TasksByCategory"
+            android:exported="false" />
+
+        <activity
             android:name=".activity.SearchActivity"
             android:exported="false" />
         <activity

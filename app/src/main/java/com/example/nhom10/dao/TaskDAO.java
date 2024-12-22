@@ -75,6 +75,21 @@ public class TaskDAO {
         return taskList;
     }
 
+    public List<Task> findAllByCategoryId(int categoryId) {
+        List<Task> taskList = new ArrayList<>();
+
+        String query = "SELECT * FROM tasks WHERE user_id = ? AND category_id = ?";
+        try (Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId), String.valueOf(categoryId)})) {
+            while (cursor.moveToNext()) {
+                taskList.add(parseTask(cursor));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return taskList;
+    }
+
     public long save(Task task) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("title", task.getTitle());
