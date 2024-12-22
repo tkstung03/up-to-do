@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,6 +42,7 @@ public class SearchActivity extends AppCompatActivity {
     private EditText searchBar;
     private TasksAdapter tasksAdapter;
     private LinearLayout tagsContainer;
+    private TextView noResultsTextView;
 
     private final ArrayList<Integer> selectedTagIds = new ArrayList<>();
     private final List<Task> filteredTasks = new ArrayList<>();
@@ -60,6 +62,7 @@ public class SearchActivity extends AppCompatActivity {
 
         searchBar = findViewById(R.id.editTextSearch);
         tagsContainer = findViewById(R.id.linearLayoutSelectedTags);
+        noResultsTextView = findViewById(R.id.textViewNoResults);
         ImageView backButton = findViewById(R.id.imageViewBack);
         Button btnSelectTag = findViewById(R.id.btnSelectTag);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
@@ -151,6 +154,12 @@ public class SearchActivity extends AppCompatActivity {
         filteredTasks.clear();
         filteredTasks.addAll(tasks);
         tasksAdapter.notifyDataSetChanged();
+
+        if (tasks.isEmpty()) {
+            noResultsTextView.setVisibility(View.VISIBLE);
+        } else {
+            noResultsTextView.setVisibility(View.GONE);
+        }
     }
 
     private void filterTasks() {
