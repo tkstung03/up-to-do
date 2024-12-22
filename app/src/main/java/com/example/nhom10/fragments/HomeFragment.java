@@ -35,14 +35,16 @@ public class HomeFragment extends Fragment {
     private CategoryDAO categoryDAO;
     private TaskTagsDAO taskTagsDAO;
     private RecyclerView recyclerView;
+    private TaskGroupAdapter taskGroupAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        taskDAO = new TaskDAO(requireContext());
-        categoryDAO = new CategoryDAO(requireContext());
-        taskTagsDAO = new TaskTagsDAO(requireContext());
+        Context context = requireContext();
+        taskDAO = new TaskDAO(context);
+        categoryDAO = new CategoryDAO(context);
+        taskTagsDAO = new TaskTagsDAO(context);
 
         // Lắng nghe kết quả từ dialog
         getParentFragmentManager().setFragmentResultListener("taskAdded", this, (requestKey, result) -> {
@@ -64,8 +66,8 @@ public class HomeFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         List<TaskGroup> parentItemList = getTaskGroups();
-        TaskGroupAdapter parentAdapter = new TaskGroupAdapter(parentItemList, taskDAO, categoryDAO, taskTagsDAO);
-        recyclerView.setAdapter(parentAdapter);
+        taskGroupAdapter = new TaskGroupAdapter(parentItemList, taskDAO, categoryDAO, taskTagsDAO, this::updateRecyclerView);
+        recyclerView.setAdapter(taskGroupAdapter);
 
         handleSearch(searchBar);
 
@@ -80,10 +82,7 @@ public class HomeFragment extends Fragment {
 
     private void updateRecyclerView() {
         List<TaskGroup> updatedTaskGroups = getTaskGroups();
-        TaskGroupAdapter adapter = (TaskGroupAdapter) recyclerView.getAdapter();
-        if (adapter != null) {
-            adapter.updateTaskGroups(updatedTaskGroups);
-        }
+        taskGroupAdapter.updateTaskGroups(updatedTaskGroups);
     }
 
     private void handleSearch(EditText searchBar) {
