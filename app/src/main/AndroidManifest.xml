@@ -23,7 +23,7 @@
         <receiver android:name=".receiver.ReminderReceiver" />
 
         <activity
-            android:name=".activity.TagManagement"
+            android:name=".activity.Welcome"
             android:exported="false" />
         <activity
             android:name=".activity.TaskDetailActivity"
@@ -38,7 +38,7 @@
             android:name=".activity.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.Welcome"
+            android:name=".activity.TagManagement"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
