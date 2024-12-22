@@ -1,13 +1,12 @@
 package com.example.nhom10.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -16,6 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nhom10.R;
+import com.example.nhom10.activity.SearchActivity;
+import com.example.nhom10.activity.TagManagement;
 import com.example.nhom10.adapter.TaskGroupAdapter;
 import com.example.nhom10.dao.CategoryDAO;
 import com.example.nhom10.dao.TaskDAO;
@@ -34,7 +35,6 @@ public class HomeFragment extends Fragment {
     private TaskDAO taskDAO;
     private CategoryDAO categoryDAO;
     private TaskTagsDAO taskTagsDAO;
-    private RecyclerView recyclerView;
     private TaskGroupAdapter taskGroupAdapter;
 
     @Override
@@ -60,16 +60,25 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        EditText searchBar = view.findViewById(R.id.searchBar);
+        LinearLayout linearLayoutTags = view.findViewById(R.id.linearLayoutTags);
+        LinearLayout linearLayoutSearch = view.findViewById(R.id.linearLayoutSearch);
 
-        recyclerView = view.findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         List<TaskGroup> parentItemList = getTaskGroups();
         taskGroupAdapter = new TaskGroupAdapter(parentItemList, taskDAO, categoryDAO, taskTagsDAO, this::updateRecyclerView);
         recyclerView.setAdapter(taskGroupAdapter);
 
-        handleSearch(searchBar);
+        linearLayoutTags.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), TagManagement.class);
+            startActivity(intent);
+        });
+
+        linearLayoutSearch.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), SearchActivity.class);
+            startActivity(intent);
+        });
 
         return view;
     }
@@ -83,52 +92,6 @@ public class HomeFragment extends Fragment {
     private void updateRecyclerView() {
         List<TaskGroup> updatedTaskGroups = getTaskGroups();
         taskGroupAdapter.updateTaskGroups(updatedTaskGroups);
-    }
-
-    private void handleSearch(EditText searchBar) {
-        searchBar.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                filterTasksBySearch(charSequence.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-            }
-        });
-    }
-
-    private void filterTasksBySearch(String keyword) {
-        List<TaskGroup> originalTaskGroups = getTaskGroups();
-
-        if (keyword == null || keyword.trim().isEmpty()) {
-            updateRecyclerView();
-            return;
-        }
-
-        List<TaskGroup> filteredTaskGroups = new ArrayList<>();
-        for (TaskGroup group : originalTaskGroups) {
-            List<Task> filteredTasks = new ArrayList<>();
-            for (Task task : group.getTaskList()) {
-                if (task.getTitle().toLowerCase().contains(keyword.toLowerCase()) ||
-                        (task.getNote() != null && task.getNote().toLowerCase().contains(keyword.toLowerCase()))) {
-                    filteredTasks.add(task);
-                }
-            }
-
-            if (!filteredTasks.isEmpty()) {
-                filteredTaskGroups.add(new TaskGroup(group.getTitle(), group.getColor(), group.getTextColor(), filteredTasks));
-            }
-        }
-
-        TaskGroupAdapter adapter = (TaskGroupAdapter) recyclerView.getAdapter();
-        if (adapter != null) {
-            adapter.updateTaskGroups(filteredTaskGroups);
-        }
     }
 
     private List<TaskGroup> getTaskGroups() {
