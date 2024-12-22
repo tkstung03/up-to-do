@@ -52,7 +52,7 @@ public class CategoryAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_category, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_category_1, parent, false);
         }
 
         ImageView iconView = convertView.findViewById(R.id.categoryIcon);

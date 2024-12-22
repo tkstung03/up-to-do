@@ -30,7 +30,7 @@ public class ChooseCategoryAdapter extends RecyclerView.Adapter<ChooseCategoryAd
     @Override
     public ChooseCategoryAdapter.CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.category_item, parent, false);
+                .inflate(R.layout.item_category_2, parent, false);
         return new CategoryViewHolder(view);
     }
 

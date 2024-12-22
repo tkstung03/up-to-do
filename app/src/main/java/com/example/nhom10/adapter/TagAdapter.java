@@ -33,7 +33,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.TagViewHolder> {
     @Override
     public TagViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_tag, parent, false); // Sử dụng layout `item_tag.xml`
+                .inflate(R.layout.item_tag_1, parent, false); // Sử dụng layout `item_tag.xml`
         return new TagViewHolder(view);
     }
 

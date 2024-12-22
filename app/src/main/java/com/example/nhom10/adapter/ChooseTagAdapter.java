@@ -32,7 +32,7 @@ public class ChooseTagAdapter extends RecyclerView.Adapter<ChooseTagAdapter.TagV
     @Override
     public TagViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.tag_item, parent, false);
+                .inflate(R.layout.item_tag_2, parent, false);
         return new TagViewHolder(view);
     }
 
