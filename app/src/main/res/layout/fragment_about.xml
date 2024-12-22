@@ -33,8 +33,7 @@
             android:id="@+id/imageView"
             android:layout_width="150dp"
             android:layout_height="150dp"
-
-            tools:src="@drawable/logo_haui"/>
+            android:src="@drawable/logo_haui"/>
     </TableRow>
 
     <TableRow
@@ -86,7 +85,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="20241IT6029007"
-            android:paddingLeft="20dp"
+            android:paddingLeft="10dp"
             android:layout_weight="2"/>
     </TableRow>
 
@@ -107,7 +106,7 @@
             android:id="@+id/textView8"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingLeft="20dp"
+            android:paddingLeft="10dp"
             android:text="Nhóm 10"
             android:layout_weight="2" />
     </TableRow>
@@ -135,32 +134,32 @@
                 android:id="@+id/textView10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="20dp"
+                android:paddingLeft="10dp"
                 android:text="1. Nguyễn Thái Sơn - 2021607906" />
 
             <TextView
                 android:id="@+id/textView11"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="20dp"
+                android:paddingLeft="10dp"
                 android:text="2. Nguyễn Anh Tú - 2021608453" />
             <TextView
                 android:id="@+id/textView12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="20dp"
+                android:paddingLeft="10dp"
                 android:text="3. Triệu Đăng Tuấn - 2021607789" />
             <TextView
                 android:id="@+id/textView13"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="20dp"
+                android:paddingLeft="10dp"
                 android:text="4. Phạm Thanh Tùng - 2021608193"/>
             <TextView
                 android:id="@+id/textView14"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="20dp"
+                android:paddingLeft="10dp"
                 android:text="5. Trịnh Ngọc Tuyến - 2021608007"/>
         </LinearLayout>
 
