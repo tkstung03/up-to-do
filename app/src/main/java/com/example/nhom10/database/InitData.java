@@ -10,13 +10,13 @@ public class InitData {
             "('Cá nhân','ic_personal', '#8687E7', 2);";
 
     public static final String INSERT_TAGS = "INSERT INTO tags (name, color, user_id) VALUES " +
-            "('Urgent', 'red', 1), " +
+            "('Quan trọng', 'red', 1), " +
             "('Quan trọng', 'yellow', 2), " +
-            "('Low Priority', 'blue', 1);";
+            "('Bình thường', 'blue', 1);";
 
     public static final String INSERT_TASKS = "INSERT INTO tasks (title, note, due_date, reminder_time, user_id, category_id, is_completed) VALUES " +
-            "('Thi Android', '', '2024-12-27', '', 1, 1, 0), " +
-            "('Thi KTPM', 'Ăn no', '2024-12-28', '', 2, 2, 0);";
+            "('Thi Android', '', '', '', 1, 1, 0), " +
+            "('Thi KTPM', '', '', '', 2, 2, 0);";
 
     public static final String INSERT_TASKS_TAGS = "INSERT INTO tasks_tags (task_id, tag_id) VALUES " +
             "(1, 1), " +

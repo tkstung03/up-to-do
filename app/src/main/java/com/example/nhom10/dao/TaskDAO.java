@@ -15,13 +15,15 @@ import java.util.List;
 
 public class TaskDAO {
     private final SQLiteDatabase db;
-    private final int userId;
+    public int getUserId(){
+        UserSession userSession = UserSession.getInstance();
+        return userSession.getUserId();
+    }
 
     public TaskDAO(Context context) {
         DbHelper dbHelper = new DbHelper(context);
         db = dbHelper.getWritableDatabase();
-        UserSession userSession = UserSession.getInstance();
-        userId = userSession.getUserId();
+
     }
 
     private Task parseTask(Cursor cursor) {
@@ -50,7 +52,7 @@ public class TaskDAO {
 
     public Task findById(int taskId) {
         String query = "SELECT * FROM tasks WHERE user_id = ? AND task_id = ?";
-        try (Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId), String.valueOf(taskId)})) {
+        try (Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(getUserId()), String.valueOf(taskId)})) {
             if (cursor.moveToNext()) {
                 return parseTask(cursor);
             }
@@ -64,7 +66,7 @@ public class TaskDAO {
         List<Task> taskList = new ArrayList<>();
 
         String query = "SELECT * FROM tasks WHERE user_id = ?";
-        try (Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId)})) {
+        try (Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(getUserId())})) {
             while (cursor.moveToNext()) {
                 taskList.add(parseTask(cursor));
             }
@@ -79,7 +81,7 @@ public class TaskDAO {
         List<Task> taskList = new ArrayList<>();
 
         String query = "SELECT * FROM tasks WHERE user_id = ? AND category_id = ?";
-        try (Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId), String.valueOf(categoryId)})) {
+        try (Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(getUserId()), String.valueOf(categoryId)})) {
             while (cursor.moveToNext()) {
                 taskList.add(parseTask(cursor));
             }
@@ -104,7 +106,7 @@ public class TaskDAO {
         } else {
             contentValues.putNull("reminder_time");
         }
-        contentValues.put("user_id", userId);
+        contentValues.put("user_id", getUserId());
         contentValues.put("category_id", task.getCategoryId());
 
         return db.insert("tasks", null, contentValues);
@@ -149,11 +151,11 @@ public class TaskDAO {
         values.put("note", newNote);
 
         return db.update("tasks", values, "task_id = ? AND user_id = ?",
-                new String[]{String.valueOf(taskId), String.valueOf(userId)});
+                new String[]{String.valueOf(taskId), String.valueOf(getUserId())});
     }
 
     public long delete(int taskId) {
-        return db.delete("tasks", "task_id = ? AND user_id = ?", new String[]{String.valueOf(taskId), String.valueOf(userId)});
+        return db.delete("tasks", "task_id = ? AND user_id = ?", new String[]{String.valueOf(taskId), String.valueOf(getUserId())});
     }
 
     public List<Task> searchTask(String keyword, ArrayList<Integer> selectedTagIds) {

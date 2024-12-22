@@ -90,6 +90,10 @@ public class Login extends AppCompatActivity {
             } else {
                 SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                editor.remove("is_logged_in");
+                editor.remove("user_id");
+                editor.apply();
                 editor.putBoolean("is_logged_in", true);
                 editor.putInt("user_id", user_id);
                 editor.apply();

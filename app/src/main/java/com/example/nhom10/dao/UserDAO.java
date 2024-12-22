@@ -12,13 +12,12 @@ import com.example.nhom10.objects.UserSession;
 
 public class UserDAO {
     private final SQLiteDatabase db;
-    private final int userId;
+
 
     public UserDAO(Context context) {
         DbHelper dbHelper = new DbHelper(context);
         db = dbHelper.getWritableDatabase();
-        UserSession userSession = UserSession.getInstance();
-        userId = userSession.getUserId();
+
     }
 
     public boolean checkUser(String username, String password) {

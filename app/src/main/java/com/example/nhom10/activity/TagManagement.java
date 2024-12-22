@@ -36,8 +36,7 @@ public class TagManagement extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tag_management);
 
-        // Thiết lập ID người dùng tạm thời
-        UserSession.getInstance().setUserId(1);
+
         tagDAO = new TagDAO(this);
 
         ImageButton btnBack = findViewById(R.id.btnBack);
@@ -69,6 +68,7 @@ public class TagManagement extends AppCompatActivity {
 
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(48,16,48,16);
 
         final EditText inputName = new EditText(this);
         inputName.setHint("Tên tag");
