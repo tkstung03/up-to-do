@@ -2,6 +2,7 @@ package com.example.nhom10.adapter;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.Gravity;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nhom10.R;
+import com.example.nhom10.activity.MainActivity;
 import com.example.nhom10.dao.CategoryDAO;
 import com.example.nhom10.model.Category;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -46,7 +48,7 @@ public class CategoryAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return categoryList.get(position).getCategoryId();  // Đảm bảo trả về long
+        return categoryList.get(position).getCategoryId();
     }
 
     @Override
@@ -90,6 +92,13 @@ public class CategoryAdapter extends BaseAdapter {
         } else {
             nameView.setTextColor(Color.BLACK); // Màu mặc định nếu không có giá trị màu
         }
+        convertView.setOnClickListener(v -> {
+            // Chuyển hướng tới MainActivity với category_id và category_name
+            Intent intent = new Intent(context, MainActivity.class);
+            intent.putExtra("category_id", category.getCategoryId());
+            intent.putExtra("category_name", category.getName());
+            context.startActivity(intent);
+        });
         // Xử lý sự kiện nhấn vào nút xóa
         deleteIcon.setOnClickListener(v -> {
             removeCategory(position);
