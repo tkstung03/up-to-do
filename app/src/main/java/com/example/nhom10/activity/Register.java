@@ -103,6 +103,7 @@ public class Register extends AppCompatActivity {
         if (!isValidUserName(username)) {
             showToast("Tên đăng nhập không hợp lệ!");
             edtUsername.requestFocus();
+            return;
         }
         if (!isValidPassword(password)) {
             showToast("Mật khẩu không hợp lệ!");
@@ -128,6 +129,7 @@ public class Register extends AppCompatActivity {
         if (userDAO.checkExistEmail(email)) {
             showToast("Email đã tồn tại");
             edtUsername.requestFocus();
+            return;
         }
         User newUser = new User(username, email, password);
         userDAO.insert(newUser);

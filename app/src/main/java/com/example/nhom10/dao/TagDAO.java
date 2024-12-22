@@ -14,20 +14,21 @@ import java.util.List;
 
 public class TagDAO {
     private final SQLiteDatabase db;
-    private final int userId;
+    public int getUserId(){
+        UserSession userSession = UserSession.getInstance();
+        return userSession.getUserId();
+    }
 
     public TagDAO(Context context) {
         DbHelper dbHelper = new DbHelper(context);
         db = dbHelper.getWritableDatabase();
-        UserSession userSession = UserSession.getInstance();
-        userId = userSession.getUserId();
     }
 
     public long addTag(String name, String color) {
         ContentValues values = new ContentValues();
         values.put("name", name);
         values.put("color", color);
-        values.put("user_id", userId);
+        values.put("user_id", getUserId());
 
         return db.insert("tags", null, values);
     }
@@ -36,7 +37,7 @@ public class TagDAO {
         List<Tag> tags = new ArrayList<>();
         String selectQuery = "SELECT tag_id, name, color FROM tags WHERE user_id = ?";
 
-        Cursor cursor = db.rawQuery(selectQuery, new String[]{String.valueOf(userId)});
+        Cursor cursor = db.rawQuery(selectQuery, new String[]{String.valueOf(getUserId())});
 
         if (cursor != null && cursor.moveToFirst()) {
             do {
@@ -44,7 +45,7 @@ public class TagDAO {
                 String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
                 String color = cursor.getString(cursor.getColumnIndexOrThrow("color"));
 
-                tags.add(new Tag(id, name, color, userId));
+                tags.add(new Tag(id, name, color, getUserId()));
             } while (cursor.moveToNext());
             cursor.close();
         }
@@ -57,14 +58,14 @@ public class TagDAO {
         values.put("color", newColor);
 
         String whereClause = "tag_id = ? AND user_id = ?";
-        String[] whereArgs = {String.valueOf(tagId), String.valueOf(userId)};
+        String[] whereArgs = {String.valueOf(tagId), String.valueOf(getUserId())};
 
         return db.update("tags", values, whereClause, whereArgs);
     }
 
     public int deleteTag(int id) {
         String whereClause = "tag_id = ? AND user_id = ?";
-        String[] whereArgs = {String.valueOf(id), String.valueOf(userId)};
+        String[] whereArgs = {String.valueOf(id), String.valueOf(getUserId())};
 
         return db.delete("tags", whereClause, whereArgs);
     }
@@ -72,7 +73,7 @@ public class TagDAO {
     public Tag getTagById(int tagId) {
         Tag tag = null;
         String selectQuery = "SELECT tag_id, name, color FROM tags WHERE tag_id = ? AND user_id = ?";
-        String[] whereArgs = {String.valueOf(tagId), String.valueOf(userId)};
+        String[] whereArgs = {String.valueOf(tagId), String.valueOf(getUserId())};
 
         Cursor cursor = db.rawQuery(selectQuery, whereArgs);
 
@@ -81,7 +82,7 @@ public class TagDAO {
             String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
             String color = cursor.getString(cursor.getColumnIndexOrThrow("color"));
 
-            tag = new Tag(id, name, color, userId);
+            tag = new Tag(id, name, color, getUserId());
             cursor.close();
         }
         return tag;

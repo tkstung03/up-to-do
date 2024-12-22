@@ -15,13 +15,15 @@ import java.util.List;
 
 public class TaskTagsDAO {
     private final SQLiteDatabase db;
-    private final int userId;
+    public int getUserId(){
+        UserSession userSession = UserSession.getInstance();
+        return userSession.getUserId();
+    }
 
     public TaskTagsDAO(Context context) {
         DbHelper dbHelper = new DbHelper(context);
         db = dbHelper.getWritableDatabase();
-        UserSession userSession = UserSession.getInstance();
-        userId = userSession.getUserId();
+
     }
 
     public void create(int taskId, int[] selectedTags) {
@@ -56,7 +58,7 @@ public class TaskTagsDAO {
                 String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
                 String color = cursor.getString(cursor.getColumnIndexOrThrow("color"));
 
-                Tag tag = new Tag(tagId, name, color, userId);
+                Tag tag = new Tag(tagId, name, color, getUserId());
                 tags.add(tag);
             }
         } finally {
