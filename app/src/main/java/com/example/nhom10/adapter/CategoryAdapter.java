@@ -177,26 +177,7 @@ public class CategoryAdapter extends BaseAdapter {
         FloatingActionButton fabSaveCategory = dialog.findViewById(R.id.fabSave);
         fabSaveCategory.setOnClickListener(view -> {
             String categoryName = editCategoryName.getText().toString();
-            if (categoryName.isEmpty()) {
-                Toast.makeText(context, "Vui lòng nhập tên danh mục", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            category.setName(categoryName);
-            category.setColor(selectedColor[0]);
-            category.setIcon(selectedIcon[0]);
-
-            int result = categoryDAO.updateCategory(category);
-
-            if (result > 0) {
-                Toast.makeText(context, "Danh mục đã được cập nhật", Toast.LENGTH_SHORT).show();
-                categoryList.set(position, category);
-                notifyDataSetChanged();
-            } else {
-                Toast.makeText(context, "Cập nhật không thành công", Toast.LENGTH_SHORT).show();
-            }
-
-            dialog.dismiss();
+            updateCategory(categoryName, selectedIcon[0], selectedColor[0], category, position, dialog);
         });
 
         closeButton.setOnClickListener(view -> dialog.dismiss());
@@ -207,5 +188,25 @@ public class CategoryAdapter extends BaseAdapter {
         dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
         dialog.getWindow().setGravity(Gravity.BOTTOM);
     }
+    private void updateCategory(String categoryName, String selectedIcon, String selectedColor, Category category, int position, Dialog dialog) {
+        if (categoryName.isEmpty()) {
+            Toast.makeText(context, "Vui lòng nhập tên danh mục", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        category.setName(categoryName);
+        category.setColor(selectedColor);
+        category.setIcon(selectedIcon);
+
+        int result = categoryDAO.updateCategory(category);
+        if (result > 0) {
+            Toast.makeText(context, "Danh mục đã được cập nhật", Toast.LENGTH_SHORT).show();
+            categoryList.set(position, category);
+            notifyDataSetChanged();
+        } else {
+            Toast.makeText(context, "Cập nhật không thành công", Toast.LENGTH_SHORT).show();
+        }
+        dialog.dismiss();
+    }
+
 
 }
