@@ -22,9 +22,9 @@ import com.example.nhom10.R;
 import com.example.nhom10.fragments.AboutFragment;
 import com.example.nhom10.fragments.CalendarFragment;
 import com.example.nhom10.fragments.CategoryFragment;
+import com.example.nhom10.fragments.ChangePasswordFragment;
 import com.example.nhom10.fragments.HomeFragment;
 import com.example.nhom10.fragments.PersonalFragment;
-import com.example.nhom10.fragments.ChangePasswordFragment;
 import com.example.nhom10.fragments.ShareFragment;
 import com.example.nhom10.fragments.TaskBottomDialogFragment;
 import com.example.nhom10.objects.UserSession;
@@ -77,7 +77,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return false;
         });
         fragmentManager = getSupportFragmentManager();
-        openFragment(new HomeFragment());
+
+        Intent intent = getIntent();
+        String fragmentToOpen = intent.getStringExtra("fragment");
+
+        if (fragmentToOpen != null) {
+            switch (fragmentToOpen) {
+                case "calendar":
+                    openFragment(new CalendarFragment());
+                    bottomNavigationView.setSelectedItemId(R.id.bottom_calendar);
+                    break;
+                case "category":
+                    openFragment(new CategoryFragment());
+                    bottomNavigationView.setSelectedItemId(R.id.bottom_category);
+                    break;
+                case "profile":
+                    openFragment(new PersonalFragment());
+                    bottomNavigationView.setSelectedItemId(R.id.bottom_profile);
+                    break;
+                case "home":
+                default:
+                    openFragment(new HomeFragment());
+                    bottomNavigationView.setSelectedItemId(R.id.bottom_home);
+                    break;
+            }
+        } else {
+            openFragment(new HomeFragment());
+            bottomNavigationView.setSelectedItemId(R.id.bottom_home);
+        }
 
         floatingActionButton.setOnClickListener(view -> {
             // Khi nhấn FAB trong CategoryFragment, mở hộp thoại thêm danh mục

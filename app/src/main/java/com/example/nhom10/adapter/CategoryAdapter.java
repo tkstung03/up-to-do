@@ -18,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nhom10.R;
-import com.example.nhom10.activity.MainActivity;
+import com.example.nhom10.activity.TasksByCategory;
 import com.example.nhom10.dao.CategoryDAO;
 import com.example.nhom10.model.Category;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -94,9 +94,10 @@ public class CategoryAdapter extends BaseAdapter {
         }
         convertView.setOnClickListener(v -> {
             // Chuyển hướng tới MainActivity với category_id và category_name
-            Intent intent = new Intent(context, MainActivity.class);
+            Intent intent = new Intent(context, TasksByCategory.class);
             intent.putExtra("category_id", category.getCategoryId());
             intent.putExtra("category_name", category.getName());
+            intent.putExtra("category_color", category.getColor());
             context.startActivity(intent);
         });
         // Xử lý sự kiện nhấn vào nút xóa
