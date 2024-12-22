@@ -68,44 +68,39 @@ public class CategoryAdapter extends BaseAdapter {
         if (category.getIcon() != null && !category.getIcon().isEmpty()) {
             int iconResId = context.getResources().getIdentifier(category.getIcon(), "drawable", context.getPackageName());
 
-            if (iconResId != 0) {  // Kiểm tra nếu icon tồn tại trong drawable
+            if (iconResId != 0) {
                 iconView.setImageResource(iconResId);
             } else {
-                // Nếu không tìm thấy, sử dụng placeholder
                 iconView.setImageResource(R.drawable.ic_block);
             }
         } else {
-            // Nếu không có icon, sử dụng placeholder
             iconView.setImageResource(R.drawable.ic_block);
         }
 
-        // Cập nhật tên danh mục với màu sắc
         nameView.setText(category.getName());
 
-        // Kiểm tra nếu có màu sắc, nếu không thì dùng màu mặc định
         if (category.getColor() != null && !category.getColor().isEmpty()) {
             try {
                 nameView.setTextColor(Color.parseColor(category.getColor())); // Áp dụng màu cho tên
             } catch (IllegalArgumentException e) {
-                nameView.setTextColor(Color.BLACK); // Nếu không hợp lệ, dùng màu đen
+                nameView.setTextColor(Color.BLACK);
             }
         } else {
-            nameView.setTextColor(Color.BLACK); // Màu mặc định nếu không có giá trị màu
+            nameView.setTextColor(Color.BLACK);
         }
         convertView.setOnClickListener(v -> {
-            // Chuyển hướng tới MainActivity với category_id và category_name
             Intent intent = new Intent(context, TasksByCategory.class);
             intent.putExtra("category_id", category.getCategoryId());
             intent.putExtra("category_name", category.getName());
             intent.putExtra("category_color", category.getColor());
             context.startActivity(intent);
         });
-        // Xử lý sự kiện nhấn vào nút xóa
+        // Xóa
         deleteIcon.setOnClickListener(v -> {
             removeCategory(position);
         });
 
-        // Xử lý sự kiện nhấn vào nút sửa
+        // Sửa
         editIcon.setOnClickListener(v -> {
             showEditCategoryDialog(category, position);
         });
@@ -142,10 +137,11 @@ public class CategoryAdapter extends BaseAdapter {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_add_category);
 
-        // Ánh xạ các phần tử trong layout
         ImageView closeButton = dialog.findViewById(R.id.cancelButton);
         TextView createText = dialog.findViewById(R.id.createText);
         EditText editCategoryName = dialog.findViewById(R.id.editCategoryName);
+
+        createText.setText("Sửa danh mục");
 
         LinearLayout colorSelectionLayout = dialog.findViewById(R.id.colorSelectionLayout);
         ImageView color1 = dialog.findViewById(R.id.color1);
@@ -161,30 +157,24 @@ public class CategoryAdapter extends BaseAdapter {
         ImageView icon4 = dialog.findViewById(R.id.icon4);
         ImageView icon5 = dialog.findViewById(R.id.icon5);
 
-        FloatingActionButton fabSaveCategory = dialog.findViewById(R.id.fabSave);
+        final String[] selectedColor = {category.getColor() != null ? category.getColor() : "#000000"};
+        final String[] selectedIcon = {category.getIcon() != null ? category.getIcon() : "ic_question"};
 
-        // Mặc định là màu và icon của danh mục đã chọn
-        final String[] selectedColor = {category.getColor() != null ? category.getColor() : "#FFFFFF"};
-        final String[] selectedIcon = {category.getIcon() != null ? category.getIcon() : "baseline_home_24"};
-
-        // Điền sẵn tên danh mục vào EditText
         editCategoryName.setText(category.getName());
 
-        // Sự kiện cho các ô màu sắc
         color1.setOnClickListener(v -> selectedColor[0] = "#FF0000"); // Màu đỏ
         color2.setOnClickListener(v -> selectedColor[0] = "#33B5E5"); // Màu xanh
         color3.setOnClickListener(v -> selectedColor[0] = "#99CC00"); // Màu xanh lá
-        color4.setOnClickListener(v -> selectedColor[0] = "FFBB33"); // Màu cam
+        color4.setOnClickListener(v -> selectedColor[0] = "#FFBB33"); // Màu cam
         color5.setOnClickListener(v -> selectedColor[0] = "#AA66CC"); // Màu tím
 
-        // Sự kiện cho các biểu tượng
         icon1.setOnClickListener(v -> selectedIcon[0] = "baseline_home_24");
         icon2.setOnClickListener(v -> selectedIcon[0] = "ic_work");
         icon3.setOnClickListener(v -> selectedIcon[0] = "ic_personal");
         icon4.setOnClickListener(v -> selectedIcon[0] = "ic_cart");
         icon5.setOnClickListener(v -> selectedIcon[0] = "ic_question");
 
-        // Khi nhấn nút lưu, thực hiện cập nhật danh mục
+        FloatingActionButton fabSaveCategory = dialog.findViewById(R.id.fabSave);
         fabSaveCategory.setOnClickListener(view -> {
             String categoryName = editCategoryName.getText().toString();
             if (categoryName.isEmpty()) {
@@ -192,18 +182,16 @@ public class CategoryAdapter extends BaseAdapter {
                 return;
             }
 
-            // Cập nhật đối tượng Category
             category.setName(categoryName);
             category.setColor(selectedColor[0]);
             category.setIcon(selectedIcon[0]);
 
-            // Cập nhật vào cơ sở dữ liệu
             int result = categoryDAO.updateCategory(category);
 
             if (result > 0) {
                 Toast.makeText(context, "Danh mục đã được cập nhật", Toast.LENGTH_SHORT).show();
-                categoryList.set(position, category);  // Cập nhật danh mục trong danh sách
-                notifyDataSetChanged();  // Cập nhật giao diện
+                categoryList.set(position, category);
+                notifyDataSetChanged();
             } else {
                 Toast.makeText(context, "Cập nhật không thành công", Toast.LENGTH_SHORT).show();
             }
@@ -211,7 +199,6 @@ public class CategoryAdapter extends BaseAdapter {
             dialog.dismiss();
         });
 
-        // Khi nhấn nút đóng, đóng dialog
         closeButton.setOnClickListener(view -> dialog.dismiss());
 
         dialog.show();

@@ -60,16 +60,12 @@ public class CategoryFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Category category = categoryList.get(position);
-                // Kiểm tra xem có thực sự vào đây không
-                Log.d("CategoryFragment", "Item clicked: " + category.getName());
-                Toast.makeText(getActivity(), "Ok", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 intent.putExtra("category_id", category.getCategoryId());
                 intent.putExtra("category_name", category.getName());
                 startActivity(intent);
             }
         });
-
 
         return view;
     }
@@ -97,15 +93,13 @@ public class CategoryFragment extends Fragment {
         ImageView icon4 = dialog.findViewById(R.id.icon4);
         ImageView icon5 = dialog.findViewById(R.id.icon5);
 
-        FloatingActionButton fabSaveCategory = dialog.findViewById(R.id.fabSave);
-
-        final String[] selectedColor = {"#FFFFFF"};  // Màu mặc định là màu trắng
-        final String[] selectedIcon = {"baseline_home_24"};  // Biểu tượng mặc định
+        final String[] selectedColor = {"#8687E7"};
+        final String[] selectedIcon = {"ic_question"};
 
         color1.setOnClickListener(v -> selectedColor[0] = "#FF0000"); // Màu đỏ
         color2.setOnClickListener(v -> selectedColor[0] = "#33B5E5"); // Màu xanh
         color3.setOnClickListener(v -> selectedColor[0] = "#99CC00"); // Màu xanh lá
-        color4.setOnClickListener(v -> selectedColor[0] = "FFBB33"); // Màu cam
+        color4.setOnClickListener(v -> selectedColor[0] = "#FFBB33"); // Màu cam
         color5.setOnClickListener(v -> selectedColor[0] = "#AA66CC"); // Màu tím
 
         icon1.setOnClickListener(v -> selectedIcon[0] = "baseline_home_24");
@@ -114,29 +108,10 @@ public class CategoryFragment extends Fragment {
         icon4.setOnClickListener(v -> selectedIcon[0] = "ic_cart");
         icon5.setOnClickListener(v -> selectedIcon[0] = "ic_question");
 
+        FloatingActionButton fabSaveCategory = dialog.findViewById(R.id.fabSave);
         fabSaveCategory.setOnClickListener(view -> {
             String categoryName = editCategoryName.getText().toString();
-            if (categoryName.isEmpty()) {
-                Toast.makeText(requireContext(), "Vui lòng nhập tên danh mục", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            Category category = new Category(0, categoryName, selectedIcon[0], selectedColor[0], 0);
-
-            boolean isInserted = categoryDAO.insertCategory(category);
-
-            if (isInserted) {
-                Toast.makeText(requireContext(), "Danh mục đã được thêm", Toast.LENGTH_SHORT).show();
-
-                categoryList.clear();
-                categoryList.addAll(categoryDAO.getAllCategories());
-                adapter.notifyDataSetChanged();  // Thông báo adapter cập nhật danh sách
-
-            } else {
-                Toast.makeText(requireContext(), "Lỗi khi thêm danh mục", Toast.LENGTH_SHORT).show();
-            }
-
-            dialog.dismiss();
+            addCategory(categoryName, selectedIcon[0], selectedColor[0], dialog);
         });
 
         closeButton.setOnClickListener(view -> dialog.dismiss());
@@ -148,9 +123,31 @@ public class CategoryFragment extends Fragment {
         dialog.getWindow().setGravity(Gravity.BOTTOM);
     }
 
+    private void addCategory(String categoryName, String selectedIcon, String selectedColor, Dialog dialog) {
+        if (categoryName.isEmpty()) {
+            Toast.makeText(requireContext(), "Vui lòng nhập tên danh mục", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Category category = new Category(0, categoryName, selectedIcon, selectedColor, 0);
+
+        boolean isInserted = categoryDAO.insertCategory(category);
+
+        if (isInserted) {
+            Toast.makeText(requireContext(), "Danh mục đã được thêm", Toast.LENGTH_SHORT).show();
+            categoryList.clear();
+            categoryList.addAll(categoryDAO.getAllCategories());
+            adapter.notifyDataSetChanged();  // Thông báo adapter cập nhật danh sách
+        } else {
+            Toast.makeText(requireContext(), "Lỗi khi thêm danh mục", Toast.LENGTH_SHORT).show();
+        }
+
+        dialog.dismiss();
+    }
+
     private void addSampleCategories() {
-        categoryDAO.insertCategory(new Category(0, "Công việc", "ic_work", null, 1));
-        categoryDAO.insertCategory(new Category(0, "Cá nhân", "ic_personal", null, 2));
+        categoryDAO.insertCategory(new Category(0, "Công việc", "ic_work", "#8687E7", 1));
+        categoryDAO.insertCategory(new Category(0, "Cá nhân", "ic_personal", "#8687E7", 2));
         categoryList.clear();
         categoryList.addAll(categoryDAO.getAllCategories());
     }
