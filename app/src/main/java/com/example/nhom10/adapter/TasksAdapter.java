@@ -1,6 +1,5 @@
 package com.example.nhom10.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -32,16 +31,18 @@ import java.util.Locale;
 
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHolder> {
 
-    private List<Task> taskList;
+    private final List<Task> taskList;
     private final TaskDAO taskDAO;
     private final CategoryDAO categoryDAO;
     private final TaskTagsDAO taskTagsDAO;
+    private final OnTaskStatusChangedListener taskStatusChangedListener;
 
-    public TasksAdapter(List<Task> taskList, TaskDAO taskDAO, CategoryDAO categoryDAO, TaskTagsDAO taskTagsDAO) {
+    public TasksAdapter(List<Task> taskList, TaskDAO taskDAO, CategoryDAO categoryDAO, TaskTagsDAO taskTagsDAO, OnTaskStatusChangedListener taskStatusChangedListener) {
         this.taskList = taskList;
         this.taskDAO = taskDAO;
         this.categoryDAO = categoryDAO;
         this.taskTagsDAO = taskTagsDAO;
+        this.taskStatusChangedListener = taskStatusChangedListener;
     }
 
     @NonNull
@@ -55,18 +56,12 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         Task task = taskList.get(position);
-        holder.bind(task, taskDAO, categoryDAO, taskTagsDAO);
+        holder.bind(task, taskDAO, categoryDAO, taskTagsDAO, taskStatusChangedListener);
     }
 
     @Override
     public int getItemCount() {
         return taskList.size();
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    public void updateTasks(List<Task> newTaskList) {
-        this.taskList = newTaskList;
-        notifyDataSetChanged();
     }
 
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
@@ -89,7 +84,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             layoutCategoryButton = itemView.findViewById(R.id.layoutCategoryButton);
         }
 
-        public void bind(Task task, TaskDAO taskDAO, CategoryDAO categoryDAO, TaskTagsDAO taskTagsDAO) {
+        public void bind(Task task, TaskDAO taskDAO, CategoryDAO categoryDAO, TaskTagsDAO taskTagsDAO, OnTaskStatusChangedListener taskStatusChangedListener) {
             taskTitle.setText(task.getTitle());
 
             Date dueDate = task.getDueDate();
@@ -147,6 +142,10 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
                 long isUpdate = taskDAO.updateTaskStatus(task.getTaskId(), isChecked);
                 if (isUpdate > 0) {
                     task.setCompleted(isChecked);
+
+                    if (taskStatusChangedListener != null) {
+                        taskStatusChangedListener.onTaskStatusChanged();
+                    }
                 }
             });
 
@@ -158,4 +157,9 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             });
         }
     }
+
+    public interface OnTaskStatusChangedListener {
+        void onTaskStatusChanged();
+    }
+
 }

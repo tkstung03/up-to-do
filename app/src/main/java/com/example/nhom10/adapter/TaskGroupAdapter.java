@@ -26,12 +26,14 @@ public class TaskGroupAdapter extends RecyclerView.Adapter<TaskGroupAdapter.Pare
     private final TaskDAO taskDAO;
     private final CategoryDAO categoryDAO;
     private final TaskTagsDAO taskTagsDAO;
+    private final TasksAdapter.OnTaskStatusChangedListener taskStatusChangedListener;
 
-    public TaskGroupAdapter(List<TaskGroup> taskGroupList, TaskDAO taskDAO, CategoryDAO categoryDAO, TaskTagsDAO taskTagsDAO) {
+    public TaskGroupAdapter(List<TaskGroup> taskGroupList, TaskDAO taskDAO, CategoryDAO categoryDAO, TaskTagsDAO taskTagsDAO, TasksAdapter.OnTaskStatusChangedListener taskStatusChangedListener) {
         this.taskGroupList = taskGroupList;
         this.taskDAO = taskDAO;
         this.categoryDAO = categoryDAO;
         this.taskTagsDAO = taskTagsDAO;
+        this.taskStatusChangedListener = taskStatusChangedListener;
     }
 
     @NonNull
@@ -44,7 +46,7 @@ public class TaskGroupAdapter extends RecyclerView.Adapter<TaskGroupAdapter.Pare
     @Override
     public void onBindViewHolder(ParentViewHolder holder, int position) {
         TaskGroup taskGroup = taskGroupList.get(position);
-        holder.bind(taskGroup, taskDAO, categoryDAO, taskTagsDAO);
+        holder.bind(taskGroup, taskDAO, categoryDAO, taskTagsDAO, taskStatusChangedListener);
     }
 
     @Override
@@ -83,7 +85,7 @@ public class TaskGroupAdapter extends RecyclerView.Adapter<TaskGroupAdapter.Pare
             });
         }
 
-        public void bind(TaskGroup taskGroup, TaskDAO taskDAO, CategoryDAO categoryDAO, TaskTagsDAO taskTagsDAO) {
+        public void bind(TaskGroup taskGroup, TaskDAO taskDAO, CategoryDAO categoryDAO, TaskTagsDAO taskTagsDAO, TasksAdapter.OnTaskStatusChangedListener taskStatusChangedListener) {
             header.setBackgroundColor(taskGroup.getColor());
 
             parentTitle.setText(taskGroup.getTitle());
@@ -99,7 +101,7 @@ public class TaskGroupAdapter extends RecyclerView.Adapter<TaskGroupAdapter.Pare
             childRecyclerView.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
 
             childRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
-            TasksAdapter childAdapter = new TasksAdapter(taskGroup.getTaskList(), taskDAO, categoryDAO, taskTagsDAO);
+            TasksAdapter childAdapter = new TasksAdapter(taskGroup.getTaskList(), taskDAO, categoryDAO, taskTagsDAO, taskStatusChangedListener);
             childRecyclerView.setAdapter(childAdapter);
         }
     }
