@@ -1,7 +1,5 @@
 package com.example.nhom10.model;
 
-import com.example.nhom10.R;
-
 import java.util.List;
 
 public class TaskGroup {

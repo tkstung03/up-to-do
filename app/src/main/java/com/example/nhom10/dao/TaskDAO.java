@@ -140,8 +140,44 @@ public class TaskDAO {
     public long delete(int taskId) {
         return db.delete("tasks", "task_id = ? AND user_id = ?", new String[]{String.valueOf(taskId), String.valueOf(userId)});
     }
-    public int getTaskCompletedByDay(Date findDate){
 
-        return 0;
+    public List<Task> searchTask(String keyword, ArrayList<Integer> selectedTagIds) {
+        List<Task> tasks = new ArrayList<>();
+
+        StringBuilder sqlQuery = new StringBuilder("SELECT DISTINCT t.* FROM tasks t ");
+        sqlQuery.append("LEFT JOIN tasks_tags tt ON t.task_id = tt.task_id ");
+        sqlQuery.append("LEFT JOIN tags tg ON tt.tag_id = tg.tag_id WHERE ");
+        sqlQuery.append("(LOWER(t.title) LIKE ? OR LOWER(t.note) LIKE ?) ");
+        if (!selectedTagIds.isEmpty()) {
+            sqlQuery.append("AND tg.tag_id IN (");
+            for (int i = 0; i < selectedTagIds.size(); i++) {
+                sqlQuery.append("?");
+                if (i < selectedTagIds.size() - 1) {
+                    sqlQuery.append(", ");
+                }
+            }
+            sqlQuery.append(") ");
+        }
+        List<String> selectionArgs = new ArrayList<>();
+        selectionArgs.add("%" + keyword.toLowerCase() + "%");
+        selectionArgs.add("%" + keyword.toLowerCase() + "%");
+        if (!selectedTagIds.isEmpty()) {
+            for (Integer tagId : selectedTagIds) {
+                selectionArgs.add(String.valueOf(tagId));
+            }
+        }
+
+        Cursor cursor = db.rawQuery(sqlQuery.toString(), selectionArgs.toArray(new String[0]));
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                Task task = parseTask(cursor);
+                tasks.add(task);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        return tasks;
     }
+
 }
