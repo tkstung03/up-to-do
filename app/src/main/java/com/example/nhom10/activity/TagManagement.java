@@ -1,26 +1,31 @@
 package com.example.nhom10.activity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nhom10.R;
 import com.example.nhom10.adapter.TagAdapter;
 import com.example.nhom10.dao.TagDAO;
 import com.example.nhom10.model.Tag;
 import com.example.nhom10.objects.UserSession;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
+import yuku.ambilwarna.AmbilWarnaDialog;
+
 public class TagManagement extends AppCompatActivity {
     private TagDAO tagDAO;
-    private ListView listViewTags;
-    private Button btnAddTag;
+    private RecyclerView recyclerViewTags;
+    private FloatingActionButton fabAddTag;
     private TagAdapter adapter;
     private List<Tag> tags;
 
@@ -29,92 +34,136 @@ public class TagManagement extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tag_management);
 
-        UserSession.getInstance().setUserId(1); // Thiết lập ID người dùng tạm thời
+        // Thiết lập ID người dùng tạm thời
+        UserSession.getInstance().setUserId(1);
         tagDAO = new TagDAO(this);
 
-        listViewTags = findViewById(R.id.listViewTags);
-        btnAddTag = findViewById(R.id.btnAddTag);
+        recyclerViewTags = findViewById(R.id.recyclerViewTags);
+        fabAddTag = findViewById(R.id.fabAddTag);
+
+        // Cấu hình RecyclerView
+        recyclerViewTags.setLayoutManager(new LinearLayoutManager(this));
 
         loadTags();
 
-        btnAddTag.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Thêm Tag");
-
-            LinearLayout layout = new LinearLayout(this);
-            layout.setOrientation(LinearLayout.VERTICAL);
-
-            final EditText inputName = new EditText(this);
-            inputName.setHint("Tên tag");
-            layout.addView(inputName);
-
-            final EditText inputColor = new EditText(this);
-            inputColor.setHint("Mã màu (vd: #FF5733)");
-            layout.addView(inputColor);
-
-            builder.setView(layout);
-
-            builder.setPositiveButton("Thêm", (dialog, which) -> {
-                String tagName = inputName.getText().toString();
-                String tagColor = inputColor.getText().toString();
-
-                if (!tagName.isEmpty() && !tagColor.isEmpty()) {
-                    tagDAO.addTag(tagName, tagColor); // Sử dụng TagDAO
-                    loadTags();
-                }
-            });
-            builder.setNegativeButton("Hủy", (dialog, which) -> dialog.cancel());
-            builder.show();
-        });
-
-        listViewTags.setOnItemLongClickListener((parent, view, position, id) -> {
-            Tag selectedTag = tags.get(position);
-
-            CharSequence[] options = {"Sửa", "Xóa"};
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Tùy chọn");
-            builder.setItems(options, (dialog, which) -> {
-                if (which == 0) { // Sửa
-                    AlertDialog.Builder editBuilder = new AlertDialog.Builder(this);
-                    editBuilder.setTitle("Sửa Tag");
-
-                    LinearLayout layout = new LinearLayout(this);
-                    layout.setOrientation(LinearLayout.VERTICAL);
-
-                    final EditText editName = new EditText(this);
-                    editName.setText(selectedTag.getName());
-                    layout.addView(editName);
-
-                    final EditText editColor = new EditText(this);
-                    editColor.setText(selectedTag.getColor());
-                    layout.addView(editColor);
-
-                    editBuilder.setView(layout);
-
-                    editBuilder.setPositiveButton("Cập nhật", (dialog1, which1) -> {
-                        String newName = editName.getText().toString();
-                        String newColor = editColor.getText().toString();
-
-                        if (!newName.isEmpty() && !newColor.isEmpty()) {
-                            tagDAO.updateTag(selectedTag.getTagId(), newName, newColor); // Sử dụng TagDAO
-                            loadTags();
-                        }
-                    });
-                    editBuilder.setNegativeButton("Hủy", (dialog1, which1) -> dialog1.cancel());
-                    editBuilder.show();
-                } else if (which == 1) { // Xóa
-                    tagDAO.deleteTag(selectedTag.getTagId()); // Sử dụng TagDAO
-                    loadTags();
-                }
-            });
-            builder.show();
-            return true;
-        });
+        fabAddTag.setOnClickListener(v -> showAddTagDialog());
     }
 
     private void loadTags() {
-        tags = tagDAO.getAllTags(); // Lấy dữ liệu từ TagDAO
-        adapter = new TagAdapter(this, tags);
-        listViewTags.setAdapter(adapter);
+        tags = tagDAO.getAllTags();
+        adapter = new TagAdapter(tags, this::showEditDeleteDialog);
+        recyclerViewTags.setAdapter(adapter);
+    }
+
+
+
+    private void showAddTagDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Thêm Tag");
+
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        final EditText inputName = new EditText(this);
+        inputName.setHint("Tên tag");
+        layout.addView(inputName);
+
+        final Button colorPickerButton = new Button(this);
+        colorPickerButton.setText("Chọn màu");
+        layout.addView(colorPickerButton);
+
+        final int[] selectedColor = {0xFFFFFFFF}; // Màu mặc định là trắng
+        colorPickerButton.setOnClickListener(v -> {
+            AmbilWarnaDialog colorPicker = new AmbilWarnaDialog(this, selectedColor[0], new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                @Override
+                public void onOk(AmbilWarnaDialog dialog, int color) {
+                    selectedColor[0] = color;
+                    colorPickerButton.setBackgroundColor(color);
+                }
+
+                @Override
+                public void onCancel(AmbilWarnaDialog dialog) {
+                    // Người dùng hủy chọn màu
+                }
+            });
+            colorPicker.show();
+        });
+
+        builder.setView(layout);
+
+        builder.setPositiveButton("Thêm", (dialog, which) -> {
+            String tagName = inputName.getText().toString();
+            String tagColor = String.format("#%06X", (0xFFFFFF & selectedColor[0]));
+
+            if (!tagName.isEmpty()) {
+                tagDAO.addTag(tagName, tagColor);
+                loadTags();
+            }
+        });
+        builder.setNegativeButton("Hủy", (dialog, which) -> dialog.cancel());
+        builder.show();
+    }
+
+    private void showEditDeleteDialog(Tag tag) {
+        CharSequence[] options = {"Sửa", "Xóa"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Tùy chọn");
+        builder.setItems(options, (dialog, which) -> {
+            if (which == 0) { // Sửa
+                showEditTagDialog(tag);
+            } else if (which == 1) { // Xóa
+                tagDAO.deleteTag(tag.getTagId());
+                loadTags();
+            }
+        });
+        builder.show();
+    }
+
+    private void showEditTagDialog(Tag tag) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Sửa Tag");
+
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        final EditText editName = new EditText(this);
+        editName.setText(tag.getName());
+        layout.addView(editName);
+
+        final Button colorPickerButton = new Button(this);
+        colorPickerButton.setText("Chọn màu");
+        colorPickerButton.setBackgroundColor(android.graphics.Color.parseColor(tag.getColor()));
+        layout.addView(colorPickerButton);
+
+        final int[] selectedColor = {android.graphics.Color.parseColor(tag.getColor())};
+        colorPickerButton.setOnClickListener(v -> {
+            AmbilWarnaDialog colorPicker = new AmbilWarnaDialog(this, selectedColor[0], new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                @Override
+                public void onOk(AmbilWarnaDialog dialog, int color) {
+                    selectedColor[0] = color;
+                    colorPickerButton.setBackgroundColor(color);
+                }
+
+                @Override
+                public void onCancel(AmbilWarnaDialog dialog) {
+                    // Người dùng hủy chọn màu
+                }
+            });
+            colorPicker.show();
+        });
+
+        builder.setView(layout);
+
+        builder.setPositiveButton("Cập nhật", (dialog, which) -> {
+            String newName = editName.getText().toString();
+            String newColor = String.format("#%06X", (0xFFFFFF & selectedColor[0]));
+
+            if (!newName.isEmpty()) {
+                tagDAO.updateTag(tag.getTagId(), newName, newColor);
+                loadTags();
+            }
+        });
+        builder.setNegativeButton("Hủy", (dialog, which) -> dialog.cancel());
+        builder.show();
     }
 }

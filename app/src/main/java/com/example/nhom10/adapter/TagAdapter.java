@@ -1,54 +1,68 @@
 package com.example.nhom10.adapter;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.nhom10.R;
 import com.example.nhom10.model.Tag;
 
 import java.util.List;
 
-public class TagAdapter extends BaseAdapter {
-    private final Context context;
+public class TagAdapter extends RecyclerView.Adapter<TagAdapter.TagViewHolder> {
     private final List<Tag> tags;
+    private final OnTagClickListener onTagClickListener;
 
-    public TagAdapter(Context context, List<Tag> tags) {
-        this.context = context;
+    // Interface để xử lý sự kiện click
+    public interface OnTagClickListener {
+        void onTagClick(Tag tag);
+    }
+
+    // Constructor
+    public TagAdapter(List<Tag> tags, OnTagClickListener onTagClickListener) {
         this.tags = tags;
+        this.onTagClickListener = onTagClickListener;
+    }
+
+    @NonNull
+    @Override
+    public TagViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_tag, parent, false); // Sử dụng layout `item_tag.xml`
+        return new TagViewHolder(view);
     }
 
     @Override
-    public int getCount() {
+    public void onBindViewHolder(@NonNull TagViewHolder holder, int position) {
+        Tag tag = tags.get(position);
+        holder.bind(tag);
+    }
+
+    @Override
+    public int getItemCount() {
         return tags.size();
     }
 
-    @Override
-    public Object getItem(int position) {
-        return tags.get(position);
-    }
+    // ViewHolder cho từng item trong RecyclerView
+    class TagViewHolder extends RecyclerView.ViewHolder {
+        private final TextView tvTagName;
+        private final View colorIndicator;
 
-    @Override
-    public long getItemId(int position) {
-        return tags.get(position).getTagId();
-    }
-
-    @Override
-    public View getView(int position, View view, ViewGroup viewGroup) {
-        if (view == null) {
-            view = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_1, viewGroup, false);
+        public TagViewHolder(@NonNull View itemView) {
+            super(itemView);
+            tvTagName = itemView.findViewById(R.id.tvTagName);
+            colorIndicator = itemView.findViewById(R.id.colorIndicator);
         }
 
-        TextView textView = view.findViewById(android.R.id.text1);
-        Tag tag = tags.get(position);
-
-        textView.setText(tag.getName());
-        textView.setBackgroundColor(Color.parseColor(tag.getColor())); // Set màu nền
-        textView.setTextColor(Color.WHITE); // Màu chữ trắng
-
-        return view;
+        public void bind(Tag tag) {
+            tvTagName.setText(tag.getName());
+            colorIndicator.setBackgroundColor(Color.parseColor(tag.getColor())); // Set màu cho tag
+            itemView.setOnClickListener(v -> onTagClickListener.onTagClick(tag)); // Xử lý sự kiện click
+        }
     }
 }
