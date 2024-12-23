@@ -1,7 +1,6 @@
 package com.example.nhom10.adapter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -37,9 +36,10 @@ public class TaskArrayAdapter extends ArrayAdapter {
     Activity context;
     int layoutID;
     ArrayList<Task> list = null;
-    TaskDAO taskDAO ;
+    TaskDAO taskDAO;
     CategoryDAO categoryDAO;
     TaskTagsDAO taskTagsDAO;
+
     public TaskArrayAdapter(@NonNull Activity context, int resource, @NonNull List objects) {
         super(context, resource, objects);
         this.context = context;
@@ -52,9 +52,9 @@ public class TaskArrayAdapter extends ArrayAdapter {
 
         LayoutInflater inflater = context.getLayoutInflater();
         convertView = inflater.inflate(layoutID, null);
-        taskDAO=new TaskDAO(convertView.getContext());
-        categoryDAO=new CategoryDAO(convertView.getContext());
-        taskTagsDAO =new TaskTagsDAO(convertView.getContext());
+        taskDAO = new TaskDAO(convertView.getContext());
+        categoryDAO = new CategoryDAO(convertView.getContext());
+        taskTagsDAO = new TaskTagsDAO(convertView.getContext());
         TextView taskTitle = convertView.findViewById(R.id.taskTitle);
         TextView taskTime = convertView.findViewById(R.id.taskTime);
         CheckBox taskCheckBox = convertView.findViewById(R.id.checkbox);
@@ -130,12 +130,8 @@ public class TaskArrayAdapter extends ArrayAdapter {
             view.getContext().startActivity(intent);
         });
 
-
-
-
         return convertView;
     }
-
 
 }
 

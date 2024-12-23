@@ -91,7 +91,7 @@
         android:layout_toEndOf="@+id/icon_username_password"
         android:layout_marginTop="16dp"
         android:hint="Mật khẩu"
-        android:inputType="textPassword"/>
+        android:inputType="textPassword" />
 
     <!-- Ô repass -->
     <ImageView

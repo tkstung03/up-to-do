@@ -1,7 +1,6 @@
 package com.example.nhom10.activity;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -17,7 +16,6 @@ import com.example.nhom10.R;
 import com.example.nhom10.adapter.TagAdapter;
 import com.example.nhom10.dao.TagDAO;
 import com.example.nhom10.model.Tag;
-import com.example.nhom10.objects.UserSession;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -35,7 +33,6 @@ public class TagManagement extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tag_management);
-
 
         tagDAO = new TagDAO(this);
 
@@ -60,15 +57,13 @@ public class TagManagement extends AppCompatActivity {
         recyclerViewTags.setAdapter(adapter);
     }
 
-
-
     private void showAddTagDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Thêm Tag");
 
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(48,16,48,16);
+        layout.setPadding(48, 16, 48, 16);
 
         final EditText inputName = new EditText(this);
         inputName.setHint("Tên tag");

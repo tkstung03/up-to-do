@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -21,7 +20,7 @@
             android:textColor="@color/white"
             android:background="@null"
             android:textStyle="bold"
-            android:textSize="20sp"/>
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/monthYearTV"
@@ -31,7 +30,7 @@
             android:text="Feb 2021"
             android:textSize="20sp"
             android:textAlignment="center"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black" />
 
         <Button
             android:id="@+id/btnNextWeek"
@@ -42,7 +41,7 @@
             android:textColor="@color/white"
             android:background="@null"
             android:textStyle="bold"
-            android:textSize="20sp"/>
+            android:textSize="20sp" />
 
     </LinearLayout>
 
@@ -124,12 +123,12 @@
         android:layout_weight="0.5"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
-        android:paddingBottom="15dp"/>
+        android:paddingBottom="15dp" />
 
     <ListView
         android:id="@+id/lvTask"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="4.5"/> <!-- Tăng layout_weight của ListView từ 5 lên 4.5 -->
+        android:layout_weight="4.5" /> <!-- Tăng layout_weight của ListView từ 5 lên 4.5 -->
 
 </LinearLayout>

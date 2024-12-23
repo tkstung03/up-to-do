@@ -15,11 +15,11 @@ import java.util.List;
 public class CategoryDAO {
     private final SQLiteDatabase db;
 
-
-    public int getUserId(){
+    public int getUserId() {
         UserSession userSession = UserSession.getInstance();
         return userSession.getUserId();
     }
+
     public CategoryDAO(Context context) {
         DbHelper dbHelper = new DbHelper(context);
         db = dbHelper.getWritableDatabase();

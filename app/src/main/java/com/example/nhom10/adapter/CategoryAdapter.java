@@ -188,6 +188,7 @@ public class CategoryAdapter extends BaseAdapter {
         dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
         dialog.getWindow().setGravity(Gravity.BOTTOM);
     }
+
     private void updateCategory(String categoryName, String selectedIcon, String selectedColor, Category category, int position, Dialog dialog) {
         if (categoryName.isEmpty()) {
             Toast.makeText(context, "Vui lòng nhập tên danh mục", Toast.LENGTH_SHORT).show();
@@ -207,6 +208,5 @@ public class CategoryAdapter extends BaseAdapter {
         }
         dialog.dismiss();
     }
-
 
 }

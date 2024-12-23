@@ -17,7 +17,6 @@ import java.security.SecureRandom;
 
 import javax.mail.MessagingException;
 
-
 public class ResetPassword extends AppCompatActivity {
 
     EditText edtUsername, edtEmail;

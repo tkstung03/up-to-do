@@ -28,6 +28,7 @@ public class ChangePasswordFragment extends Fragment {
     TextView txtShowPassword;
     ImageView eyeIcon;
     boolean isPasswordVisible = false;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -57,6 +58,7 @@ public class ChangePasswordFragment extends Fragment {
         });
         return view;
     }
+
     private void changePassword() {
         String oldPassword = edtOldPassword.getText().toString().trim();
         String newPassword = edtNewPassword.getText().toString().trim();

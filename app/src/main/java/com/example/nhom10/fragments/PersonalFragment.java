@@ -40,26 +40,26 @@ public class PersonalFragment extends Fragment {
     PieChart chart;
     TaskDAO taskDAO;
     List<Task> tasks;
-    TextView txtComp,txtInComp;
+    TextView txtComp, txtInComp;
 
     public void getWidget(View view) {
         taskDAO = new TaskDAO(requireContext());
-        txtComp=view.findViewById(R.id.txtCompleted);
-        txtInComp=view.findViewById(R.id.txtInCompleted);
+        txtComp = view.findViewById(R.id.txtCompleted);
+        txtInComp = view.findViewById(R.id.txtInCompleted);
         textViewSelectedDate = view.findViewById(R.id.textViewSelectedDate);
         spinnerFilter = view.findViewById(R.id.spinnerFilter);
         chart = view.findViewById(R.id.pieChart);
         filterList = new ArrayList<>();
         filterList.add("Chọn ngày");
         filterList.add("Theo ngày");
- //       filterList.add("Tuần qua");
+        //       filterList.add("Tuần qua");
         filterList.add("Theo tháng");
 
-        tasks =taskDAO.findAll();
+        tasks = taskDAO.findAll();
 
         adapter = new ArrayAdapter<>(view.getContext(), android.R.layout.simple_spinner_dropdown_item, filterList);
         spinnerFilter.setAdapter(adapter);
-        getPieChart(50,50);
+        getPieChart(50, 50);
         spinnerFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -84,7 +84,6 @@ public class PersonalFragment extends Fragment {
         });
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -95,7 +94,7 @@ public class PersonalFragment extends Fragment {
         return view;
     }
 
-    public void getPieChart(int doneValue,int unfinishValue){
+    public void getPieChart(int doneValue, int unfinishValue) {
         ArrayList<PieEntry> entries = new ArrayList<>();
         entries.add(new PieEntry(doneValue, "Hoàn thành"));
         entries.add(new PieEntry(unfinishValue, "Chưa hoàn thành"));
@@ -135,11 +134,8 @@ public class PersonalFragment extends Fragment {
         chart.animateY(1400, Easing.EaseInOutQuad);
         chart.notifyDataSetChanged();
 
-
         chart.invalidate();
     }
-
-
 
     private void showDatePicker() {
         Calendar calendar = Calendar.getInstance();
@@ -158,7 +154,6 @@ public class PersonalFragment extends Fragment {
                 }, year, month, day);
         datePickerDialog.show();
     }
-
 
     private void showMonthYearPicker() {
         final Calendar calendar = Calendar.getInstance();
@@ -202,7 +197,6 @@ public class PersonalFragment extends Fragment {
                 .show();
     }
 
-
     public void getStatisticByDay(Date filterDate) {
         int inComp = 1, comp = 1;
 
@@ -227,14 +221,14 @@ public class PersonalFragment extends Fragment {
 
         txtComp.setText(String.valueOf(comp - 1));
         txtInComp.setText(String.valueOf(inComp - 1));
-        if(inComp ==1 && comp ==1){
+        if (inComp == 1 && comp == 1) {
             getPieChart(comp, inComp);
-        }
-        else {
-            getPieChart(comp-1, inComp-1);
+        } else {
+            getPieChart(comp - 1, inComp - 1);
         }
 
     }
+
     public void getStatisticByMonth(Date filterDate) {
         int inComp = 0, comp = 0;
 
@@ -261,9 +255,5 @@ public class PersonalFragment extends Fragment {
         txtInComp.setText(String.valueOf(inComp));
         getPieChart(comp, inComp);
     }
-
-
-
-
 
 }

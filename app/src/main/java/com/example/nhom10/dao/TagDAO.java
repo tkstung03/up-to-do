@@ -14,7 +14,8 @@ import java.util.List;
 
 public class TagDAO {
     private final SQLiteDatabase db;
-    public int getUserId(){
+
+    public int getUserId() {
         UserSession userSession = UserSession.getInstance();
         return userSession.getUserId();
     }

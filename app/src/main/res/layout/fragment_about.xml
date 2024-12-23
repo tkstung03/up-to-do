@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".fragments.AboutFragment">
-
 
     <TableRow
         android:layout_width="match_parent"
@@ -33,7 +31,7 @@
             android:id="@+id/imageView"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:src="@drawable/logo_haui"/>
+            android:src="@drawable/logo_haui" />
     </TableRow>
 
     <TableRow
@@ -78,7 +76,7 @@
             android:layout_height="wrap_content"
             android:text="Lớp:"
             android:layout_weight="1"
-            android:gravity="end"/>
+            android:gravity="end" />
 
         <TextView
             android:id="@+id/textView16"
@@ -86,7 +84,7 @@
             android:layout_height="wrap_content"
             android:text="20241IT6029007"
             android:paddingLeft="10dp"
-            android:layout_weight="2"/>
+            android:layout_weight="2" />
     </TableRow>
 
     <TableRow
@@ -100,7 +98,7 @@
             android:layout_height="wrap_content"
             android:text="Tên nhóm:"
             android:layout_weight="1"
-            android:gravity="end"/>
+            android:gravity="end" />
 
         <TextView
             android:id="@+id/textView8"
@@ -115,14 +113,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp">
+
         <TextView
             android:id="@+id/textView9"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Người thực hiện:"
             android:layout_weight="1"
-            android:gravity="end"/>
-
+            android:gravity="end" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -143,26 +141,28 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
                 android:text="2. Nguyễn Anh Tú - 2021608453" />
+
             <TextView
                 android:id="@+id/textView12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
                 android:text="3. Triệu Đăng Tuấn - 2021607789" />
+
             <TextView
                 android:id="@+id/textView13"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
-                android:text="4. Phạm Thanh Tùng - 2021608193"/>
+                android:text="4. Phạm Thanh Tùng - 2021608193" />
+
             <TextView
                 android:id="@+id/textView14"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
-                android:text="5. Trịnh Ngọc Tuyến - 2021608007"/>
+                android:text="5. Trịnh Ngọc Tuyến - 2021608007" />
         </LinearLayout>
-
 
     </LinearLayout>
 

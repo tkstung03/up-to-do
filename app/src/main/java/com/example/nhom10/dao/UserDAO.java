@@ -8,11 +8,9 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.example.nhom10.database.DbHelper;
 import com.example.nhom10.model.User;
-import com.example.nhom10.objects.UserSession;
 
 public class UserDAO {
     private final SQLiteDatabase db;
-
 
     public UserDAO(Context context) {
         DbHelper dbHelper = new DbHelper(context);
@@ -65,6 +63,7 @@ public class UserDAO {
         cursor.close();
         return userExists;
     }
+
     public boolean updatePassword(int userId, String newPassword) {
         ContentValues values = new ContentValues();
         values.put("password", newPassword);

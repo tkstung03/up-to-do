@@ -58,7 +58,6 @@ public class TasksByCategory extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-
         Intent intent = getIntent();
         int categoryId = intent.getIntExtra("category_id", -1);
         String categoryName = intent.getStringExtra("category_name");
